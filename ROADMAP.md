@@ -9,9 +9,10 @@
 - [x] Linux, macOS, and Windows CI definitions.
 - [x] Cross-platform wheel workflow.
 - [x] Choose and add an open source license (MIT).
-- [ ] Confirm the `bielsort` name on PyPI and GitHub.
+- [x] Confirm and create the `bielsort` repository on GitHub.
+- [ ] Confirm the `bielsort` package name on PyPI.
 - [x] Add repository URLs and full author metadata.
-- [ ] Run CI successfully on all supported CPython versions.
+- [x] Run CI successfully on all supported CPython versions.
 - [ ] Validate AddressSanitizer and UndefinedBehaviorSanitizer builds.
 - [ ] Measure peak memory in addition to execution time.
 - [ ] Compare with NumPy including list-to-array conversion cost.
