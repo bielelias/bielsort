@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bielsort"
-version = "0.1.0a1"
+version = "0.1.0rc1"
 description = "Adaptive stable sorting for large Python integer lists"
 readme = "README.md"
 license = "MIT"
@@ -21,7 +21,7 @@ keywords = [
   "performance",
 ]
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
   "Programming Language :: C",
   "Programming Language :: Python :: 3",

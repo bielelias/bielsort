@@ -4,9 +4,13 @@
 
 `bielsort_native.bielsort` exposes four primary functions:
 
-- `biel_sort`: returns a new sorted list;
-- `biel_sort_in_place`: mutates an exact list and returns `None`;
-- two diagnostic variants that also report the selected strategy.
+- `sort`: returns a new sorted list;
+- `sort_in_place`: mutates an exact list and returns `None`;
+- `sort_with_strategy` and `sort_in_place_with_strategy`: diagnostic variants
+  that also report the selected strategy.
+
+The earlier `biel_sort*` spellings are compatibility aliases for the 0.1
+series.
 
 `key=` and `reverse=` deliberately delegate to Python's built-in sorting to
 preserve its semantics.

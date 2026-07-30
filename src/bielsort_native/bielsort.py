@@ -1,8 +1,7 @@
-"""BielSort híbrido e otimizado.
+"""Adaptive stable sorting with native integer fast paths.
 
-O caminho rápido usa um radix sort estável implementado em C para inteiros
-com sinal de 64 bits. O núcleo seleciona o Timsort do CPython quando ele tende
-a ser superior ou quando os valores não são compatíveis com o radix.
+The native core accelerates compatible signed 64-bit integer workloads and
+selects CPython's Timsort when it is more suitable.
 """
 
 try:
@@ -20,54 +19,60 @@ except ImportError as erro:
     ) from erro
 
 
-def biel_sort(iteravel, *, key=None, reverse=False):
-    """Retorna uma nova lista ordenada.
+def sort(iterable, *, key=None, reverse=False):
+    """Return a new sorted list.
 
-    O caminho radix é usado na ordem crescente natural de inteiros. Recursos
-    gerais como ``key`` e ``reverse`` preservam a semântica de ``sorted()``
-    por meio do fallback.
+    Native integer paths apply to natural ascending order. General ``key`` and
+    ``reverse`` operations delegate to ``sorted()`` to preserve its semantics.
     """
     if key is not None or reverse:
-        return sorted(iteravel, key=key, reverse=reverse)
-    return _sort(iteravel)
+        return sorted(iterable, key=key, reverse=reverse)
+    return _sort(iterable)
 
 
-def biel_sort_diagnostico(iteravel, *, key=None, reverse=False):
-    """Retorna uma tupla ``(resultado, estratégia utilizada)``."""
+def sort_with_strategy(iterable, *, key=None, reverse=False):
+    """Return ``(sorted_list, selected_strategy)`` for diagnostics."""
     if key is not None or reverse:
         return (
-            sorted(iteravel, key=key, reverse=reverse),
+            sorted(iterable, key=key, reverse=reverse),
             "timsort: key ou reverse",
         )
-    return _sort_with_strategy(iteravel)
+    return _sort_with_strategy(iterable)
 
 
-def biel_sort_in_place(lista, *, key=None, reverse=False):
-    """Ordena uma lista no lugar e retorna ``None``, como ``list.sort()``."""
+def sort_in_place(values, *, key=None, reverse=False):
+    """Sort an exact list in place and return ``None``, like ``list.sort()``."""
     if key is not None or reverse:
-        return lista.sort(key=key, reverse=reverse)
-    return _sort_in_place(lista)
+        return values.sort(key=key, reverse=reverse)
+    return _sort_in_place(values)
 
 
-def biel_sort_in_place_diagnostico(lista, *, key=None, reverse=False):
-    """Ordena no lugar e retorna o nome da estratégia utilizada."""
+def sort_in_place_with_strategy(values, *, key=None, reverse=False):
+    """Sort in place and return the selected strategy for diagnostics."""
     if key is not None or reverse:
-        lista.sort(key=key, reverse=reverse)
+        values.sort(key=key, reverse=reverse)
         return "timsort: key ou reverse"
-    return _sort_in_place_with_strategy(lista)
+    return _sort_in_place_with_strategy(values)
 
 
-sort = biel_sort
-biel_sort_with_strategy = biel_sort_diagnostico
-biel_sort_in_place_with_strategy = biel_sort_in_place_diagnostico
+# Compatibility aliases retained for the 0.1 series.
+biel_sort = sort
+biel_sort_diagnostico = sort_with_strategy
+biel_sort_with_strategy = sort_with_strategy
+biel_sort_in_place = sort_in_place
+biel_sort_in_place_diagnostico = sort_in_place_with_strategy
+biel_sort_in_place_with_strategy = sort_in_place_with_strategy
 
 __all__ = [
+    "sort",
+    "sort_with_strategy",
+    "sort_in_place",
+    "sort_in_place_with_strategy",
     "biel_sort",
     "biel_sort_diagnostico",
     "biel_sort_with_strategy",
     "biel_sort_in_place",
     "biel_sort_in_place_diagnostico",
     "biel_sort_in_place_with_strategy",
-    "sort",
 ]
-__version__ = "0.1.0a1"
+__version__ = "0.1.0rc1"

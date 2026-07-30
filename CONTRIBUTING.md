@@ -47,8 +47,8 @@ Close unrelated applications, keep the machine on stable power, and report:
 ## Native-code rules
 
 - Preserve stable sorting.
-- Preserve the input list when using `biel_sort()`.
-- Preserve list identity and return `None` in `biel_sort_in_place()`.
+- Preserve the input list when using `sort()`.
+- Preserve list identity and return `None` in `sort_in_place()`.
 - Avoid releasing the GIL while mutating a caller-owned list.
 - Check allocation failures and integer boundaries.
 - Keep the Timsort fallback correct even when a heuristic is conservative.

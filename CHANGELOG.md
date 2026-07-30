@@ -8,6 +8,8 @@ release.
 
 ## [Unreleased]
 
+## [0.1.0rc1] - 2026-07-30
+
 ### Added
 
 - Modern `pyproject.toml` packaging and `src/` layout.
@@ -22,11 +24,15 @@ release.
 - Isolated peak-memory and fair end-to-end NumPy benchmark harnesses.
 - Versioned benchmark report with environment and methodology metadata.
 - Counting Sort identity-order stress coverage.
+- Canonical `sort`, `sort_in_place`, `sort_with_strategy`, and
+  `sort_in_place_with_strategy` APIs.
+- Tokenless TestPyPI publishing workflow using GitHub OIDC.
 
 ### Changed
 
 - Reduced Counting Sort peak memory by compacting normalized keys to 32 bits
   and separating them from the object-pointer output.
+- Kept the earlier `biel_sort*` API names as compatibility aliases.
 
 ## [0.1.0a1] - 2026-07-30
 

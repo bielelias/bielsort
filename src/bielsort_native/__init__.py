@@ -4,20 +4,26 @@ from .bielsort import (
     __version__,
     biel_sort,
     biel_sort_diagnostico,
-    biel_sort_in_place_with_strategy,
     biel_sort_in_place,
     biel_sort_in_place_diagnostico,
+    biel_sort_in_place_with_strategy,
     biel_sort_with_strategy,
     sort,
+    sort_in_place,
+    sort_in_place_with_strategy,
+    sort_with_strategy,
 )
 
 __all__ = [
+    "sort",
+    "sort_with_strategy",
+    "sort_in_place",
+    "sort_in_place_with_strategy",
     "biel_sort",
     "biel_sort_diagnostico",
     "biel_sort_with_strategy",
     "biel_sort_in_place",
     "biel_sort_in_place_diagnostico",
     "biel_sort_in_place_with_strategy",
-    "sort",
     "__version__",
 ]

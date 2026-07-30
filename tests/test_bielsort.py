@@ -8,6 +8,10 @@ from bielsort import (
     biel_sort_diagnostico,
     biel_sort_in_place,
     biel_sort_in_place_diagnostico,
+    sort,
+    sort_in_place,
+    sort_in_place_with_strategy,
+    sort_with_strategy,
 )
 import bielsort_native
 
@@ -24,6 +28,20 @@ class BielSortTests(unittest.TestCase):
 
     def test_legacy_import_remains_compatible(self):
         self.assertIs(bielsort_native.biel_sort, biel_sort)
+
+    def test_canonical_api_and_compatibility_aliases(self):
+        self.assertIs(sort, biel_sort)
+        self.assertIs(sort_with_strategy, biel_sort_diagnostico)
+        self.assertIs(sort_in_place, biel_sort_in_place)
+        self.assertIs(
+            sort_in_place_with_strategy,
+            biel_sort_in_place_diagnostico,
+        )
+        self.assertEqual(sort((3, 1, 2)), [1, 2, 3])
+
+        values = [3, 1, 2]
+        self.assertIsNone(sort_in_place(values))
+        self.assertEqual(values, [1, 2, 3])
 
     def conferir(self, valores):
         original = list(valores)

@@ -51,9 +51,10 @@ body:
     attributes:
       label: API
       options:
-        - biel_sort
-        - biel_sort_in_place
+        - sort
+        - sort_in_place
         - Diagnostic API
+        - Compatibility alias
         - Installation or build
         - Other
     validations:

@@ -2,6 +2,8 @@ name: Native sanitizers
 
 on:
   push:
+    branches:
+      - main
     paths:
       - ".github/workflows/sanitizers.yml"
       - "pyproject.toml"
