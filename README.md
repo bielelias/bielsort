@@ -29,6 +29,18 @@ It provides separate APIs to compete fairly with both `sorted()` and
 
 ## Installation
 
+Install the release candidate from TestPyPI:
+
+```bash
+python -m pip install \
+  --index-url https://test.pypi.org/simple/ \
+  --no-deps \
+  bielsort==0.1.0rc1
+```
+
+The package has no runtime dependencies. `--no-deps` prevents `pip` from
+looking for unrelated packages in the test index.
+
 From the project directory:
 
 ```bash
@@ -133,6 +145,7 @@ records the measured 36%-45% peak-memory reduction.
 - [Roadmap](ROADMAP.md)
 - [Changelog](CHANGELOG.md)
 - [Release guide](docs/RELEASING.md)
+- [TestPyPI release candidate](https://test.pypi.org/project/bielsort/0.1.0rc1/)
 - [Benchmark results](benchmarks/results/2026-07-30-linux-x86_64.md)
 - [Counting Sort memory optimization](benchmarks/results/2026-07-30-counting-memory.md)
 

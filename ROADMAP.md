@@ -22,7 +22,7 @@
 
 ## Candidate 0.1 release
 
-- [ ] Publish signed/tagged `0.1.0rc1` artifacts to TestPyPI.
+- [x] Publish attested/tagged `0.1.0rc1` artifacts to TestPyPI.
 - [x] Test installation from wheels in clean CI environments.
 - [x] Freeze the public API for the 0.1 series.
 - [x] Prepare tokenless TestPyPI publishing through GitHub OIDC.
