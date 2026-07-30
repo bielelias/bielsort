@@ -25,10 +25,15 @@ The C compiler must be compatible with the selected CPython distribution.
 5. Do not claim universal speedups from one distribution or machine.
 6. Update `CHANGELOG.md` for user-visible changes.
 
+For native changes on Linux, also run the sanitizer workflow or an equivalent
+local build with `BIELSORT_SANITIZE=1`.
+
 ## Benchmarking
 
 ```bash
 python benchmarks/benchmark.py -n 10000 100000 1000000 -r 5
+python benchmarks/memory.py -n 1000000 -r 3
+python benchmarks/numpy_comparison.py -n 10000 100000 1000000 -r 5
 ```
 
 Close unrelated applications, keep the machine on stable power, and report:

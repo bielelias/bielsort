@@ -26,3 +26,30 @@ The included distributions exercise:
 Performance claims must include machine, Python, compiler, distributions,
 repetitions, and median timings. A speedup on one machine is not a universal
 guarantee.
+
+## Peak memory
+
+The memory benchmark runs each algorithm in a separate child process so the
+native C allocations contribute to the operating system's peak RSS:
+
+```bash
+python benchmarks/memory.py -n 1000000 -r 3
+```
+
+It currently supports Linux and macOS. Reported memory is the incremental peak
+above the process state after generating the input. It is an operating-system
+measurement, not an exact allocation trace.
+
+## NumPy
+
+Install the optional benchmark dependency and run:
+
+```bash
+python -m pip install -e ".[benchmark]"
+python benchmarks/numpy_comparison.py -n 10000 100000 1000000 -r 5
+```
+
+`NumPy E2E` includes conversion from `list[int]` to `ndarray`, stable sorting,
+and conversion back to `list[int]`. `NumPy array` measures stable sorting when
+the input is already an `int64` array; it is intentionally shown as a
+different API scenario.
