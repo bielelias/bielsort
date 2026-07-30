@@ -16,6 +16,7 @@
 - [x] Run CI successfully on all supported CPython versions.
 - [x] Validate AddressSanitizer and UndefinedBehaviorSanitizer builds.
 - [x] Measure peak memory in addition to execution time.
+- [x] Reduce Counting Sort peak memory with compact keys and phased buffers.
 - [x] Compare with NumPy including list-to-array conversion cost.
 - [x] Complete the initial IP decision (defer INPI registration).
 

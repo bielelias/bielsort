@@ -310,63 +310,94 @@ biel_sort_impl(PyObject *iteravel, TipoRetorno tipo, int copiar)
         passagens = contar_digitos_variaveis(variacao);
     }
 
+    if (usar_contagem) {
+        const size_t tamanho_contagem = (size_t)amplitude + 1;
+        uint32_t *chaves = PyMem_Malloc((size_t)n * sizeof(*chaves));
+
+        /*
+         * A amplitude deste caminho cabe em 32 bits. Compactar as chaves
+         * antes de criar a saída evita manter simultaneamente dois buffers
+         * Entrada de 16 bytes por elemento.
+         */
+        if (chaves != NULL) {
+            for (Py_ssize_t i = 0; i < n; i++) {
+                chaves[i] = (uint32_t)origem[i].chave;
+            }
+            PyMem_Free(origem);
+            origem = NULL;
+
+            PyObject **saida = PyMem_Malloc((size_t)n * sizeof(*saida));
+            Py_ssize_t *contagem = PyMem_Calloc(
+                tamanho_contagem,
+                sizeof(*contagem)
+            );
+
+            if (saida != NULL && contagem != NULL) {
+                PyObject **itens = PySequence_Fast_ITEMS(lista);
+                PyThreadState *estado_gil = NULL;
+                if (copiar) {
+                    estado_gil = PyEval_SaveThread();
+                }
+
+                for (Py_ssize_t i = 0; i < n; i++) {
+                    contagem[chaves[i]]++;
+                }
+
+                Py_ssize_t total = 0;
+                for (size_t chave = 0; chave < tamanho_contagem; chave++) {
+                    const Py_ssize_t quantidade = contagem[chave];
+                    contagem[chave] = total;
+                    total += quantidade;
+                }
+
+                for (Py_ssize_t i = 0; i < n; i++) {
+                    const uint32_t chave = chaves[i];
+                    saida[contagem[chave]++] = itens[i];
+                }
+
+                if (estado_gil != NULL) {
+                    PyEval_RestoreThread(estado_gil);
+                }
+
+                for (Py_ssize_t i = 0; i < n; i++) {
+                    PyList_SET_ITEM(lista, i, saida[i]);
+                }
+
+                PyMem_Free(contagem);
+                PyMem_Free(saida);
+                PyMem_Free(chaves);
+                return finalizar_resultado(
+                    lista,
+                    "counting nativo estável",
+                    tipo
+                );
+            }
+
+            /*
+             * O counting é opcional. Em caso de pressão de memória,
+             * reconstruímos a representação completa e tentamos o radix.
+             */
+            PyMem_Free(contagem);
+            PyMem_Free(saida);
+            origem = PyMem_Malloc((size_t)n * sizeof(*origem));
+            if (origem == NULL) {
+                PyMem_Free(chaves);
+                Py_DECREF(lista);
+                return PyErr_NoMemory();
+            }
+            for (Py_ssize_t i = 0; i < n; i++) {
+                origem[i].objeto = PyList_GET_ITEM(lista, i);
+                origem[i].chave = chaves[i];
+            }
+            PyMem_Free(chaves);
+        }
+    }
+
     Entrada *destino = PyMem_Malloc((size_t)n * sizeof(*destino));
     if (destino == NULL) {
         PyMem_Free(origem);
         Py_DECREF(lista);
         return PyErr_NoMemory();
-    }
-
-    if (usar_contagem) {
-        const size_t tamanho_contagem = (size_t)amplitude + 1;
-        Py_ssize_t *contagem = PyMem_Calloc(
-            tamanho_contagem,
-            sizeof(*contagem)
-        );
-
-        /*
-         * Se a tabela opcional não couber na memória, o radix continua sendo
-         * uma alternativa correta e já possui os buffers necessários.
-         */
-        if (contagem != NULL) {
-            PyThreadState *estado_gil = NULL;
-            if (copiar) {
-                estado_gil = PyEval_SaveThread();
-            }
-
-            for (Py_ssize_t i = 0; i < n; i++) {
-                contagem[(size_t)origem[i].chave]++;
-            }
-
-            Py_ssize_t total = 0;
-            for (size_t chave = 0; chave < tamanho_contagem; chave++) {
-                const Py_ssize_t quantidade = contagem[chave];
-                contagem[chave] = total;
-                total += quantidade;
-            }
-
-            for (Py_ssize_t i = 0; i < n; i++) {
-                const size_t chave = (size_t)origem[i].chave;
-                destino[contagem[chave]++] = origem[i];
-            }
-
-            if (estado_gil != NULL) {
-                PyEval_RestoreThread(estado_gil);
-            }
-
-            for (Py_ssize_t i = 0; i < n; i++) {
-                PyList_SET_ITEM(lista, i, destino[i].objeto);
-            }
-
-            PyMem_Free(contagem);
-            PyMem_Free(destino);
-            PyMem_Free(origem);
-            return finalizar_resultado(
-                lista,
-                "counting nativo estável",
-                tipo
-            );
-        }
     }
 
     Entrada *buffer_a = origem;
