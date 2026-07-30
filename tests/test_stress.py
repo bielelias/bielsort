@@ -68,6 +68,32 @@ class BielSortStressTests(unittest.TestCase):
         self.assertEqual(in_place, expected)
         self.assertEqual(strategy_in_place, "counting nativo estável")
 
+    def test_counting_sort_preserves_object_identity_order(self):
+        values = [
+            int(str(10_000 + index % 7))
+            for index in range(250_000)
+        ]
+        identities = {}
+        for value in values:
+            identities.setdefault(value, []).append(id(value))
+
+        result, strategy = biel_sort_diagnostico(values)
+        result_identities = {}
+        for value in result:
+            result_identities.setdefault(value, []).append(id(value))
+
+        self.assertEqual(strategy, "counting nativo estável")
+        self.assertEqual(result_identities, identities)
+
+        in_place = values.copy()
+        strategy_in_place = biel_sort_in_place_diagnostico(in_place)
+        in_place_identities = {}
+        for value in in_place:
+            in_place_identities.setdefault(value, []).append(id(value))
+
+        self.assertEqual(strategy_in_place, "counting nativo estável")
+        self.assertEqual(in_place_identities, identities)
+
     def test_radix_repeated_full_int64_range(self):
         rng = random.Random(0x64B1E1)
 
