@@ -1,0 +1,60 @@
+name: Bug report
+description: Report incorrect output, crashes, or API problems
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not report memory-safety or security vulnerabilities publicly.
+        Follow SECURITY.md for private reporting.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproducer
+    attributes:
+      label: Minimal reproducer
+      render: python
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: BielSort version
+    validations:
+      required: true
+
+  - type: input
+    id: python
+    attributes:
+      label: Python version and implementation
+    validations:
+      required: true
+
+  - type: input
+    id: platform
+    attributes:
+      label: Operating system and architecture
+    validations:
+      required: true
+
+  - type: dropdown
+    id: api
+    attributes:
+      label: API
+      options:
+        - biel_sort
+        - biel_sort_in_place
+        - Diagnostic API
+        - Installation or build
+        - Other
+    validations:
+      required: true

@@ -1,0 +1,177 @@
+import random
+import unittest
+from importlib.metadata import version
+
+from bielsort import (
+    __version__,
+    biel_sort,
+    biel_sort_diagnostico,
+    biel_sort_in_place,
+    biel_sort_in_place_diagnostico,
+)
+import bielsort_native
+
+
+class InteiroComNome(int):
+    pass
+
+
+class BielSortTests(unittest.TestCase):
+    """Correctness and API-compatibility tests for both sorting modes."""
+
+    def test_package_version_matches_metadata(self):
+        self.assertEqual(__version__, version("bielsort"))
+
+    def test_legacy_import_remains_compatible(self):
+        self.assertIs(bielsort_native.biel_sort, biel_sort)
+
+    def conferir(self, valores):
+        original = list(valores)
+        resultado = biel_sort(valores)
+        self.assertEqual(resultado, sorted(original))
+        self.assertEqual(list(valores), original)
+        self.assertIsNot(resultado, valores)
+
+    def conferir_in_place(self, valores):
+        esperado = sorted(valores)
+        identidade = id(valores)
+        retorno = biel_sort_in_place(valores)
+        self.assertIsNone(retorno)
+        self.assertEqual(id(valores), identidade)
+        self.assertEqual(valores, esperado)
+
+    def test_casos_basicos(self):
+        casos = [
+            [],
+            [1],
+            [2, 1],
+            [3, -1, 3, 0, -10, 8, -1],
+            [5] * 10_000,
+            list(range(10_000)),
+            list(range(10_000, -1, -1)),
+        ]
+        for caso in casos:
+            with self.subTest(tamanho=len(caso)):
+                self.conferir(caso)
+
+    def test_limites_de_int64(self):
+        minimo = -(1 << 63)
+        maximo = (1 << 63) - 1
+        rng = random.Random(2026)
+        valores = [
+            minimo,
+            maximo,
+            0,
+            -1,
+            1,
+            *[rng.randint(minimo, maximo) for _ in range(100_000)],
+        ]
+        self.conferir(valores)
+        self.conferir_in_place(valores.copy())
+
+    def test_distribuicoes_aleatorias(self):
+        rng = random.Random(2027)
+        for tamanho in (2_048, 10_000, 100_000):
+            casos = [
+                [rng.randint(-100, 100) for _ in range(tamanho)],
+                [rng.randint(-(1 << 31), (1 << 31) - 1) for _ in range(tamanho)],
+                [rng.randint(-(1 << 63), (1 << 63) - 1) for _ in range(tamanho)],
+            ]
+            for caso in casos:
+                with self.subTest(tamanho=tamanho):
+                    self.conferir(caso)
+
+    def test_estabilidade_para_inteiros_iguais(self):
+        valores = []
+        grupos_originais = {}
+        for indice in range(10_000):
+            valor = int(str(10_000 + indice % 7))
+            valores.append(valor)
+            grupos_originais.setdefault(valor, []).append(id(valor))
+
+        resultado = biel_sort(valores)
+        grupos_resultado = {}
+        for valor in resultado:
+            grupos_resultado.setdefault(valor, []).append(id(valor))
+
+        self.assertEqual(grupos_resultado, grupos_originais)
+
+        copia = valores.copy()
+        self.conferir_in_place(copia)
+        grupos_in_place = {}
+        for valor in copia:
+            grupos_in_place.setdefault(valor, []).append(id(valor))
+        self.assertEqual(grupos_in_place, grupos_originais)
+
+    def test_fallback_para_inteiros_gigantes(self):
+        rng = random.Random(2028)
+        valores = [
+            rng.getrandbits(2048) * rng.choice((-1, 1))
+            for _ in range(10_000)
+        ]
+        resultado, estrategia = biel_sort_diagnostico(valores)
+        self.assertEqual(resultado, sorted(valores))
+        self.assertTrue(estrategia.startswith("timsort:"))
+
+    def test_fallback_preserva_objetos_e_estabilidade(self):
+        valores = [
+            InteiroComNome(3),
+            InteiroComNome(1),
+            InteiroComNome(3),
+            InteiroComNome(1),
+        ] * 1_000
+        resultado, estrategia = biel_sort_diagnostico(valores)
+        self.assertEqual(resultado, sorted(valores))
+        self.assertTrue(estrategia.startswith("timsort:"))
+
+        esperado_ids = {}
+        resultado_ids = {}
+        for valor in valores:
+            esperado_ids.setdefault(int(valor), []).append(id(valor))
+        for valor in resultado:
+            resultado_ids.setdefault(int(valor), []).append(id(valor))
+        self.assertEqual(resultado_ids, esperado_ids)
+
+    def test_iteraveis_que_nao_sao_listas(self):
+        self.assertEqual(biel_sort((3, 1, 2)), [1, 2, 3])
+        self.assertEqual(biel_sort(x for x in (3, 1, 2)), [1, 2, 3])
+        with self.assertRaises(TypeError):
+            biel_sort_in_place((3, 1, 2))
+
+    def test_key_e_reverse_compativeis_com_sorted(self):
+        valores = ["bbb", "a", "cc", "dddd"]
+        self.assertEqual(
+            biel_sort(valores, key=len),
+            sorted(valores, key=len),
+        )
+        self.assertEqual(
+            biel_sort(valores, key=len, reverse=True),
+            sorted(valores, key=len, reverse=True),
+        )
+        self.assertEqual(
+            biel_sort([3, 1, 3, 2], reverse=True),
+            sorted([3, 1, 3, 2], reverse=True),
+        )
+        copia = valores.copy()
+        self.assertIsNone(biel_sort_in_place(copia, key=len, reverse=True))
+        self.assertEqual(copia, sorted(valores, key=len, reverse=True))
+
+    def test_diagnostico_in_place(self):
+        rng = random.Random(2029)
+        valores = [
+            rng.randint(-(1 << 63), (1 << 63) - 1)
+            for _ in range(100_000)
+        ]
+        estrategia = biel_sort_in_place_diagnostico(valores)
+        self.assertEqual(valores, sorted(valores))
+        self.assertIn("radix nativo", estrategia)
+
+    def test_ordem_decrescente_usa_fallback_adaptativo(self):
+        valores = list(range(100_000, 0, -1))
+        resultado, estrategia = biel_sort_diagnostico(valores)
+        self.assertEqual(resultado, sorted(valores))
+        self.assertIn("monotônica", estrategia)
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)

@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bielsort"
+version = "0.1.0a1"
+description = "Adaptive stable sorting for large Python integer lists"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.9"
+authors = [
+  { name = "Gabriel Fernandes Farah Elias", email = "gabriel_elias@msn.com" },
+]
+keywords = [
+  "sorting",
+  "radix-sort",
+  "counting-sort",
+  "cpython-extension",
+  "performance",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: C",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://github.com/bielelias/bielsort"
+Repository = "https://github.com/bielelias/bielsort"
+Issues = "https://github.com/bielelias/bielsort/issues"
+Changelog = "https://github.com/bielelias/bielsort/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+dev = [
+  "build>=1.2",
+  "cibuildwheel>=4.1",
+]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+bielsort_native = ["py.typed", "*.pyi"]
+bielsort = ["py.typed", "*.pyi"]
+
+[tool.cibuildwheel]
+build = [
+  "cp39-*",
+  "cp310-*",
+  "cp311-*",
+  "cp312-*",
+  "cp313-*",
+  "cp314-*",
+]
+skip = ["*-musllinux_i686"]
+test-command = "python -m unittest discover -s {project}/tests -v"

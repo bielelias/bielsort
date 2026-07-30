@@ -1,0 +1,54 @@
+# Contributing to BielSort
+
+Thank you for helping improve BielSort.
+
+## Development setup
+
+Use a supported CPython version and a virtual environment:
+
+```bash
+python -m venv .venv
+.venv/bin/python -m pip install -e .
+.venv/bin/python -m unittest discover -s tests -v
+```
+
+On Windows, use `.venv\Scripts\python` instead.
+
+The C compiler must be compatible with the selected CPython distribution.
+
+## Before submitting a change
+
+1. Add or update tests for observable behavior.
+2. Run the complete unit-test suite.
+3. Run a benchmark when changing the native algorithm or heuristics.
+4. Report correctness and performance separately.
+5. Do not claim universal speedups from one distribution or machine.
+6. Update `CHANGELOG.md` for user-visible changes.
+
+## Benchmarking
+
+```bash
+python benchmarks/benchmark.py -n 10000 100000 1000000 -r 5
+```
+
+Close unrelated applications, keep the machine on stable power, and report:
+
+- CPU and operating system;
+- Python version and compiler;
+- input distributions;
+- number of repetitions;
+- medians, not only the fastest run.
+
+## Native-code rules
+
+- Preserve stable sorting.
+- Preserve the input list when using `biel_sort()`.
+- Preserve list identity and return `None` in `biel_sort_in_place()`.
+- Avoid releasing the GIL while mutating a caller-owned list.
+- Check allocation failures and integer boundaries.
+- Keep the Timsort fallback correct even when a heuristic is conservative.
+
+## Pull requests
+
+Keep changes focused. Explain the motivation, correctness argument, benchmark
+method, results, and any memory tradeoffs.

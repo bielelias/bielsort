@@ -1,0 +1,41 @@
+name: Performance report
+description: Submit a reproducible performance result or regression
+title: "[Performance]: "
+labels:
+  - performance
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Benchmark command or script
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: CPU, OS, Python, compiler, power mode, and background load.
+    validations:
+      required: true
+
+  - type: textarea
+    id: distribution
+    attributes:
+      label: Input distribution and sizes
+    validations:
+      required: true
+
+  - type: textarea
+    id: results
+    attributes:
+      label: Median results and repetition count
+    validations:
+      required: true
