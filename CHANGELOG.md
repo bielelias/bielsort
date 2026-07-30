@@ -21,6 +21,12 @@ release.
 - AddressSanitizer and UndefinedBehaviorSanitizer build workflow.
 - Isolated peak-memory and fair end-to-end NumPy benchmark harnesses.
 - Versioned benchmark report with environment and methodology metadata.
+- Counting Sort identity-order stress coverage.
+
+### Changed
+
+- Reduced Counting Sort peak memory by compacting normalized keys to 32 bits
+  and separating them from the object-pointer output.
 
 ## [0.1.0a1] - 2026-07-30
 

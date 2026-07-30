@@ -40,13 +40,23 @@ Counting sort is selected only when:
 The distribution is stable. If the optional count table cannot be allocated,
 the implementation continues with radix sort.
 
+After the range scan, normalized Counting Sort keys are compacted to
+`uint32_t`; this is safe because the counting range limit is below four
+million. The temporary full entries can then be released before allocating the
+output pointer array and count table. This phased allocation reduces peak
+memory while preserving the original Python objects and their stable order.
+
+If an optional Counting Sort allocation fails after compaction, the full entry
+representation is reconstructed and the implementation attempts Radix Sort.
+
 ## Radix path
 
 The LSD radix uses 11-bit digits and at most six stable passes for signed
 64-bit integers. Digits that are constant for the entire input are skipped.
 
 Two native entry buffers hold Python object pointers and transformed keys.
-Objects are not recreated.
+Objects are not recreated. These buffers apply only to the Radix Sort path;
+Counting Sort uses the compact representation described above.
 
 ## GIL policy
 

@@ -104,7 +104,9 @@ These numbers are not universal guarantees. See
 [`benchmarks/README.md`](benchmarks/README.md) for the benchmark policy and
 reproduction commands. The versioned
 [2026-07-30 Linux report](benchmarks/results/2026-07-30-linux-x86_64.md)
-also records peak memory and NumPy comparisons.
+also records peak memory and NumPy comparisons. A separate
+[Counting Sort optimization report](benchmarks/results/2026-07-30-counting-memory.md)
+records the measured 36%-45% peak-memory reduction.
 
 ## Scope and limitations
 
@@ -128,6 +130,7 @@ also records peak memory and NumPy comparisons.
 - [Roadmap](ROADMAP.md)
 - [Changelog](CHANGELOG.md)
 - [Benchmark results](benchmarks/results/2026-07-30-linux-x86_64.md)
+- [Counting Sort memory optimization](benchmarks/results/2026-07-30-counting-memory.md)
 
 ## License
 
