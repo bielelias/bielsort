@@ -11,7 +11,7 @@
   x86/x64, macOS Intel, and macOS Apple Silicon.
 - [x] Choose and add an open source license (MIT).
 - [x] Confirm and create the `bielsort` repository on GitHub.
-- [ ] Confirm the `bielsort` package name on PyPI.
+- [x] Check current `bielsort` name availability on PyPI and TestPyPI.
 - [x] Add repository URLs and full author metadata.
 - [x] Run CI successfully on all supported CPython versions.
 - [x] Validate AddressSanitizer and UndefinedBehaviorSanitizer builds.
@@ -24,7 +24,8 @@
 
 - [ ] Publish signed/tagged `0.1.0rc1` artifacts to TestPyPI.
 - [x] Test installation from wheels in clean CI environments.
-- [ ] Freeze the public API for the 0.1 series.
+- [x] Freeze the public API for the 0.1 series.
+- [x] Prepare tokenless TestPyPI publishing through GitHub OIDC.
 - [x] Publish reproducible benchmark metadata.
 
 ## Future research

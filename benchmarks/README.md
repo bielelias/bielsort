@@ -2,8 +2,8 @@
 
 The benchmark compares equivalent operations:
 
-- `sorted(data)` against `biel_sort(data)`;
-- `data.sort()` against `biel_sort_in_place(data)`.
+- `sorted(data)` against `sort(data)`;
+- `data.sort()` against `sort_in_place(data)`.
 
 Input copies for in-place algorithms are created before timing. Expected
 results are also created outside the timed region.

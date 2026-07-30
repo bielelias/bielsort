@@ -1,6 +1,6 @@
 # BielSort
 
-> Alpha software: the API and performance heuristics may change before 1.0.
+> Pre-release software: performance heuristics may change before 1.0.
 
 BielSort is an adaptive, stable sorting library for CPython. It specializes in
 large `list[int]` workloads while preserving Python-compatible behavior through
@@ -18,7 +18,7 @@ It provides separate APIs to compete fairly with both `sorted()` and
 
 ## Status
 
-- Development stage: alpha (`0.1.0a1`)
+- Development stage: release candidate (`0.1.0rc1`)
 - Runtime: CPython 3.9+
 - Native language: C
 - Fast path: exact Python integers in signed 64-bit range
@@ -45,35 +45,38 @@ python -m unittest discover -s tests -v
 ## Usage
 
 ```python
-from bielsort import biel_sort, biel_sort_in_place
+from bielsort import sort, sort_in_place
 
 numbers = [8, -4, 10, 3, -4]
 
 # Like sorted(): returns a new list.
-ordered = biel_sort(numbers)
+ordered = sort(numbers)
 
 # Like list.sort(): mutates the list and returns None.
-biel_sort_in_place(numbers)
+sort_in_place(numbers)
 ```
 
 `key=` and `reverse=` are supported and deliberately use the Timsort fallback:
 
 ```python
 records = [{"score": 8}, {"score": 3}]
-ordered = biel_sort(records, key=lambda item: item["score"], reverse=True)
+ordered = sort(records, key=lambda item: item["score"], reverse=True)
 ```
 
 The diagnostic APIs expose the selected strategy:
 
 ```python
 from bielsort import (
-    biel_sort_diagnostico,
-    biel_sort_in_place_diagnostico,
+    sort_in_place_with_strategy,
+    sort_with_strategy,
 )
 
-ordered, strategy = biel_sort_diagnostico([3, 1, 2] * 10_000)
+ordered, strategy = sort_with_strategy([3, 1, 2] * 10_000)
 print(strategy)
 ```
+
+The earlier `biel_sort*` names remain compatibility aliases for the 0.1
+series. New code should use the four `sort*` names shown above.
 
 ## Complexity
 
@@ -129,6 +132,7 @@ records the measured 36%-45% peak-memory reduction.
 - [Security policy](SECURITY.md)
 - [Roadmap](ROADMAP.md)
 - [Changelog](CHANGELOG.md)
+- [Release guide](docs/RELEASING.md)
 - [Benchmark results](benchmarks/results/2026-07-30-linux-x86_64.md)
 - [Counting Sort memory optimization](benchmarks/results/2026-07-30-counting-memory.md)
 
@@ -144,6 +148,6 @@ O BielSort é uma biblioteca de ordenação estável e adaptativa para CPython.
 Ela acelera listas grandes de inteiros usando Counting Sort ou Radix Sort em C
 e recorre ao Timsort nos casos em que o algoritmo padrão é mais adequado.
 
-A biblioteca ainda está em fase alfa e é distribuída sob a licença MIT. A
-compilação e os testes de wheels já foram validados no CI para CPython 3.9 até
-3.14 em Linux, Windows, macOS Intel e macOS Apple Silicon.
+A biblioteca está preparando sua primeira versão candidata e é distribuída sob
+a licença MIT. A compilação e os testes de wheels já foram validados no CI para
+CPython 3.9 até 3.14 em Linux, Windows, macOS Intel e macOS Apple Silicon.
