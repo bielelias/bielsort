@@ -17,6 +17,10 @@ release.
 - MIT license and standardized package license metadata.
 - Tested wheel builds for CPython 3.9-3.14 on Linux x86-64, Windows x86/x64,
   macOS Intel, and macOS Apple Silicon.
+- Deterministic stress tests for strategy boundaries and randomized inputs.
+- AddressSanitizer and UndefinedBehaviorSanitizer build workflow.
+- Isolated peak-memory and fair end-to-end NumPy benchmark harnesses.
+- Versioned benchmark report with environment and methodology metadata.
 
 ## [0.1.0a1] - 2026-07-30
 

@@ -14,9 +14,9 @@
 - [ ] Confirm the `bielsort` package name on PyPI.
 - [x] Add repository URLs and full author metadata.
 - [x] Run CI successfully on all supported CPython versions.
-- [ ] Validate AddressSanitizer and UndefinedBehaviorSanitizer builds.
-- [ ] Measure peak memory in addition to execution time.
-- [ ] Compare with NumPy including list-to-array conversion cost.
+- [x] Validate AddressSanitizer and UndefinedBehaviorSanitizer builds.
+- [x] Measure peak memory in addition to execution time.
+- [x] Compare with NumPy including list-to-array conversion cost.
 - [x] Complete the initial IP decision (defer INPI registration).
 
 ## Candidate 0.1 release
@@ -24,7 +24,7 @@
 - [ ] Publish signed/tagged `0.1.0rc1` artifacts to TestPyPI.
 - [x] Test installation from wheels in clean CI environments.
 - [ ] Freeze the public API for the 0.1 series.
-- [ ] Publish reproducible benchmark metadata.
+- [x] Publish reproducible benchmark metadata.
 
 ## Future research
 

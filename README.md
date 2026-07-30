@@ -102,7 +102,9 @@ million elements:
 
 These numbers are not universal guarantees. See
 [`benchmarks/README.md`](benchmarks/README.md) for the benchmark policy and
-reproduction commands.
+reproduction commands. The versioned
+[2026-07-30 Linux report](benchmarks/results/2026-07-30-linux-x86_64.md)
+also records peak memory and NumPy comparisons.
 
 ## Scope and limitations
 
@@ -125,6 +127,7 @@ reproduction commands.
 - [Security policy](SECURITY.md)
 - [Roadmap](ROADMAP.md)
 - [Changelog](CHANGELOG.md)
+- [Benchmark results](benchmarks/results/2026-07-30-linux-x86_64.md)
 
 ## License
 

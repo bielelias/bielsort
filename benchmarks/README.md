@@ -53,3 +53,7 @@ python benchmarks/numpy_comparison.py -n 10000 100000 1000000 -r 5
 and conversion back to `list[int]`. `NumPy array` measures stable sorting when
 the input is already an `int64` array; it is intentionally shown as a
 different API scenario.
+
+## Versioned results
+
+- [Linux x86-64 — 2026-07-30](results/2026-07-30-linux-x86_64.md)
