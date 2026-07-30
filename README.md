@@ -24,6 +24,8 @@ It provides separate APIs to compete fairly with both `sorted()` and
 - Fast path: exact Python integers in signed 64-bit range
 - Fallback: Python-compatible stable sorting
 - License: MIT
+- CI: CPython 3.9-3.14 on Linux, Windows, and macOS
+- Wheels: Linux x86-64, Windows x86/x64, and macOS Intel/Apple Silicon
 
 ## Installation
 
@@ -136,6 +138,6 @@ O BielSort é uma biblioteca de ordenação estável e adaptativa para CPython.
 Ela acelera listas grandes de inteiros usando Counting Sort ou Radix Sort em C
 e recorre ao Timsort nos casos em que o algoritmo padrão é mais adequado.
 
-A biblioteca ainda está em fase alfa e é distribuída sob a licença MIT. Antes
-da publicação pública, falta validar no CI os wheels gerados para Linux,
-Windows e macOS.
+A biblioteca ainda está em fase alfa e é distribuída sob a licença MIT. A
+compilação e os testes de wheels já foram validados no CI para CPython 3.9 até
+3.14 em Linux, Windows, macOS Intel e macOS Apple Silicon.

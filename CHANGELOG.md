@@ -15,6 +15,8 @@ release.
 - Type information through PEP 561 marker and stub files.
 - Project governance and contribution documentation.
 - MIT license and standardized package license metadata.
+- Tested wheel builds for CPython 3.9-3.14 on Linux x86-64, Windows x86/x64,
+  macOS Intel, and macOS Apple Silicon.
 
 ## [0.1.0a1] - 2026-07-30
 

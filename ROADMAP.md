@@ -7,7 +7,8 @@
 - [x] New-list and in-place APIs.
 - [x] Deterministic tests and benchmark harness.
 - [x] Linux, macOS, and Windows CI definitions.
-- [x] Cross-platform wheel workflow.
+- [x] Cross-platform wheel workflow validated on Linux x86-64, Windows
+  x86/x64, macOS Intel, and macOS Apple Silicon.
 - [x] Choose and add an open source license (MIT).
 - [x] Confirm and create the `bielsort` repository on GitHub.
 - [ ] Confirm the `bielsort` package name on PyPI.
@@ -21,7 +22,7 @@
 ## Candidate 0.1 release
 
 - [ ] Publish signed/tagged `0.1.0rc1` artifacts to TestPyPI.
-- [ ] Test installation from wheels on clean machines.
+- [x] Test installation from wheels in clean CI environments.
 - [ ] Freeze the public API for the 0.1 series.
 - [ ] Publish reproducible benchmark metadata.
 
