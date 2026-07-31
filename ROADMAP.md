@@ -29,7 +29,9 @@
 - [x] Publish reproducible benchmark metadata.
 - [x] Register the pending production PyPI Trusted Publisher.
 - [x] Prepare guarded, tokenless production PyPI publishing.
-- [ ] Promote the validated candidate to `0.1.0`.
+- [x] Audit tracked files and Git history for common credential patterns.
+- [x] Promote the validated candidate to `0.1.0`.
+- [ ] Make the GitHub repository public.
 - [ ] Publish and verify `0.1.0` on production PyPI.
 
 ## Future research

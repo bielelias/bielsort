@@ -1,6 +1,7 @@
 # BielSort
 
-> Pre-release software: performance heuristics may change before 1.0.
+> Early release software: the public API is stable for the 0.1 series, while
+> performance heuristics may continue to evolve before 1.0.
 
 BielSort is an adaptive, stable sorting library for CPython. It specializes in
 large `list[int]` workloads while preserving Python-compatible behavior through
@@ -18,7 +19,7 @@ It provides separate APIs to compete fairly with both `sorted()` and
 
 ## Status
 
-- Development stage: release candidate (`0.1.0rc1`)
+- Development stage: beta (`0.1.0`)
 - Runtime: CPython 3.9+
 - Native language: C
 - Fast path: exact Python integers in signed 64-bit range
@@ -29,17 +30,13 @@ It provides separate APIs to compete fairly with both `sorted()` and
 
 ## Installation
 
-Install the release candidate from TestPyPI:
+Install the stable release from PyPI:
 
 ```bash
-python -m pip install \
-  --index-url https://test.pypi.org/simple/ \
-  --no-deps \
-  bielsort==0.1.0rc1
+python -m pip install bielsort==0.1.0
 ```
 
-The package has no runtime dependencies. `--no-deps` prevents `pip` from
-looking for unrelated packages in the test index.
+The package has no runtime dependencies.
 
 From the project directory:
 
@@ -131,6 +128,9 @@ records the measured 36%-45% peak-memory reduction.
   `reverse=` use Timsort.
 - The project is CPython-specific because its native module uses the CPython C
   API.
+- Prebuilt wheels currently target Linux x86-64, Windows x86/x64, and macOS
+  Intel/Apple Silicon. Other platforms may need to build from source and are
+  not yet part of the validated compatibility matrix.
 - `bielsort` is the canonical import. The older `bielsort_native` import
   remains available for compatibility.
 - Counting and radix paths allocate native buffers proportional to input size.
@@ -161,6 +161,6 @@ O BielSort é uma biblioteca de ordenação estável e adaptativa para CPython.
 Ela acelera listas grandes de inteiros usando Counting Sort ou Radix Sort em C
 e recorre ao Timsort nos casos em que o algoritmo padrão é mais adequado.
 
-A biblioteca está preparando sua primeira versão candidata e é distribuída sob
-a licença MIT. A compilação e os testes de wheels já foram validados no CI para
-CPython 3.9 até 3.14 em Linux, Windows, macOS Intel e macOS Apple Silicon.
+A primeira versão pública estável é a `0.1.0`, distribuída sob a licença MIT.
+A compilação e os testes de wheels foram validados no CI para CPython 3.9 até
+3.14 em Linux, Windows, macOS Intel e macOS Apple Silicon.

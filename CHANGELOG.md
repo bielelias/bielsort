@@ -8,10 +8,19 @@ release.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-07-31
+
 ### Added
 
+- First stable BielSort release, promoting the API and native sorting core
+  exercised in `0.1.0rc1`.
 - Guarded, tokenless production PyPI publishing that accepts only an exact
   stable-version tag selected through a manual workflow run.
+
+### Changed
+
+- Promoted the validated release candidate without runtime algorithm or public
+  API changes.
 
 ## [0.1.0rc1] - 2026-07-30
 
