@@ -159,6 +159,19 @@ also records peak memory and NumPy comparisons. A separate
 [Counting Sort optimization report](benchmarks/results/2026-07-30-counting-memory.md)
 records the measured 36%-45% peak-memory reduction.
 
+## Help validate BielSort
+
+The first
+[GitHub-hosted consistency report](benchmarks/results/2026-07-31-github-hosted.md)
+installed the public `0.1.0` wheel successfully on five Linux, Windows, Intel
+macOS, and Apple Silicon environments. Its native proxies were consistent, but
+shared-runner results are not evidence of real user demand.
+
+If your application already sorts a large `list[int]`, use the
+[real-world use-case form](https://github.com/bielelias/bielsort/issues/new?template=use_case.yml)
+to share an anonymized win, loss, or incompatibility. Reports where BielSort is
+not beneficial are equally valuable.
+
 ## Scope and limitations
 
 - The accelerated path currently supports exact `int` objects in signed
@@ -195,6 +208,7 @@ records the measured 36%-45% peak-memory reduction.
 - [TestPyPI release-candidate archive](https://test.pypi.org/project/bielsort/0.1.0rc1/)
 - [Benchmark results](benchmarks/results/2026-07-30-linux-x86_64.md)
 - [Counting Sort memory optimization](benchmarks/results/2026-07-30-counting-memory.md)
+- [GitHub-hosted consistency report](benchmarks/results/2026-07-31-github-hosted.md)
 
 ## License
 

@@ -23,9 +23,12 @@ release.
   Linux, Windows, Intel macOS, and Apple Silicon macOS.
 - Added a report consolidator and bilingual guidance that separates synthetic
   portability evidence from real workload adoption.
+- Added the first reviewed five-runner consistency snapshot for the public
+  `0.1.0` PyPI wheel.
 
 ### Changed
 
+- Updated artifact downloads to the Node.js 24-compatible action generation.
 - Refreshed the README, roadmap, architecture notes, and release guide to
   reflect the completed `0.1.0` GitHub and PyPI publication.
 - Made namespaced `import bielsort` usage the primary documentation style to
