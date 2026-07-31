@@ -2,17 +2,22 @@
 
 ## Supported versions
 
-BielSort is currently alpha software. Only the latest source revision is
-supported while the project prepares its first public release.
+Only the latest patch release in the `0.1.x` series receives security fixes.
+Pre-releases and older source snapshots are not supported.
+
+| Version | Supported |
+|---|---|
+| Latest `0.1.x` | Yes |
+| `< 0.1` | No |
 
 ## Reporting a vulnerability
 
 Do not open a public issue for memory-safety bugs, crashes with crafted input,
 reference-count corruption, or build/release credential problems.
 
-Before publication, contact the maintainer privately. After the GitHub
-repository is created, enable GitHub private vulnerability reporting and use
-that channel.
+Use GitHub's private vulnerability reporting from the repository's Security
+page. If that form is unavailable, contact Gabriel Fernandes Farah Elias at
+`gabriel_elias@msn.com` with the subject `BielSort security report`.
 
 Include:
 
@@ -22,5 +27,6 @@ Include:
 - sanitizer or crash output, if available;
 - potential impact.
 
-The maintainer should acknowledge a report before discussing public
-disclosure.
+Do not include secrets or sensitive production data in the report. The
+maintainer will acknowledge the report as soon as practical, investigate it
+privately, and coordinate disclosure after a fix or mitigation is available.

@@ -8,7 +8,8 @@ body:
     attributes:
       value: |
         Do not report memory-safety or security vulnerabilities publicly.
-        Follow SECURITY.md for private reporting.
+        Follow the [security policy](https://github.com/bielelias/bielsort/security/policy)
+        for private reporting.
 
   - type: textarea
     id: summary

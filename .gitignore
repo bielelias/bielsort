@@ -30,6 +30,7 @@ htmlcov/
 # Editors and operating systems
 .idea/
 .vscode/
+*.code-workspace
 .DS_Store
 Thumbs.db
 

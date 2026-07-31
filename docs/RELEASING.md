@@ -98,12 +98,15 @@ production publication has been explicitly approved.
    version, such as `0.1.0`.
 2. Complete the candidate checklist again and merge the release commit into
    `main`.
-3. Create and push a tag that exactly matches the version with a leading
+3. Make the GitHub repository public, enable private vulnerability reporting,
+   and verify that the repository, issue tracker, security policy, license,
+   and changelog links are accessible without signing in.
+4. Create and push a tag that exactly matches the version with a leading
    `v`, such as `v0.1.0`.
-4. On the GitHub Actions page, select the `Build wheels` workflow.
-5. Choose `Run workflow`, select the stable tag instead of `main`, and select
+5. On the GitHub Actions page, select the `Build wheels` workflow.
+6. Choose `Run workflow`, select the stable tag instead of `main`, and select
    `pypi` as the publication target.
-6. Review the complete workflow result and verify the new project page on
+7. Review the complete workflow result and verify the new project page on
    PyPI.
 
 The production validation job rejects pre-release, development, and local
