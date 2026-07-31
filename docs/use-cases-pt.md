@@ -146,3 +146,7 @@ gerador pequeno e anônimo que reproduza a distribuição dos dados.
 
 Concluir que `sorted()`, NumPy ou o banco continua sendo a melhor opção também
 é um resultado de validação bem-sucedido.
+
+Para evidência de instalação e portabilidade, continue com a
+[validação em runners independentes](external-validation-pt.md). Ela testa a
+wheel pública, mas não substitui um workload de aplicação.

@@ -19,6 +19,10 @@ release.
   mostly ordered proxies plus shareable JSON reports.
 - Added a use-case and adoption guide and a structured form for reporting real
   evaluations, including workloads where BielSort is not beneficial.
+- Added a manual hosted-runner matrix that installs the public PyPI wheel on
+  Linux, Windows, Intel macOS, and Apple Silicon macOS.
+- Added a report consolidator and bilingual guidance that separates synthetic
+  portability evidence from real workload adoption.
 
 ### Changed
 

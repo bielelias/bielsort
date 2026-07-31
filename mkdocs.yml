@@ -85,11 +85,13 @@ nav:
   - How it works:
       - Strategy selection: strategies.md
       - Performance: performance.md
+      - Hosted runner validation: external-validation.md
       - Limits and compatibility: limitations.md
       - Architecture: ARCHITECTURE.md
   - Português:
       - Guia principal: pt-br.md
       - Casos de uso e adoção: use-cases-pt.md
+      - Validação em runners: external-validation-pt.md
   - Project:
       - Release process: RELEASING.md
       - Changelog: https://github.com/bielelias/bielsort/blob/main/CHANGELOG.md

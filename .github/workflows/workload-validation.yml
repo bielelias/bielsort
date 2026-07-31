@@ -1,0 +1,155 @@
+name: Hosted runner validation
+
+run-name: >-
+  PyPI ${{ inputs.package_version }} workload validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_version:
+        description: Exact stable BielSort version to install from PyPI
+        required: true
+        type: string
+        default: "0.1.0"
+      repetitions:
+        description: Median repetition count
+        required: true
+        type: choice
+        default: "5"
+        options:
+          - "3"
+          - "5"
+          - "7"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bielsort-hosted-workload-validation
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: ${{ matrix.id }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - id: ubuntu-py311
+            os: ubuntu-latest
+            python: "3.11"
+          - id: ubuntu-py314
+            os: ubuntu-latest
+            python: "3.14"
+          - id: windows-py311
+            os: windows-latest
+            python: "3.11"
+          - id: macos-intel-py311
+            os: macos-15-intel
+            python: "3.11"
+          - id: macos-arm-py311
+            os: macos-latest
+            python: "3.11"
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install published wheels
+        shell: bash
+        env:
+          BIELSORT_VERSION: ${{ inputs.package_version }}
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install \
+            --no-cache-dir \
+            --only-binary=:all: \
+            "bielsort==${BIELSORT_VERSION}" \
+            numpy
+          python -m pip check
+
+      - name: Verify package source
+        shell: bash
+        env:
+          BIELSORT_VERSION: ${{ inputs.package_version }}
+        run: |
+          python - <<'PY'
+          import importlib.metadata
+          import os
+          from pathlib import Path
+
+          import bielsort
+
+          actual = importlib.metadata.version("bielsort")
+          expected = os.environ["BIELSORT_VERSION"]
+          if actual != expected:
+              raise SystemExit(f"Expected BielSort {expected}, received {actual}")
+
+          package_path = Path(bielsort.__file__).resolve()
+          workspace = Path(os.environ["GITHUB_WORKSPACE"]).resolve()
+          if package_path == workspace or workspace in package_path.parents:
+              raise SystemExit(f"Imported local source instead of PyPI: {package_path}")
+
+          print(f"Verified PyPI BielSort {actual} at {package_path}")
+          PY
+
+      - name: Run workload validation
+        shell: bash
+        env:
+          BIELSORT_CONTEXT: >-
+            ${{ matrix.id }}; GitHub-hosted ${{ runner.os }} ${{ runner.arch }};
+            PyPI wheel
+          BIELSORT_REPETITIONS: ${{ inputs.repetitions }}
+          BIELSORT_REPORT: workload-${{ matrix.id }}.json
+        run: |
+          python benchmarks/workload_validation.py \
+            -n 100000 1000000 \
+            -r "${BIELSORT_REPETITIONS}" \
+            --context "${BIELSORT_CONTEXT}" \
+            --json "${BIELSORT_REPORT}"
+
+      - name: Upload workload report
+        uses: actions/upload-artifact@v7
+        with:
+          name: workload-report-${{ matrix.id }}
+          path: workload-${{ matrix.id }}.json
+          if-no-files-found: error
+          retention-days: 30
+
+  summarize:
+    name: Consolidate reports
+    needs: validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Download workload reports
+        uses: actions/download-artifact@v6
+        with:
+          pattern: workload-report-*
+          path: collected-reports
+          merge-multiple: true
+
+      - name: Build Markdown summary
+        run: |
+          python benchmarks/summarize_workload_reports.py \
+            collected-reports \
+            --output collected-reports/cross-platform-summary.md
+          cat collected-reports/cross-platform-summary.md >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Upload consolidated report
+        uses: actions/upload-artifact@v7
+        with:
+          name: workload-validation-summary
+          path: collected-reports/
+          if-no-files-found: error
+          retention-days: 30
