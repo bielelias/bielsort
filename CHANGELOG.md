@@ -8,6 +8,13 @@ release.
 
 ## [Unreleased]
 
+### Changed
+
+- Refreshed the README, roadmap, architecture notes, and release guide to
+  reflect the completed `0.1.0` GitHub and PyPI publication.
+- Made namespaced `import bielsort` usage the primary documentation style to
+  distinguish BielSort calls from `sorted()` and `list.sort()`.
+
 ## [0.1.0] - 2026-07-31
 
 ### Added

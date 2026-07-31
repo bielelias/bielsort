@@ -1,7 +1,14 @@
 # BielSort
 
-> Early release software: the public API is stable for the 0.1 series, while
-> performance heuristics may continue to evolve before 1.0.
+[![PyPI version](https://img.shields.io/pypi/v/bielsort.svg)](https://pypi.org/project/bielsort/)
+[![CPython 3.9-3.14](https://img.shields.io/badge/CPython-3.9--3.14-blue.svg)](https://pypi.org/project/bielsort/)
+[![CI](https://github.com/bielelias/bielsort/actions/workflows/ci.yml/badge.svg)](https://github.com/bielelias/bielsort/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+> Current stable release: [`0.1.0` on PyPI](https://pypi.org/project/bielsort/0.1.0/)
+> and [`v0.1.0` on GitHub](https://github.com/bielelias/bielsort/releases/tag/v0.1.0).
+> The public API is stable for the 0.1 series, while performance heuristics may
+> continue to evolve before 1.0.
 
 BielSort is an adaptive, stable sorting library for CPython. It specializes in
 large `list[int]` workloads while preserving Python-compatible behavior through
@@ -20,6 +27,7 @@ It provides separate APIs to compete fairly with both `sorted()` and
 ## Status
 
 - Development stage: beta (`0.1.0`)
+- Published: PyPI and GitHub Releases
 - Runtime: CPython 3.9+
 - Native language: C
 - Fast path: exact Python integers in signed 64-bit range
@@ -33,10 +41,16 @@ It provides separate APIs to compete fairly with both `sorted()` and
 Install the stable release from PyPI:
 
 ```bash
+python -m pip install bielsort
+```
+
+For a reproducible installation, pin the current release:
+
+```bash
 python -m pip install bielsort==0.1.0
 ```
 
-The package has no runtime dependencies.
+The package has no runtime dependencies. The canonical import is `bielsort`.
 
 From the project directory:
 
@@ -54,33 +68,40 @@ python -m unittest discover -s tests -v
 ## Usage
 
 ```python
-from bielsort import sort, sort_in_place
+import bielsort
 
 numbers = [8, -4, 10, 3, -4]
 
 # Like sorted(): returns a new list.
-ordered = sort(numbers)
+ordered = bielsort.sort(numbers)
 
 # Like list.sort(): mutates the list and returns None.
-sort_in_place(numbers)
+bielsort.sort_in_place(numbers)
 ```
+
+Using the package namespace keeps the calls visually distinct from Python's
+`sorted()` function and `list.sort()` method. Python has no standalone built-in
+function named `sort()`.
 
 `key=` and `reverse=` are supported and deliberately use the Timsort fallback:
 
 ```python
+import bielsort
+
 records = [{"score": 8}, {"score": 3}]
-ordered = sort(records, key=lambda item: item["score"], reverse=True)
+ordered = bielsort.sort(
+    records,
+    key=lambda item: item["score"],
+    reverse=True,
+)
 ```
 
 The diagnostic APIs expose the selected strategy:
 
 ```python
-from bielsort import (
-    sort_in_place_with_strategy,
-    sort_with_strategy,
-)
+import bielsort
 
-ordered, strategy = sort_with_strategy([3, 1, 2] * 10_000)
+ordered, strategy = bielsort.sort_with_strategy([3, 1, 2] * 10_000)
 print(strategy)
 ```
 
@@ -139,13 +160,16 @@ records the measured 36%-45% peak-memory reduction.
 
 ## Development
 
+- [Stable release on PyPI](https://pypi.org/project/bielsort/0.1.0/)
+- [GitHub release `v0.1.0`](https://github.com/bielelias/bielsort/releases/tag/v0.1.0)
+- [Continuous integration](https://github.com/bielelias/bielsort/actions/workflows/ci.yml)
 - [Contributing guide](CONTRIBUTING.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Security policy](SECURITY.md)
 - [Roadmap](ROADMAP.md)
 - [Changelog](CHANGELOG.md)
 - [Release guide](docs/RELEASING.md)
-- [TestPyPI release candidate](https://test.pypi.org/project/bielsort/0.1.0rc1/)
+- [TestPyPI release-candidate archive](https://test.pypi.org/project/bielsort/0.1.0rc1/)
 - [Benchmark results](benchmarks/results/2026-07-30-linux-x86_64.md)
 - [Counting Sort memory optimization](benchmarks/results/2026-07-30-counting-memory.md)
 
@@ -164,3 +188,15 @@ e recorre ao Timsort nos casos em que o algoritmo padrão é mais adequado.
 A primeira versão pública estável é a `0.1.0`, distribuída sob a licença MIT.
 A compilação e os testes de wheels foram validados no CI para CPython 3.9 até
 3.14 em Linux, Windows, macOS Intel e macOS Apple Silicon.
+
+Instalação e uso recomendado:
+
+```bash
+python -m pip install bielsort
+```
+
+```python
+import bielsort
+
+ordenados = bielsort.sort([8, -4, 10, 3, -4])
+```

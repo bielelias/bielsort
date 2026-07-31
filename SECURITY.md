@@ -4,6 +4,8 @@
 
 Only the latest patch release in the `0.1.x` series receives security fixes.
 Pre-releases and older source snapshots are not supported.
+The current supported release is
+[`0.1.0`](https://pypi.org/project/bielsort/0.1.0/).
 
 | Version | Supported |
 |---|---|
@@ -15,8 +17,9 @@ Pre-releases and older source snapshots are not supported.
 Do not open a public issue for memory-safety bugs, crashes with crafted input,
 reference-count corruption, or build/release credential problems.
 
-Use GitHub's private vulnerability reporting from the repository's Security
-page. If that form is unavailable, contact Gabriel Fernandes Farah Elias at
+Use GitHub's
+[private vulnerability reporting form](https://github.com/bielelias/bielsort/security/advisories/new).
+If that form is unavailable, contact Gabriel Fernandes Farah Elias at
 `gabriel_elias@msn.com` with the subject `BielSort security report`.
 
 Include:

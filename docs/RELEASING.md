@@ -8,10 +8,14 @@ PyPI Trusted Publishing. The workflow does not store a PyPI API token.
 Release candidates are exercised on TestPyPI before a stable release is
 published to production PyPI.
 
-## One-time TestPyPI setup
+The first stable release, `0.1.0`, was published on 2026-07-31. PyPI release
+files and metadata cannot be replaced in place; every subsequent publication
+must use a new PEP 440 version.
 
-TestPyPI uses a separate account from PyPI. In the TestPyPI account, open the
-account publishing settings and add a pending GitHub publisher with exactly:
+## One-time TestPyPI setup (completed)
+
+TestPyPI uses a separate account from PyPI. The initial TestPyPI publisher was
+registered with exactly:
 
 | Field | Value |
 |---|---|
@@ -24,14 +28,13 @@ account publishing settings and add a pending GitHub publisher with exactly:
 In the GitHub repository settings, create an environment named `testpypi`.
 No password or API-token secret is required.
 
-A pending publisher does not reserve the project name. The project is created
-when the first trusted publication succeeds.
+The first trusted publication created the TestPyPI project. Future candidate
+releases use the registered publisher and the same `testpypi` environment.
 
-## One-time production PyPI setup
+## One-time production PyPI setup (completed)
 
-PyPI and TestPyPI use separate accounts and publisher configurations. In the
-production PyPI account, open the account publishing settings and add a
-pending GitHub publisher with exactly:
+PyPI and TestPyPI use separate accounts and publisher configurations. The
+production publisher was registered with exactly:
 
 | Field | Value |
 |---|---|
@@ -43,6 +46,10 @@ pending GitHub publisher with exactly:
 
 In the GitHub repository settings, create an environment named `pypi`. No
 password or API-token secret is required.
+
+The first trusted publication created
+[`pypi.org/project/bielsort`](https://pypi.org/project/bielsort/). Future
+stable releases use this registered publisher and the same `pypi` environment.
 
 ## Candidate checklist
 
@@ -79,30 +86,31 @@ python -m venv test-bielsort
 test-bielsort/bin/python -m pip install \
   --index-url https://test.pypi.org/simple/ \
   --no-deps \
-  bielsort==0.1.0rc1
+  bielsort==0.1.1rc1
 test-bielsort/bin/python -c \
-  "from bielsort import sort; print(sort([3, 1, 2]))"
+  "import bielsort; print(bielsort.sort([3, 1, 2]))"
 ```
 
 On Windows, use `test-bielsort\Scripts\python` instead.
 
-Do not reuse a version after it has been uploaded. If the candidate changes,
-increment it to `0.1.0rc2` or the next appropriate PEP 440 version.
+Replace `0.1.1rc1` with the candidate being tested. Do not reuse a version
+after it has been uploaded. If a candidate changes, increment its release
+candidate number or choose the next appropriate PEP 440 version.
 
 ## Publish a stable release to PyPI
 
 Do not perform these steps until the candidate has passed review and the
 production publication has been explicitly approved.
 
-1. Change both `pyproject.toml` and `bielsort.__version__` to the same stable
-   version, such as `0.1.0`.
+1. Change both `pyproject.toml` and `bielsort.__version__` to the same new
+   stable version, such as `0.1.1`.
 2. Complete the candidate checklist again and merge the release commit into
    `main`.
-3. Make the GitHub repository public, enable private vulnerability reporting,
-   and verify that the repository, issue tracker, security policy, license,
-   and changelog links are accessible without signing in.
+3. Confirm that the GitHub repository remains public, private vulnerability
+   reporting remains enabled, and the repository, issue tracker, security
+   policy, license, and changelog links are accessible without signing in.
 4. Create and push a tag that exactly matches the version with a leading
-   `v`, such as `v0.1.0`.
+   `v`, such as `v0.1.1`.
 5. On the GitHub Actions page, select the `Build wheels` workflow.
 6. Choose `Run workflow`, select the stable tag instead of `main`, and select
    `pypi` as the publication target.
@@ -118,9 +126,14 @@ After publication, verify the exact release in a new environment:
 
 ```bash
 python -m venv verify-bielsort
-verify-bielsort/bin/python -m pip install --no-cache-dir bielsort==0.1.0
+verify-bielsort/bin/python -m pip install --no-cache-dir bielsort==0.1.1
 verify-bielsort/bin/python -c \
-  "from bielsort import sort; print(sort([3, 1, 2]))"
+  "import bielsort; print(bielsort.sort([3, 1, 2]))"
 ```
 
 On Windows, use `verify-bielsort\Scripts\python` instead.
+
+Replace `0.1.1` with the exact stable version being released. Record the
+release date and user-visible changes in `CHANGELOG.md`, then verify the GitHub
+Release, PyPI project page, file matrix, and a clean installation before
+announcing the release.

@@ -1,9 +1,9 @@
 # Benchmark policy
 
-The benchmark compares equivalent operations:
+The benchmark imports `bielsort` and compares equivalent operations:
 
-- `sorted(data)` against `sort(data)`;
-- `data.sort()` against `sort_in_place(data)`.
+- `sorted(data)` against `bielsort.sort(data)`;
+- `data.sort()` against `bielsort.sort_in_place(data)`.
 
 Input copies for in-place algorithms are created before timing. Expected
 results are also created outside the timed region.
