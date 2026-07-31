@@ -161,11 +161,12 @@ records the measured 36%-45% peak-memory reduction.
 
 ## Help validate BielSort
 
-The first
-[GitHub-hosted consistency report](benchmarks/results/2026-07-31-github-hosted.md)
+The
+[corrected GitHub-hosted validation](benchmarks/results/2026-07-31-fallback-investigation.md)
 installed the public `0.1.0` wheel successfully on five Linux, Windows, Intel
-macOS, and Apple Silicon environments. Its native proxies were consistent, but
-shared-runner results are not evidence of real user demand.
+macOS, and Apple Silicon environments. It also documents a benchmark-lifetime
+defect found and corrected during fallback profiling. Native proxies remained
+consistent, but shared-runner results are not evidence of real user demand.
 
 If your application already sorts a large `list[int]`, use the
 [real-world use-case form](https://github.com/bielelias/bielsort/issues/new?template=use_case.yml)
@@ -208,7 +209,7 @@ not beneficial are equally valuable.
 - [TestPyPI release-candidate archive](https://test.pypi.org/project/bielsort/0.1.0rc1/)
 - [Benchmark results](benchmarks/results/2026-07-30-linux-x86_64.md)
 - [Counting Sort memory optimization](benchmarks/results/2026-07-30-counting-memory.md)
-- [GitHub-hosted consistency report](benchmarks/results/2026-07-31-github-hosted.md)
+- [Corrected hosted validation](benchmarks/results/2026-07-31-fallback-investigation.md)
 
 ## License
 

@@ -50,10 +50,11 @@ The reports are retained as workflow artifacts for 30 days. Reviewed snapshots
 can be stored permanently under `benchmarks/results/` with the runner date,
 workflow link, package version, and limitations intact.
 
-The first reviewed snapshot tested the public `0.1.0` wheel on five runners:
+The corrected snapshot tested the public `0.1.0` wheel on five runners and
+records the fix for cross-sample result-lifetime contamination:
 
-- [2026-07-31 GitHub-hosted consistency report](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-07-31-github-hosted.md)
-- [GitHub Actions run 30670579360](https://github.com/bielelias/bielsort/actions/runs/30670579360)
+- [Corrected hosted validation and fallback investigation](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-07-31-fallback-investigation.md)
+- [Corrected GitHub Actions run 30672513742](https://github.com/bielelias/bielsort/actions/runs/30672513742)
 
 ## How to interpret it
 

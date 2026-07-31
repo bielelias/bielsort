@@ -1,5 +1,12 @@
 # GitHub-hosted PyPI wheel consistency — 2026-07-31
 
+> [!CAUTION]
+> The performance ratios in this historical snapshot are superseded by the
+> [corrected validation and fallback investigation](2026-07-31-fallback-investigation.md).
+> The harness accidentally charged destruction of one result to the following
+> timed operation. Installation, correctness, and strategy-selection findings
+> remain valid; do not cite the timing tables below as performance evidence.
+
 This snapshot records
 [GitHub Actions run 30670579360](https://github.com/bielelias/bielsort/actions/runs/30670579360).
 Every runner installed the public `bielsort==0.1.0` wheel from PyPI with
