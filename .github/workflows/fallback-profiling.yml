@@ -1,0 +1,110 @@
+name: Fallback overhead profiling
+
+run-name: >-
+  PyPI ${{ inputs.package_version }} fallback profile
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_version:
+        description: Exact BielSort version to install from PyPI
+        required: true
+        type: string
+        default: "0.1.0"
+      repetitions:
+        description: Interleaved repetition count
+        required: true
+        type: choice
+        default: "15"
+        options:
+          - "9"
+          - "15"
+          - "21"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bielsort-fallback-overhead-profiling
+  cancel-in-progress: false
+
+jobs:
+  profile:
+    name: ubuntu-py${{ matrix.python-compact }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python: "3.11"
+            python-compact: "311"
+          - python: "3.14"
+            python-compact: "314"
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install published wheel
+        shell: bash
+        env:
+          BIELSORT_VERSION: ${{ inputs.package_version }}
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install \
+            --no-cache-dir \
+            --only-binary=:all: \
+            "bielsort==${BIELSORT_VERSION}"
+          python -m pip check
+
+      - name: Verify package source
+        shell: bash
+        env:
+          BIELSORT_VERSION: ${{ inputs.package_version }}
+        run: |
+          python - <<'PY'
+          import importlib.metadata
+          import os
+          from pathlib import Path
+
+          import bielsort
+
+          actual = importlib.metadata.version("bielsort")
+          expected = os.environ["BIELSORT_VERSION"]
+          if actual != expected:
+              raise SystemExit(f"Expected BielSort {expected}, received {actual}")
+
+          package_path = Path(bielsort.__file__).resolve()
+          workspace = Path(os.environ["GITHUB_WORKSPACE"]).resolve()
+          if package_path == workspace or workspace in package_path.parents:
+              raise SystemExit(f"Imported local source instead of PyPI: {package_path}")
+          print(f"Verified PyPI BielSort {actual} at {package_path}")
+          PY
+
+      - name: Profile fallback overhead
+        shell: bash
+        env:
+          PROFILE_CONTEXT: >-
+            ubuntu-py${{ matrix.python-compact }}; GitHub-hosted Linux X64;
+            PyPI wheel
+          PROFILE_REPETITIONS: ${{ inputs.repetitions }}
+          PROFILE_REPORT: fallback-ubuntu-py${{ matrix.python-compact }}.json
+        run: |
+          python benchmarks/fallback_overhead.py \
+            -n 10000 100000 1000000 \
+            -r "${PROFILE_REPETITIONS}" \
+            --context "${PROFILE_CONTEXT}" \
+            --json "${PROFILE_REPORT}"
+
+      - name: Upload profile
+        uses: actions/upload-artifact@v7
+        with:
+          name: fallback-profile-ubuntu-py${{ matrix.python-compact }}
+          path: fallback-ubuntu-py${{ matrix.python-compact }}.json
+          if-no-files-found: error
+          retention-days: 30

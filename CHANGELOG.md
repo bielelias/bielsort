@@ -25,6 +25,8 @@ release.
   portability evidence from real workload adoption.
 - Added the first reviewed five-runner consistency snapshot for the public
   `0.1.0` PyPI wheel.
+- Added a raw-sample fallback profiler and a manual CPython 3.11/3.14 workflow
+  for decomposing copy, dispatch, Timsort, and in-place costs.
 
 ### Changed
 

@@ -92,6 +92,24 @@ absolute seconds as stable hardware benchmarks or its synthetic inputs as
 evidence of real user demand. See the
 [hosted validation policy](../docs/external-validation.md).
 
+## Timsort fallback overhead
+
+The fallback profiler separates list-copy, slice-copy, equivalent new-list,
+and in-place operations without changing the selector:
+
+```bash
+python benchmarks/fallback_overhead.py \
+  -n 10000 100000 1000000 \
+  -r 15 \
+  --json fallback-overhead.json
+```
+
+It retains every nanosecond sample as well as medians and derived overheads.
+The manual `Fallback overhead profiling` workflow installs the public PyPI
+wheel on matching Ubuntu runners with CPython 3.11 and 3.14. This research
+exists to characterize [issue 18](https://github.com/bielelias/bielsort/issues/18),
+not to justify tuning a heuristic to one synthetic distribution.
+
 ## Versioned results
 
 - [GitHub-hosted PyPI wheel consistency — 2026-07-31](results/2026-07-31-github-hosted.md)
