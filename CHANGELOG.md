@@ -8,6 +8,11 @@ release.
 
 ## [Unreleased]
 
+### Added
+
+- Guarded, tokenless production PyPI publishing that accepts only an exact
+  stable-version tag selected through a manual workflow run.
+
 ## [0.1.0rc1] - 2026-07-30
 
 ### Added
