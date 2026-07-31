@@ -16,6 +16,7 @@ Python's Timsort whenever that is the safer or more compatible choice.
 <div class="biel-actions" markdown>
 [Install and start](getting-started.md){ .md-button .md-button--primary }
 [Explore the API](api.md){ .md-button }
+[Is BielSort a fit?](use-cases.md){ .md-button }
 [View on PyPI](https://pypi.org/project/bielsort/){ .md-button }
 </div>
 
@@ -107,4 +108,5 @@ python -m pip install bielsort
 - [Read the complete API reference](api.md)
 - [Understand how the strategy is selected](strategies.md)
 - [Review performance results and methodology](performance.md)
+- [Validate BielSort on a real workload](use-cases.md)
 - [Leia o guia em português](pt-br.md)

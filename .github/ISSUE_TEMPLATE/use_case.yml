@@ -1,0 +1,84 @@
+name: Real-world use case
+description: Share an evaluation, adoption, win, loss, or incompatibility
+title: "[Use case]: "
+labels:
+  - performance
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for testing BielSort on a real workload. Wins and losses are equally useful. Do not include proprietary data, credentials, or confidential identifiers.
+
+  - type: dropdown
+    id: outcome
+    attributes:
+      label: Evaluation outcome
+      options:
+        - Evaluating
+        - Adopted after measurement
+        - Not beneficial for this workload
+        - Blocked by compatibility or packaging
+    validations:
+      required: true
+
+  - type: textarea
+    id: workload
+    attributes:
+      label: Workload and application context
+      description: Explain what produces the values and why they must be sorted. Use anonymized descriptions.
+    validations:
+      required: true
+
+  - type: textarea
+    id: shape
+    attributes:
+      label: Input shape
+      description: Include container type, element type, sizes, value range, duplicate rate, and how ordered the data already is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: baseline
+    attributes:
+      label: Current implementation and alternatives
+      description: For example sorted(), list.sort(), NumPy including conversion, Polars, Pandas, or database ordering.
+      render: python
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Anonymized reproduction
+      description: Provide a deterministic generator or adapt benchmarks/workload_validation.py. Do not attach production data.
+      render: python
+    validations:
+      required: true
+
+  - type: textarea
+    id: measurements
+    attributes:
+      label: Measurements
+      description: Report medians, repetitions, total pipeline time, isolated sort time, and peak memory when available.
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: BielSort, Python, OS, CPU, architecture, and installation method.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Comparison checks
+      options:
+        - label: I compared equivalent input and output types and included conversion costs.
+          required: true
+        - label: I verified the result against the current implementation.
+          required: true
+        - label: I removed confidential and proprietary data from this report.
+          required: true

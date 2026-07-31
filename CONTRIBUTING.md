@@ -34,6 +34,7 @@ local build with `BIELSORT_SANITIZE=1`.
 python benchmarks/benchmark.py -n 10000 100000 1000000 -r 5
 python benchmarks/memory.py -n 1000000 -r 3
 python benchmarks/numpy_comparison.py -n 10000 100000 1000000 -r 5
+python benchmarks/workload_validation.py -n 10000 100000 1000000 -r 7
 ```
 
 Close unrelated applications, keep the machine on stable power, and report:
@@ -43,6 +44,11 @@ Close unrelated applications, keep the machine on stable power, and report:
 - input distributions;
 - number of repetitions;
 - medians, not only the fastest run.
+
+For application feedback, replace one workload proxy with an anonymized
+deterministic generator, save the JSON report, and use the real-world use-case
+issue form. Reports where BielSort loses are as useful as wins. Never publish
+production data, credentials, or confidential identifiers.
 
 ## Documentation
 

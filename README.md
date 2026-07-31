@@ -180,6 +180,8 @@ records the measured 36%-45% peak-memory reduction.
 
 - [Documentation website](https://bielelias.github.io/bielsort/)
 - [Guia em português](https://bielelias.github.io/bielsort/pt-br/)
+- [Use-case and adoption guide](https://bielelias.github.io/bielsort/use-cases/)
+- [Casos de uso e adoção](https://bielelias.github.io/bielsort/use-cases-pt/)
 - [Stable release on PyPI](https://pypi.org/project/bielsort/0.1.0/)
 - [GitHub release `v0.1.0`](https://github.com/bielelias/bielsort/releases/tag/v0.1.0)
 - [Continuous integration](https://github.com/bielelias/bielsort/actions/workflows/ci.yml)
