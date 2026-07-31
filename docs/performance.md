@@ -124,8 +124,21 @@ python benchmarks/memory.py -n 1000000 -r 3
 python benchmarks/numpy_comparison.py -n 10000 100000 1000000 -r 5
 ```
 
+To evaluate transparent workload proxies and save a report that can be shared
+in a GitHub issue, run:
+
+```bash
+python benchmarks/workload_validation.py \
+  -n 10000 100000 1000000 \
+  -r 7 \
+  --json bielsort-workload-report.json
+```
+
 On Windows, activate `.venv\Scripts\Activate.ps1`. The isolated peak-memory
 benchmark currently supports Linux and macOS.
+
+Continue with the [use-case and adoption guide](use-cases.md) before deciding
+whether an isolated speedup is meaningful to an application.
 
 ## Recorded methodology
 

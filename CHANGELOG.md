@@ -15,6 +15,10 @@ release.
   compatibility guides, and a Portuguese quick guide.
 - Added strict documentation builds for pull requests and automatic GitHub
   Pages deployment from `main`.
+- Added a workload-validation benchmark with transparent event, record-ID, and
+  mostly ordered proxies plus shareable JSON reports.
+- Added a use-case and adoption guide and a structured form for reporting real
+  evaluations, including workloads where BielSort is not beneficial.
 
 ### Changed
 

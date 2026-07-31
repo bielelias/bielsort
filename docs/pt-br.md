@@ -158,6 +158,12 @@ especialização nativa não compensa.
     - necessidade de funcionar em implementações diferentes do CPython;
     - economia de memória acima de velocidade.
 
+Antes de adotar, execute o benchmark de workloads, meça o pipeline completo e
+registre também resultados negativos. O
+[guia de casos de uso e adoção](use-cases-pt.md) explica os cenários sintéticos,
+as comparações equivalentes e o formulário para compartilhar uma avaliação
+real sem publicar dados confidenciais.
+
 ## O que significam `.` e `-e .`?
 
 Estes comandos são para quem clonou o código-fonte:
@@ -196,5 +202,6 @@ metodologia, consumo de memória e comparação com NumPy.
 - [Referência completa da API](api.md)
 - [Como as estratégias são escolhidas](strategies.md)
 - [Limitações e compatibilidade](limitations.md)
+- [Casos de uso e adoção](use-cases-pt.md)
 - [Código-fonte no GitHub](https://github.com/bielelias/bielsort)
 - [Pacote no PyPI](https://pypi.org/project/bielsort/)

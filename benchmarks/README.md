@@ -54,6 +54,29 @@ and conversion back to `list[int]`. `NumPy array` measures stable sorting when
 the input is already an `int64` array; it is intentionally shown as a
 different API scenario.
 
+## Workload validation
+
+Run transparent synthetic proxies for event timestamps, signed record IDs,
+and mostly ordered offsets:
+
+```bash
+python benchmarks/workload_validation.py \
+  -n 10000 100000 1000000 \
+  -r 7 \
+  --json bielsort-workload-report.json
+```
+
+This command compares equivalent new-list operations and writes a shareable
+report containing the environment, configuration, selected strategies,
+whether a native fast path ran, medians, speedups, and winner for each case.
+Algorithm order is interleaved deterministically. Input generation and
+expected results stay outside the timed region.
+
+These inputs are workload **proxies**, not claims about production behavior.
+Potential users should replace a proxy with an anonymized deterministic
+generator matching their data and report both positive and negative results.
+See the [use-case guide](../docs/use-cases.md) for the adoption checklist.
+
 ## Versioned results
 
 - [Linux x86-64 — 2026-07-30](results/2026-07-30-linux-x86_64.md)

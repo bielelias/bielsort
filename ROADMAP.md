@@ -43,6 +43,11 @@ published on 2026-07-31.
 
 ## Future research
 
+- [ ] Collect reproducible reports from at least three external workloads.
+- [ ] Publish the first anonymized real-world case study, including losses.
+- [ ] Define performance changes from measured external workloads rather than
+  synthetic wins alone.
+
 - Unsigned 64-bit fast path.
 - Safe float fast path with explicit NaN semantics.
 - Reduced-memory radix buffers.

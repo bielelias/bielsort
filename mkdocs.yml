@@ -81,12 +81,15 @@ nav:
   - Get started:
       - Installation and first sort: getting-started.md
       - API reference: api.md
+      - Is BielSort a fit?: use-cases.md
   - How it works:
       - Strategy selection: strategies.md
       - Performance: performance.md
       - Limits and compatibility: limitations.md
       - Architecture: ARCHITECTURE.md
-  - Português: pt-br.md
+  - Português:
+      - Guia principal: pt-br.md
+      - Casos de uso e adoção: use-cases-pt.md
   - Project:
       - Release process: RELEASING.md
       - Changelog: https://github.com/bielelias/bielsort/blob/main/CHANGELOG.md
