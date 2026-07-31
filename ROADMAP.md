@@ -41,12 +41,18 @@ published on 2026-07-31.
 - [x] Publish and verify `0.1.0` on production PyPI.
 - [x] Publish searchable GitHub Pages documentation with a Portuguese guide.
 
-## Future research
+## Adoption validation
 
+- [x] Add transparent synthetic workload proxies and shareable JSON reports.
+- [x] Add a manual published-wheel matrix for Linux, Windows, Intel macOS, and
+  Apple Silicon macOS.
+- [ ] Publish the first reviewed hosted-runner consistency snapshot.
 - [ ] Collect reproducible reports from at least three external workloads.
 - [ ] Publish the first anonymized real-world case study, including losses.
 - [ ] Define performance changes from measured external workloads rather than
   synthetic wins alone.
+
+## Future research
 
 - Unsigned 64-bit fast path.
 - Safe float fast path with explicit NaN semantics.

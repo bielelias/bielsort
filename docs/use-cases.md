@@ -146,3 +146,7 @@ Consider adoption only after all of these are true:
 
 This process may conclude that `sorted()`, NumPy, or a database remains the
 better choice. That is a successful validation result, not a failed benchmark.
+
+For package and cross-platform evidence, continue with the
+[hosted runner validation](external-validation.md). It tests the published
+wheel independently but does not replace an application workload.

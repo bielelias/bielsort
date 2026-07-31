@@ -153,7 +153,14 @@ def environment_metadata():
     }
 
 
-def run_validation(sizes, repetitions, cases, include_numpy, show_table=True):
+def run_validation(
+    sizes,
+    repetitions,
+    cases,
+    include_numpy,
+    show_table=True,
+    context=None,
+):
     """Run all requested proxies and return a JSON-serializable report."""
     if repetitions < 1:
         raise ValueError("repetitions must be at least 1")
@@ -207,6 +214,7 @@ def run_validation(sizes, repetitions, cases, include_numpy, show_table=True):
         "created_at": datetime.now(timezone.utc).isoformat(),
         "environment": environment_metadata(),
         "configuration": {
+            "context": context,
             "sizes": list(sizes),
             "repetitions": repetitions,
             "cases": list(cases),
@@ -252,6 +260,10 @@ def parse_arguments():
         metavar="PATH",
         help="write environment, configuration, and results as JSON",
     )
+    parser.add_argument(
+        "--context",
+        help="identify the machine, installation source, or experiment",
+    )
     return parser.parse_args()
 
 
@@ -269,6 +281,7 @@ def main():
         arguments.repetitions,
         arguments.cases,
         include_numpy,
+        context=arguments.context,
     )
 
     if arguments.json:

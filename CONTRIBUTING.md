@@ -50,6 +50,10 @@ deterministic generator, save the JSON report, and use the real-world use-case
 issue form. Reports where BielSort loses are as useful as wins. Never publish
 production data, credentials, or confidential identifiers.
 
+The manual hosted-runner workflow is for maintainers validating an exact PyPI
+wheel. Its shared runners are not a substitute for a contributor's application
+benchmark and their absolute timings must not be compared across machines.
+
 ## Documentation
 
 Install the pinned documentation toolchain in a virtual environment:

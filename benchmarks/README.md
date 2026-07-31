@@ -77,6 +77,21 @@ Potential users should replace a proxy with an anonymized deterministic
 generator matching their data and report both positive and negative results.
 See the [use-case guide](../docs/use-cases.md) for the adoption checklist.
 
+## Published-wheel runner matrix
+
+Maintainers can manually run the
+[`Hosted runner validation`](../.github/workflows/workload-validation.yml)
+workflow. It installs an exact BielSort version from PyPI on Ubuntu, Windows,
+Intel macOS, and Apple Silicon macOS, then uploads one JSON report per runner.
+The final job consolidates environment metadata, strategy selection, timings,
+and within-runner ratios into Markdown.
+
+GitHub-hosted machines have variable load. Use the matrix to validate wheel
+installation, correctness, portability, and broad consistency. Do not use its
+absolute seconds as stable hardware benchmarks or its synthetic inputs as
+evidence of real user demand. See the
+[hosted validation policy](../docs/external-validation.md).
+
 ## Versioned results
 
 - [Linux x86-64 — 2026-07-30](results/2026-07-30-linux-x86_64.md)
