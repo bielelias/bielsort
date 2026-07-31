@@ -1,7 +1,19 @@
 import json
 import unittest
+from importlib.util import module_from_spec, spec_from_file_location
+from pathlib import Path
 
-from benchmarks import workload_validation
+
+BENCHMARK_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "benchmarks"
+    / "workload_validation.py"
+)
+SPEC = spec_from_file_location("bielsort_workload_validation", BENCHMARK_PATH)
+if SPEC is None or SPEC.loader is None:
+    raise ImportError(f"Could not load benchmark module from {BENCHMARK_PATH}")
+workload_validation = module_from_spec(SPEC)
+SPEC.loader.exec_module(workload_validation)
 
 
 class WorkloadValidationTests(unittest.TestCase):
