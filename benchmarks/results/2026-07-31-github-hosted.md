@@ -43,6 +43,22 @@ from different machines. A value above `1.00×` favors BielSort.
 | 1,000,000 | mostly ordered offsets | 5 | 0/5 | 5/5 | 1.21× | 3.91× |
 | 1,000,000 | signed record IDs | 5 | 5/5 | 5/5 | 5.85× | 2.08× |
 
+## Short replication
+
+[Run 30671059062](https://github.com/bielelias/bielsort/actions/runs/30671059062)
+repeated the complete matrix with three measurements after upgrading artifact
+downloads to the Node.js 24-compatible action. All jobs passed without the
+earlier deprecation annotation, and the winner pattern was identical:
+
+- BielSort won all 20 native-path comparisons again;
+- `sorted()` won all five 100,000-element mostly ordered controls again;
+- BielSort using its Timsort fallback won all five 1,000,000-element mostly
+  ordered controls again.
+
+The replicated median ratios were `5.28×` and `8.26×` versus `sorted()` for
+event timestamps at 100,000 and 1,000,000 elements, and `3.98×` and `4.96×`
+for signed record IDs. Shared-runner limitations still apply.
+
 ## Complete results
 
 Times are medians in seconds. The NumPy column includes conversion from
@@ -109,6 +125,7 @@ Times are medians in seconds. The NumPy column includes conversion from
 - Report validator: `benchmarks/summarize_workload_reports.py`
 - Package source: `https://pypi.org/project/bielsort/0.1.0/`
 - Workflow run: `https://github.com/bielelias/bielsort/actions/runs/30670579360`
+- Short replication: `https://github.com/bielelias/bielsort/actions/runs/30671059062`
 - Repetitions: 5
 - Sizes: 100,000 and 1,000,000
 - JSON artifact retention: 30 days from the workflow run
