@@ -17,6 +17,32 @@ SPEC.loader.exec_module(workload_validation)
 
 
 class WorkloadValidationTests(unittest.TestCase):
+    def test_previous_result_is_released_before_next_timer(self):
+        calls = []
+        releases = []
+
+        class Result:
+            def __eq__(self, other):
+                return True
+
+            def __del__(self):
+                releases.append(len(calls))
+
+        def operation():
+            self.assertEqual(len(releases), len(calls))
+            calls.append("called")
+            return Result()
+
+        workload_validation._measure_operations(
+            {"probe": operation},
+            expected=object(),
+            repetitions=3,
+            seed=42,
+        )
+
+        self.assertEqual(len(calls), 3)
+        self.assertEqual(len(releases), 3)
+
     def test_generators_are_deterministic_int64_lists(self):
         for case in workload_validation.CASE_DESCRIPTIONS:
             with self.subTest(case=case):

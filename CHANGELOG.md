@@ -36,6 +36,11 @@ release.
 - Made namespaced `import bielsort` usage the primary documentation style to
   distinguish BielSort calls from `sorted()` and `list.sort()`.
 
+### Fixed
+
+- Isolated benchmark result destruction from the following timed operation,
+  removing order-dependent cross-sample contamination.
+
 ## [0.1.0] - 2026-07-31
 
 ### Added

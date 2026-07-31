@@ -146,6 +146,7 @@ def measure_case(name, values, repetitions, seed):
         raise AssertionError(
             f"fallback profiler received native strategy: {strategy}"
         )
+    del diagnostic_result
 
     operations = _operations(values, expected)
     samples = {operation: [] for operation in OPERATION_NAMES}
@@ -169,6 +170,9 @@ def measure_case(name, values, repetitions, seed):
             if result != expected_result:
                 raise AssertionError(f"incorrect result from {operation}")
             samples[operation].append(elapsed)
+            # Keep output destruction out of the next operation's timer.
+            # This matters especially when operation order is randomized.
+            del result
 
     medians = {
         operation: int(statistics.median(timings))
@@ -270,7 +274,8 @@ def run_profile(
             "cases": list(cases),
             "timing_policy": (
                 "median perf_counter_ns; deterministic interleaved operation "
-                "order; in-place input copies prepared outside timing"
+                "order; in-place input copies and output destruction outside "
+                "timing"
             ),
         },
         "results": results,

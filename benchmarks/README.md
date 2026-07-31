@@ -105,6 +105,8 @@ python benchmarks/fallback_overhead.py \
 ```
 
 It retains every nanosecond sample as well as medians and derived overheads.
+Every result is validated and released before the next timer starts, preventing
+one operation from inheriting another operation's list-destruction cost.
 The manual `Fallback overhead profiling` workflow installs the public PyPI
 wheel on matching Ubuntu runners with CPython 3.11 and 3.14. This research
 exists to characterize [issue 18](https://github.com/bielelias/bielsort/issues/18),
