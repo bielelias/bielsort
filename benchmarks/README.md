@@ -105,6 +105,8 @@ python benchmarks/fallback_overhead.py \
 ```
 
 It retains every nanosecond sample as well as medians and derived overheads.
+Every result is validated and released before the next timer starts, preventing
+one operation from inheriting another operation's list-destruction cost.
 The manual `Fallback overhead profiling` workflow installs the public PyPI
 wheel on matching Ubuntu runners with CPython 3.11 and 3.14. This research
 exists to characterize [issue 18](https://github.com/bielelias/bielsort/issues/18),
@@ -112,6 +114,7 @@ not to justify tuning a heuristic to one synthetic distribution.
 
 ## Versioned results
 
-- [GitHub-hosted PyPI wheel consistency — 2026-07-31](results/2026-07-31-github-hosted.md)
+- [Corrected hosted validation and fallback investigation — 2026-07-31](results/2026-07-31-fallback-investigation.md)
+- [Superseded GitHub-hosted snapshot — 2026-07-31](results/2026-07-31-github-hosted.md)
 - [Linux x86-64 — 2026-07-30](results/2026-07-30-linux-x86_64.md)
 - [Counting Sort memory optimization — 2026-07-30](results/2026-07-30-counting-memory.md)

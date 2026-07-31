@@ -46,10 +46,11 @@ Os artefatos permanecem disponíveis por 30 dias. Um resultado revisado pode
 ser preservado em `benchmarks/results/` junto com data, workflow, versão e
 limitações.
 
-O primeiro snapshot revisado instalou a wheel pública `0.1.0` em cinco runners:
+O snapshot corrigido instalou a wheel pública `0.1.0` em cinco runners e
+registra também a correção de contaminação entre medições:
 
-- [Relatório de consistência de 2026-07-31](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-07-31-github-hosted.md)
-- [Execução 30670579360 no GitHub Actions](https://github.com/bielelias/bielsort/actions/runs/30670579360)
+- [Validação corrigida e investigação do fallback](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-07-31-fallback-investigation.md)
+- [Execução corrigida 30672513742 no GitHub Actions](https://github.com/bielelias/bielsort/actions/runs/30672513742)
 
 ## Leitura correta
 

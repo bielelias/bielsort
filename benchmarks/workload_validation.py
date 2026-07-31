@@ -89,6 +89,10 @@ def _measure_operations(operations, expected, repetitions, seed):
             if result != expected:
                 raise AssertionError(f"incorrect result from {name}")
             samples[name].append(elapsed)
+            # Release this output before another timer starts. Otherwise the
+            # next assignment to ``result`` can charge this list's DECREF and
+            # destruction to an unrelated operation.
+            del result
 
     return {
         name: statistics.median(timings)
@@ -102,6 +106,7 @@ def benchmark_case(name, values, repetitions, include_numpy, seed):
     diagnostic_result, strategy = sort_with_strategy(values)
     if diagnostic_result != expected:
         raise AssertionError("incorrect diagnostic BielSort result")
+    del diagnostic_result
 
     operations = {
         "sorted": lambda: sorted(values),
@@ -221,7 +226,8 @@ def run_validation(
             "numpy_end_to_end": include_numpy,
             "timing_policy": (
                 "median; deterministic interleaved order; input generation "
-                "and expected result excluded"
+                "and expected result excluded; each output released outside "
+                "the next timed interval"
             ),
         },
         "results": results,
