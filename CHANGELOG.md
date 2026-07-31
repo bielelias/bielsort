@@ -22,6 +22,11 @@ release.
 - Promoted the validated release candidate without runtime algorithm or public
   API changes.
 
+### Security
+
+- Updated the supported-version and private vulnerability reporting policy for
+  the public `0.1.x` series.
+
 ## [0.1.0rc1] - 2026-07-30
 
 ### Added

@@ -31,7 +31,9 @@
 - [x] Prepare guarded, tokenless production PyPI publishing.
 - [x] Audit tracked files and Git history for common credential patterns.
 - [x] Promote the validated candidate to `0.1.0`.
+- [x] Update the public security and conduct reporting policies.
 - [ ] Make the GitHub repository public.
+- [ ] Enable GitHub private vulnerability reporting.
 - [ ] Publish and verify `0.1.0` on production PyPI.
 
 ## Future research
