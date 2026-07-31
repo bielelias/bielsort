@@ -146,4 +146,5 @@ The repository retains the exact environment, commands, and longer tables:
 
 - [Linux x86-64 report — 2026-07-30](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-07-30-linux-x86_64.md)
 - [Counting Sort memory optimization](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-07-30-counting-memory.md)
+- [GitHub-hosted PyPI wheel consistency](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-07-31-github-hosted.md)
 - [Benchmark policy](https://github.com/bielelias/bielsort/blob/main/benchmarks/README.md)

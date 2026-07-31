@@ -46,6 +46,11 @@ Os artefatos permanecem disponíveis por 30 dias. Um resultado revisado pode
 ser preservado em `benchmarks/results/` junto com data, workflow, versão e
 limitações.
 
+O primeiro snapshot revisado instalou a wheel pública `0.1.0` em cinco runners:
+
+- [Relatório de consistência de 2026-07-31](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-07-31-github-hosted.md)
+- [Execução 30670579360 no GitHub Actions](https://github.com/bielelias/bielsort/actions/runs/30670579360)
+
 ## Leitura correta
 
 - Compare BielSort, `sorted()` e NumPy dentro da mesma máquina.

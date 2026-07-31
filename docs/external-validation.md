@@ -50,6 +50,11 @@ The reports are retained as workflow artifacts for 30 days. Reviewed snapshots
 can be stored permanently under `benchmarks/results/` with the runner date,
 workflow link, package version, and limitations intact.
 
+The first reviewed snapshot tested the public `0.1.0` wheel on five runners:
+
+- [2026-07-31 GitHub-hosted consistency report](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-07-31-github-hosted.md)
+- [GitHub Actions run 30670579360](https://github.com/bielelias/bielsort/actions/runs/30670579360)
+
 ## How to interpret it
 
 - Compare BielSort, `sorted()`, and NumPy within one runner.
