@@ -1,6 +1,10 @@
 # Roadmap
 
-## Before the first public release
+Current stable release: [`0.1.0` on PyPI](https://pypi.org/project/bielsort/0.1.0/)
+and [`v0.1.0` on GitHub](https://github.com/bielelias/bielsort/releases/tag/v0.1.0),
+published on 2026-07-31.
+
+## Foundation completed for 0.1.0
 
 - [x] Modern packaging with `pyproject.toml`.
 - [x] `src/` package layout.
@@ -20,21 +24,21 @@
 - [x] Compare with NumPy including list-to-array conversion cost.
 - [x] Complete the initial IP decision (defer INPI registration).
 
-## Candidate 0.1 release
+## Stable 0.1.0 publication
 
 - [x] Publish attested/tagged `0.1.0rc1` artifacts to TestPyPI.
 - [x] Test installation from wheels in clean CI environments.
 - [x] Freeze the public API for the 0.1 series.
 - [x] Prepare tokenless TestPyPI publishing through GitHub OIDC.
 - [x] Publish reproducible benchmark metadata.
-- [x] Register the pending production PyPI Trusted Publisher.
+- [x] Register the production PyPI Trusted Publisher.
 - [x] Prepare guarded, tokenless production PyPI publishing.
 - [x] Audit tracked files and Git history for common credential patterns.
 - [x] Promote the validated candidate to `0.1.0`.
 - [x] Update the public security and conduct reporting policies.
-- [ ] Make the GitHub repository public.
-- [ ] Enable GitHub private vulnerability reporting.
-- [ ] Publish and verify `0.1.0` on production PyPI.
+- [x] Make the GitHub repository public.
+- [x] Enable GitHub private vulnerability reporting.
+- [x] Publish and verify `0.1.0` on production PyPI.
 
 ## Future research
 

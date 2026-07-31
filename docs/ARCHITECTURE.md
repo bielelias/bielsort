@@ -2,7 +2,7 @@
 
 ## Public layer
 
-`bielsort_native.bielsort` exposes four primary functions:
+The canonical `bielsort` package exposes four primary functions:
 
 - `sort`: returns a new sorted list;
 - `sort_in_place`: mutates an exact list and returns `None`;
@@ -10,7 +10,8 @@
   that also report the selected strategy.
 
 The earlier `biel_sort*` spellings are compatibility aliases for the 0.1
-series.
+series. The older `bielsort_native` package import also remains available for
+compatibility, but new applications should use `import bielsort`.
 
 `key=` and `reverse=` deliberately delegate to Python's built-in sorting to
 preserve its semantics.
