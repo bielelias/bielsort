@@ -13,6 +13,7 @@ __pycache__/
 build/
 dist/
 wheelhouse/
+site/
 *.egg-info/
 
 # Virtual environments

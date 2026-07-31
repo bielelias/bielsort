@@ -8,6 +8,14 @@ release.
 
 ## [Unreleased]
 
+### Added
+
+- Added a searchable documentation website with a visual landing page,
+  installation guide, API reference, strategy explanation, performance and
+  compatibility guides, and a Portuguese quick guide.
+- Added strict documentation builds for pull requests and automatic GitHub
+  Pages deployment from `main`.
+
 ### Changed
 
 - Refreshed the README, roadmap, architecture notes, and release guide to

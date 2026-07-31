@@ -35,6 +35,7 @@ Homepage = "https://github.com/bielelias/bielsort"
 Repository = "https://github.com/bielelias/bielsort"
 Issues = "https://github.com/bielelias/bielsort/issues"
 Changelog = "https://github.com/bielelias/bielsort/blob/main/CHANGELOG.md"
+Documentation = "https://bielelias.github.io/bielsort/"
 
 [project.optional-dependencies]
 dev = [

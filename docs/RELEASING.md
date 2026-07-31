@@ -12,6 +12,29 @@ The first stable release, `0.1.0`, was published on 2026-07-31. PyPI release
 files and metadata cannot be replaced in place; every subsequent publication
 must use a new PEP 440 version.
 
+## Publish documentation
+
+The documentation website is independent from a PyPI release. Changes under
+`docs/`, in `mkdocs.yml`, or in the documentation workflow are checked in
+strict mode on every pull request. After those changes are merged into `main`,
+GitHub Actions builds and publishes the website automatically to
+[`bielelias.github.io/bielsort`](https://bielelias.github.io/bielsort/).
+
+This means documentation fixes do not require a new package version, tag, or
+PyPI upload. However, PyPI renders the `README.md` stored inside each uploaded
+distribution, so changes to that copy appear on PyPI only with the next package
+release.
+
+Before merging a documentation update locally, run:
+
+```bash
+python -m pip install -r requirements-docs.txt
+python -m mkdocs build --strict
+```
+
+Use `python -m mkdocs serve` when a browser preview is useful. Do not commit
+the generated `site/` directory.
+
 ## One-time TestPyPI setup (completed)
 
 TestPyPI uses a separate account from PyPI. The initial TestPyPI publisher was

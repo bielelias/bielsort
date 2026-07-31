@@ -44,6 +44,30 @@ Close unrelated applications, keep the machine on stable power, and report:
 - number of repetitions;
 - medians, not only the fastest run.
 
+## Documentation
+
+Install the pinned documentation toolchain in a virtual environment:
+
+```bash
+python -m pip install -r requirements-docs.txt
+```
+
+Preview the site locally while editing:
+
+```bash
+python -m mkdocs serve
+```
+
+Before submitting documentation changes, run the same strict build used in
+continuous integration:
+
+```bash
+python -m mkdocs build --strict
+```
+
+The generated `site/` directory is local build output and must not be
+committed. A merge to `main` deploys the validated site to GitHub Pages.
+
 ## Native-code rules
 
 - Preserve stable sorting.
