@@ -39,6 +39,7 @@ published on 2026-07-31.
 - [x] Make the GitHub repository public.
 - [x] Enable GitHub private vulnerability reporting.
 - [x] Publish and verify `0.1.0` on production PyPI.
+- [x] Publish searchable GitHub Pages documentation with a Portuguese guide.
 
 ## Future research
 

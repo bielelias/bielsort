@@ -1,0 +1,95 @@
+site_name: BielSort
+site_url: https://bielelias.github.io/bielsort/
+site_description: Adaptive stable sorting for large Python integer lists
+site_author: Gabriel Fernandes Farah Elias
+
+repo_url: https://github.com/bielelias/bielsort
+repo_name: bielelias/bielsort
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  language: en
+  icon:
+    logo: material/sort
+    repo: fontawesome/brands/github
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - navigation.footer
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+plugins:
+  - search:
+      lang:
+        - en
+        - pt
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/bielelias/bielsort
+      name: BielSort on GitHub
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/bielsort/
+      name: BielSort on PyPI
+
+copyright: Copyright &copy; 2026 Gabriel Fernandes Farah Elias · MIT License
+
+nav:
+  - Home: index.md
+  - Get started:
+      - Installation and first sort: getting-started.md
+      - API reference: api.md
+  - How it works:
+      - Strategy selection: strategies.md
+      - Performance: performance.md
+      - Limits and compatibility: limitations.md
+      - Architecture: ARCHITECTURE.md
+  - Português: pt-br.md
+  - Project:
+      - Release process: RELEASING.md
+      - Changelog: https://github.com/bielelias/bielsort/blob/main/CHANGELOG.md
+      - Roadmap: https://github.com/bielelias/bielsort/blob/main/ROADMAP.md
+      - Contributing: https://github.com/bielelias/bielsort/blob/main/CONTRIBUTING.md
+      - Security: https://github.com/bielelias/bielsort/security/policy

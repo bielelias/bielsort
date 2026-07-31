@@ -2,7 +2,9 @@ include README.md
 include CHANGELOG.md
 include CONTRIBUTING.md
 include SECURITY.md
+include mkdocs.yml
+include requirements-docs.txt
 recursive-include src/bielsort_native *.c *.py *.pyi py.typed
 recursive-include tests *.py
 recursive-include benchmarks *.py *.md
-recursive-include docs *.md
+recursive-include docs *.md *.css

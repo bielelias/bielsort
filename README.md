@@ -2,6 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/bielsort.svg)](https://pypi.org/project/bielsort/)
 [![CPython 3.9-3.14](https://img.shields.io/badge/CPython-3.9--3.14-blue.svg)](https://pypi.org/project/bielsort/)
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-0f766e.svg)](https://bielelias.github.io/bielsort/)
 [![CI](https://github.com/bielelias/bielsort/actions/workflows/ci.yml/badge.svg)](https://github.com/bielelias/bielsort/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -52,13 +53,17 @@ python -m pip install bielsort==0.1.0
 
 The package has no runtime dependencies. The canonical import is `bielsort`.
 
-From the project directory:
+### Installing from a source checkout
+
+The following commands are for a cloned project, not for a regular PyPI
+installation. From the project directory:
 
 ```bash
 python -m pip install .
 ```
 
-For development:
+The dot means **the current directory**. For development, `-e` creates an
+editable installation:
 
 ```bash
 python -m pip install -e .
@@ -123,15 +128,28 @@ For signed 64-bit integers, `p` is bounded by six and does not grow with `n`.
 ## Local benchmark snapshot
 
 Median of five executions on the original Linux development machine with one
-million elements:
+million elements. Times are in seconds and speedups above `1.00x` favor
+BielSort.
 
-| Input | `sorted()` | Biel new | Gain | `.sort()` | Biel in-place | Gain |
-|---|---:|---:|---:|---:|---:|---:|
-| dense range | 0.20259 s | 0.04713 s | 4.30x | 0.18953 s | 0.03203 s | 5.92x |
-| random int32 | 0.24079 s | 0.05009 s | 4.81x | 0.23666 s | 0.03796 s | 6.23x |
-| random int64 | 0.26314 s | 0.07535 s | 3.49x | 0.26081 s | 0.06028 s | 4.33x |
-| 1024-bit integers | 0.33237 s | 0.33417 s | 0.99x | 0.30962 s | 0.31676 s | 0.98x |
-| nearly sorted | 0.01691 s | 0.01730 s | 0.98x | 0.01139 s | 0.01097 s | 1.04x |
+### New-list operation
+
+| Input | `sorted()` (s) | BielSort (s) | Speedup |
+|---|---:|---:|---:|
+| dense range | 0.20259 | 0.04713 | 4.30x |
+| random int32 | 0.24079 | 0.05009 | 4.81x |
+| random int64 | 0.26314 | 0.07535 | 3.49x |
+| 1024-bit integers | 0.33237 | 0.33417 | 0.99x |
+| nearly sorted | 0.01691 | 0.01730 | 0.98x |
+
+### In-place operation
+
+| Input | `list.sort()` (s) | BielSort (s) | Speedup |
+|---|---:|---:|---:|
+| dense range | 0.18953 | 0.03203 | 5.92x |
+| random int32 | 0.23666 | 0.03796 | 6.23x |
+| random int64 | 0.26081 | 0.06028 | 4.33x |
+| 1024-bit integers | 0.30962 | 0.31676 | 0.98x |
+| nearly sorted | 0.01139 | 0.01097 | 1.04x |
 
 These numbers are not universal guarantees. See
 [`benchmarks/README.md`](benchmarks/README.md) for the benchmark policy and
@@ -160,6 +178,8 @@ records the measured 36%-45% peak-memory reduction.
 
 ## Development
 
+- [Documentation website](https://bielelias.github.io/bielsort/)
+- [Guia em português](https://bielelias.github.io/bielsort/pt-br/)
 - [Stable release on PyPI](https://pypi.org/project/bielsort/0.1.0/)
 - [GitHub release `v0.1.0`](https://github.com/bielelias/bielsort/releases/tag/v0.1.0)
 - [Continuous integration](https://github.com/bielelias/bielsort/actions/workflows/ci.yml)
