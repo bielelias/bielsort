@@ -82,6 +82,7 @@ nav:
       - Installation and first sort: getting-started.md
       - API reference: api.md
       - Is BielSort a fit?: use-cases.md
+      - Evaluate your workload: evaluator.md
   - How it works:
       - Strategy selection: strategies.md
       - Performance: performance.md
@@ -91,6 +92,7 @@ nav:
   - Português:
       - Guia principal: pt-br.md
       - Casos de uso e adoção: use-cases-pt.md
+      - Avalie seu workload: evaluator-pt.md
       - Validação em runners: external-validation-pt.md
   - Project:
       - Release process: RELEASING.md

@@ -127,6 +127,10 @@ Registre pelo menos:
 
 ## Compartilhe um resultado real
 
+Use o [BielSort Workload Evaluator](evaluator-pt.md) para comparar as APIs com
+uma lista que permanece na sua máquina. A ferramenta gera JSON e Markdown sem
+valores brutos ou envio automático; revise ambos antes de compartilhar.
+
 Use o
 [formulário de caso de uso](https://github.com/bielelias/bielsort/issues/new?template=use_case.yml)
 para relatar ganho, perda ou incompatibilidade. Resultados negativos ajudam a

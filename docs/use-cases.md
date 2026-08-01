@@ -124,6 +124,10 @@ Record at least:
 
 ## Share a real result
 
+Use the [BielSort Workload Evaluator](evaluator.md) to compare APIs while the
+list remains on your machine. It writes JSON and Markdown without raw values or
+automatic uploads; review both before sharing.
+
 Use the
 [real-world use case form](https://github.com/bielelias/bielsort/issues/new?template=use_case.yml)
 to report a win, a loss, or an incompatibility. Negative results are useful:

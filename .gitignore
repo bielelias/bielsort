@@ -38,3 +38,5 @@ Thumbs.db
 # Local benchmark output
 benchmarks/results-local.*
 /bielsort-workload-report*.json
+/bielsort-workload-report*.md
+/my_workload.py

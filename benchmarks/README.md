@@ -77,6 +77,28 @@ Potential users should replace a proxy with an anonymized deterministic
 generator matching their data and report both positive and negative results.
 See the [use-case guide](../docs/use-cases.md) for the adoption checklist.
 
+## Private workload evaluator
+
+To measure a user-owned list without writing its values to a report, copy the
+provider example and replace `load_values()` with local application code:
+
+```bash
+cp benchmarks/workload_provider_example.py my_workload.py
+python benchmarks/workload_evaluator.py \
+  my_workload.py:load_values \
+  --label "anonymous-description"
+```
+
+The evaluator compares `sorted()` with `bielsort.sort()` and `list.sort()`
+with `bielsort.sort_in_place()`. It retains raw nanosecond timing samples but
+never raw workload values or the provider path. There is no upload step. Both
+the JSON and Markdown must be reviewed by the user before submission. Pass
+`--minimal-metadata` to omit sampled distribution statistics.
+
+See the [evaluator guide](../docs/evaluator.md) or the
+[Portuguese guide](../docs/evaluator-pt.md) for the complete privacy and
+measurement policy.
+
 ## Published-wheel runner matrix
 
 Maintainers can manually run the

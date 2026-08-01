@@ -27,6 +27,9 @@ release.
   `0.1.0` PyPI wheel.
 - Added a raw-sample fallback profiler and a manual CPython 3.11/3.14 workflow
   for decomposing copy, dispatch, Timsort, and in-place costs.
+- Added a privacy-preserving Workload Evaluator with local providers,
+  equivalent new-list and in-place comparisons, raw timing samples,
+  reviewable JSON/Markdown, and bilingual documentation.
 
 ### Changed
 

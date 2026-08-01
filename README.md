@@ -173,6 +173,17 @@ If your application already sorts a large `list[int]`, use the
 to share an anonymized win, loss, or incompatibility. Reports where BielSort is
 not beneficial are equally valuable.
 
+The repository's privacy-preserving
+[Workload Evaluator](https://bielelias.github.io/bielsort/evaluator/) measures
+equivalent new-list and in-place APIs, validates every result, and writes
+reviewable JSON and Markdown without raw values or automatic uploads:
+
+```bash
+python benchmarks/workload_evaluator.py \
+  my_workload.py:load_values \
+  --label "anonymous-description"
+```
+
 ## Scope and limitations
 
 - The accelerated path currently supports exact `int` objects in signed
@@ -195,7 +206,9 @@ not beneficial are equally valuable.
 - [Documentation website](https://bielelias.github.io/bielsort/)
 - [Guia em português](https://bielelias.github.io/bielsort/pt-br/)
 - [Use-case and adoption guide](https://bielelias.github.io/bielsort/use-cases/)
+- [Private Workload Evaluator](https://bielelias.github.io/bielsort/evaluator/)
 - [Casos de uso e adoção](https://bielelias.github.io/bielsort/use-cases-pt/)
+- [Avaliador de workload](https://bielelias.github.io/bielsort/evaluator-pt/)
 - [Hosted runner validation](https://bielelias.github.io/bielsort/external-validation/)
 - [Stable release on PyPI](https://pypi.org/project/bielsort/0.1.0/)
 - [GitHub release `v0.1.0`](https://github.com/bielelias/bielsort/releases/tag/v0.1.0)

@@ -47,6 +47,7 @@ published on 2026-07-31.
 - [x] Add a manual published-wheel matrix for Linux, Windows, Intel macOS, and
   Apple Silicon macOS.
 - [x] Publish the first reviewed hosted-runner consistency snapshot.
+- [x] Add a privacy-preserving evaluator for user-owned workloads.
 - [ ] Collect reproducible reports from at least three external workloads.
 - [ ] Publish the first anonymized real-world case study, including losses.
 - [ ] Define performance changes from measured external workloads rather than
@@ -54,6 +55,7 @@ published on 2026-07-31.
 
 ## Future research
 
+- Structured strategy analysis for diagnostics and evaluator reports.
 - Unsigned 64-bit fast path.
 - Safe float fast path with explicit NaN semantics.
 - Reduced-memory radix buffers.
