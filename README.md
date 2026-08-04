@@ -27,8 +27,9 @@ It provides separate APIs to compete fairly with both `sorted()` and
 
 ## Status
 
-- Development stage: beta (`0.1.0`)
+- Development stage: beta (`0.2.0rc1` repository candidate)
 - Published: PyPI and GitHub Releases
+- Repository candidate: `0.2.0rc1` (not yet published)
 - Unreleased research: adaptive `sort(key=...)` candidate for 0.2
 - Runtime: CPython 3.9+
 - Native language: C
@@ -267,6 +268,8 @@ Ela acelera listas grandes de inteiros usando Counting Sort ou Radix Sort em C
 e recorre ao Timsort nos casos em que o algoritmo padrão é mais adequado.
 
 A primeira versão pública estável é a `0.1.0`, distribuída sob a licença MIT.
+A branch de pesquisa está identificada como `0.2.0rc1`, mas essa candidata
+ainda não foi publicada.
 A compilação e os testes de wheels foram validados no CI para CPython 3.9 até
 3.14 em Linux, Windows, macOS Intel e macOS Apple Silicon.
 

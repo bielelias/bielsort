@@ -4,7 +4,8 @@
 
     The repository's research branch can accelerate eligible signed-int64
     results from `sort(key=...)`. The published 0.1.0 wheel still sends every
-    key call to Timsort.
+    key call to Timsort. The repository metadata identifies the candidate as
+    `0.2.0rc1`; it has not been published yet.
 
 The canonical public package is `bielsort`:
 

@@ -91,7 +91,8 @@ caller. BielSort does not promise parallel sorting of one list.
 
 The four canonical 0.1 function names are stable for that series. The
 `sort_with_info()` and `SortInfo` additions exist only in the unreleased 0.2
-candidate. Performance heuristics and human-readable diagnostic wording may
+candidate, currently identified in the repository as unpublished
+`0.2.0rc1`. Performance heuristics and human-readable diagnostic wording may
 evolve before 1.0. Keep correctness independent of the exact reason or
 strategy text.
 

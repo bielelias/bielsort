@@ -8,6 +8,9 @@ release.
 
 ## [Unreleased]
 
+Current release-candidate metadata: `0.2.0rc1`. This candidate has not been
+published to TestPyPI or PyPI yet.
+
 ### Added
 
 - Added an unreleased candidate that connects the existing new-list

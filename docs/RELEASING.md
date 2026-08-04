@@ -79,13 +79,15 @@ stable releases use this registered publisher and the same `pypi` environment.
 1. Confirm that `pyproject.toml` and `bielsort.__version__` contain the same
    PEP 440 version.
 2. Run the unit and stress tests.
-3. Build both the wheel and source distribution.
-4. Validate distribution metadata.
+3. Build both the wheel and source distribution from a clean checkout without
+   pre-existing `build/`, `dist/`, or `wheelhouse/` directories.
+4. Inspect the wheel contents and validate distribution metadata.
 5. Install the wheel in a clean environment and run smoke tests outside the
    repository.
 6. Install the source distribution in a second clean environment and run the
    same smoke tests.
-7. Merge the candidate commit into `main`.
+7. Confirm that the candidate version has not already been used on TestPyPI.
+8. Merge the candidate commit into `main` only after explicit approval.
 
 ## Publish to TestPyPI
 
@@ -109,14 +111,14 @@ python -m venv test-bielsort
 test-bielsort/bin/python -m pip install \
   --index-url https://test.pypi.org/simple/ \
   --no-deps \
-  bielsort==0.1.1rc1
+  bielsort==0.2.0rc1
 test-bielsort/bin/python -c \
   "import bielsort; print(bielsort.sort([3, 1, 2]))"
 ```
 
 On Windows, use `test-bielsort\Scripts\python` instead.
 
-Replace `0.1.1rc1` with the candidate being tested. Do not reuse a version
+Replace `0.2.0rc1` with the candidate being tested. Do not reuse a version
 after it has been uploaded. If a candidate changes, increment its release
 candidate number or choose the next appropriate PEP 440 version.
 
@@ -126,14 +128,14 @@ Do not perform these steps until the candidate has passed review and the
 production publication has been explicitly approved.
 
 1. Change both `pyproject.toml` and `bielsort.__version__` to the same new
-   stable version, such as `0.1.1`.
+   stable version, such as `0.2.0`.
 2. Complete the candidate checklist again and merge the release commit into
    `main`.
 3. Confirm that the GitHub repository remains public, private vulnerability
    reporting remains enabled, and the repository, issue tracker, security
    policy, license, and changelog links are accessible without signing in.
 4. Create and push a tag that exactly matches the version with a leading
-   `v`, such as `v0.1.1`.
+   `v`, such as `v0.2.0`.
 5. On the GitHub Actions page, select the `Build wheels` workflow.
 6. Choose `Run workflow`, select the stable tag instead of `main`, and select
    `pypi` as the publication target.
@@ -149,14 +151,14 @@ After publication, verify the exact release in a new environment:
 
 ```bash
 python -m venv verify-bielsort
-verify-bielsort/bin/python -m pip install --no-cache-dir bielsort==0.1.1
+verify-bielsort/bin/python -m pip install --no-cache-dir bielsort==0.2.0
 verify-bielsort/bin/python -c \
   "import bielsort; print(bielsort.sort([3, 1, 2]))"
 ```
 
 On Windows, use `verify-bielsort\Scripts\python` instead.
 
-Replace `0.1.1` with the exact stable version being released. Record the
+Replace `0.2.0` with the exact stable version being released. Record the
 release date and user-visible changes in `CHANGELOG.md`, then verify the GitHub
 Release, PyPI project page, file matrix, and a clean installation before
 announcing the release.
