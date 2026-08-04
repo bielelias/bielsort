@@ -16,8 +16,8 @@ execução.
 <div class="biel-card" markdown>
 ### Compatível com Python
 
-Mantém ordenação estável e aceita `key=` e `reverse=` por meio do fallback para
-Timsort.
+Mantém ordenação estável. A candidata 0.2 pode acelerar `sort(key=...)` quando
+a chave retorna `int64` exato; outros casos continuam no Timsort.
 </div>
 
 <div class="biel-card" markdown>
@@ -131,7 +131,8 @@ sinal.
 ### Compatibilidade
 
 É usado para entradas pequenas, quase ordenadas, objetos gerais, inteiros
-gigantes, `key=` e `reverse=`.
+gigantes, chaves genéricas, `reverse=True` sem chave e chamadas in-place com
+`key=`.
 </div>
 
 </div>
@@ -145,6 +146,8 @@ especialização nativa não compensa.
 === "Bom candidato"
 
     - listas grandes de inteiros;
+    - ou listas de objetos com chave inteira signed 64-bit usando a candidata
+      new-list `sort(key=...)`;
     - valores entre `-(2**63)` e `2**63 - 1`;
     - dados que normalmente não chegam quase ordenados;
     - velocidade importante e memória auxiliar aceitável;
@@ -154,7 +157,8 @@ especialização nativa não compensa.
 
     - listas pequenas ou quase ordenadas;
     - strings, floats ou objetos gerais;
-    - uso constante de `key=` ou `reverse=`;
+    - chaves que não retornam inteiros signed 64-bit exatos;
+    - necessidade de acelerar `key=` in-place ou `reverse=` sem chave;
     - necessidade de funcionar em implementações diferentes do CPython;
     - economia de memória acima de velocidade.
 

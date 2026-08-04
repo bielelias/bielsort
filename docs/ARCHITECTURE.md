@@ -13,8 +13,11 @@ The earlier `biel_sort*` spellings are compatibility aliases for the 0.1
 series. The older `bielsort_native` package import also remains available for
 compatibility, but new applications should use `import bielsort`.
 
-`key=` and `reverse=` deliberately delegate to Python's built-in sorting to
-preserve its semantics.
+The unreleased 0.2 candidate routes new-list `sort(key=...)` through the
+internal adaptive selector. Exact signed-int64 results may use stable native
+Counting or Radix; incompatible results use exact-object Timsort replay. The
+in-place key path and keyless reverse path deliberately remain on Python's
+built-in sorting to avoid generic-key regressions and semantic drift.
 
 ## Native selection
 

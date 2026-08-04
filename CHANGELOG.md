@@ -10,6 +10,12 @@ release.
 
 ### Added
 
+- Added an unreleased candidate that connects the existing new-list
+  `sort(key=...)` API to stable native Counting and Radix paths for exact
+  signed-int64 key results, including `reverse=True`, with no new public name
+  or parameter.
+- Added public keyed-API benchmarks, exact key-call and stability tests, and
+  user-facing diagnostics for native and fallback strategies.
 - Added a searchable documentation website with a visual landing page,
   installation guide, API reference, strategy explanation, performance and
   compatibility guides, and a Portuguese quick guide.
@@ -33,6 +39,9 @@ release.
 
 ### Changed
 
+- Kept `sort_in_place(key=...)` on direct Timsort after an adaptive experiment
+  accelerated integer keys but introduced an unacceptable generic-key
+  regression.
 - Updated artifact downloads to the Node.js 24-compatible action generation.
 - Refreshed the README, roadmap, architecture notes, and release guide to
   reflect the completed `0.1.0` GitHub and PyPI publication.

@@ -174,6 +174,167 @@ class BielSortTests(unittest.TestCase):
         self.assertIsNone(biel_sort_in_place(copia, key=len, reverse=True))
         self.assertEqual(copia, sorted(valores, key=len, reverse=True))
 
+    def test_key_int64_publica_seleciona_counting_estavel(self):
+        rng = random.Random(2030)
+        valores = [
+            {"key": indice % 128, "position": indice}
+            for indice in range(10_000)
+        ]
+        rng.shuffle(valores)
+        original = valores.copy()
+        esperado = sorted(valores, key=lambda registro: registro["key"])
+        chamadas = []
+
+        def key(registro):
+            chamadas.append(registro["position"])
+            return registro["key"]
+
+        resultado, estrategia = sort_with_strategy(valores, key=key)
+
+        self.assertEqual(resultado, esperado)
+        self.assertEqual(valores, original)
+        self.assertEqual(
+            chamadas,
+            [registro["position"] for registro in valores],
+        )
+        self.assertEqual(estrategia, "counting nativo estável por key")
+        for chave in range(128):
+            self.assertEqual(
+                [
+                    registro["position"]
+                    for registro in resultado
+                    if registro["key"] == chave
+                ],
+                [
+                    registro["position"]
+                    for registro in valores
+                    if registro["key"] == chave
+                ],
+            )
+
+    def test_key_int64_publica_reverse_seleciona_counting_estavel(self):
+        valores = [
+            {"key": indice % 128, "position": indice}
+            for indice in range(10_000)
+        ]
+        resultado, estrategia = sort_with_strategy(
+            valores,
+            key=lambda registro: registro["key"],
+            reverse=True,
+        )
+
+        self.assertEqual(
+            resultado,
+            sorted(
+                valores,
+                key=lambda registro: registro["key"],
+                reverse=True,
+            ),
+        )
+        self.assertEqual(estrategia, "counting nativo estável por key")
+        for chave in range(127, -1, -1):
+            self.assertEqual(
+                [
+                    registro["position"]
+                    for registro in resultado
+                    if registro["key"] == chave
+                ],
+                [
+                    registro["position"]
+                    for registro in valores
+                    if registro["key"] == chave
+                ],
+            )
+
+    def test_key_int64_in_place_preserva_timsort_e_contrato(self):
+        rng = random.Random(2031)
+        valores = [
+            {"key": indice % 128, "position": indice}
+            for indice in range(10_000)
+        ]
+        rng.shuffle(valores)
+        esperado = sorted(
+            valores,
+            key=lambda registro: registro["key"],
+            reverse=True,
+        )
+        ordem_original = [registro["position"] for registro in valores]
+        tamanhos_observados = []
+        chamadas = []
+        identidade = id(valores)
+
+        def key(registro):
+            tamanhos_observados.append(len(valores))
+            chamadas.append(registro["position"])
+            return registro["key"]
+
+        estrategia = sort_in_place_with_strategy(
+            valores,
+            key=key,
+            reverse=True,
+        )
+
+        self.assertEqual(id(valores), identidade)
+        self.assertEqual(valores, esperado)
+        self.assertEqual(chamadas, ordem_original)
+        self.assertEqual(tamanhos_observados, [0] * len(valores))
+        self.assertEqual(estrategia, "timsort: key ou reverse")
+
+    def test_key_generica_publica_usa_fallback_uma_vez(self):
+        valores = ["bbb", "a", "cc", "dddd"] * 1_000
+        chamadas = []
+
+        def key(valor):
+            chamadas.append(valor)
+            return f"{len(valor):02d}:{valor}"
+
+        resultado, estrategia = sort_with_strategy(
+            valores,
+            key=key,
+            reverse=1,
+        )
+
+        self.assertEqual(
+            resultado,
+            sorted(
+                valores,
+                key=lambda valor: f"{len(valor):02d}:{valor}",
+                reverse=True,
+            ),
+        )
+        self.assertEqual(chamadas, valores)
+        self.assertEqual(estrategia, "timsort: fallback compatível por key")
+
+    def test_key_in_place_detecta_mutacao_como_list_sort(self):
+        valores = [3, 1, 2]
+        tamanhos_observados = []
+
+        def key(valor):
+            tamanhos_observados.append(len(valores))
+            if valor == 3:
+                valores.append(99)
+            return valor
+
+        with self.assertRaisesRegex(ValueError, "list modified during sort"):
+            sort_in_place(valores, key=key)
+
+        self.assertEqual(valores, [1, 2, 3])
+        self.assertEqual(tamanhos_observados, [0, 1, 1])
+
+    def test_key_in_place_restaura_lista_apos_excecao(self):
+        valores = [3, 1, 2]
+        original = valores.copy()
+
+        def key(valor):
+            if valor == 1:
+                raise RuntimeError("falha da key pública")
+            return valor
+
+        with self.assertRaisesRegex(RuntimeError, "falha da key pública"):
+            sort_in_place(valores, key=key)
+
+        self.assertEqual(valores, original)
+
     def test_diagnostico_in_place(self):
         rng = random.Random(2029)
         valores = [

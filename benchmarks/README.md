@@ -203,8 +203,26 @@ prevents a short nearly ordered prefix from hiding a disordered tail and
 records whether the conservative 2,048-key policy preserves the native Radix
 path.
 
+## Research: candidate public keyed API
+
+The accepted candidate wires the private selector into the existing new-list
+API without adding names or parameters. It deliberately leaves the in-place
+key path on `list.sort()`:
+
+```bash
+python -m benchmarks.keyed_public_api_benchmark \
+  --repetitions 11 \
+  --cases dense-int64,int64,string \
+  --output keyed-public-api.json
+```
+
+Pass `--reverse` for the descending matrix. The benchmark imports the
+canonical `bielsort` package, so it measures the public wrapper rather than
+calling the private selector directly.
+
 ## Versioned results
 
+- [Candidate public `sort(key=...)` API — 2026-08-04](results/2026-08-04-keyed-public-api-candidate.md)
 - [Adaptive generic-key selector v3 — 2026-08-04](results/2026-08-04-keyed-adaptive-selector-v3.md)
 - [Exact key-identity replay — 2026-08-04](results/2026-08-04-key-identity-replay.md)
 - [Stable reverse keyed selector — 2026-08-04](results/2026-08-04-keyed-adaptive-reverse.md)

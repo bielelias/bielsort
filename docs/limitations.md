@@ -10,9 +10,9 @@ platforms, not about producing a different sorted order.
 |---|---|
 | Python implementation | CPython only |
 | Python versions | 3.9–3.14 |
-| Fast-path values | exact `int` in signed 64-bit range |
+| Fast-path values or key results | exact `int` in signed 64-bit range |
 | Stable sorting | yes, every path |
-| `key=` and `reverse=` | yes, through Timsort |
+| `key=` and `reverse=` | yes; unreleased new-list int64-key candidate |
 | New-list API | any compatible iterable |
 | In-place API | exact `list` |
 | Runtime dependencies | none |
@@ -36,7 +36,8 @@ headers.
 
 The accelerated Counting and Radix paths require all of the following:
 
-- natural ascending order (`key=None`, `reverse=False`);
+- natural ascending exact integers, or an explicit new-list `key` returning
+  exact signed-int64 integers in the unreleased candidate;
 - exact Python `int` objects, not subclasses;
 - every value fitting between `-(2**63)` and `2**63 - 1`;
 - enough elements and a distribution that makes native work worthwhile.
@@ -50,7 +51,9 @@ ordered, or nearly monotonic.
 - mixed or general Python objects;
 - integer subclasses;
 - arbitrary-size Python integers outside signed 64-bit range;
-- calls using `key=` or `reverse=`;
+- generic, overflow, or unsuitable ordered-run key results;
+- `reverse=True` without a key;
+- every in-place call using `key=` or `reverse=True`;
 - small, ordered, and nearly ordered inputs.
 
 Fallback is part of BielSort's design. It preserves Python behavior in cases
@@ -98,7 +101,8 @@ independent of the exact string returned by a diagnostic API.
 
     - inputs are small or nearly ordered;
     - values are general Python objects;
-    - code depends heavily on `key=` or `reverse=`;
+    - key results are not exact signed-int64 integers;
+    - code needs accelerated in-place `key=` or keyless `reverse=`;
     - portability beyond CPython is required;
     - minimizing auxiliary memory is more important;
     - there is no measured bottleneck to solve.

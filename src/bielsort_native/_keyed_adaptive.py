@@ -5,8 +5,9 @@ exact signed-int64 values for Counting/Radix sorting.  On the first generic
 key, the extracted integer values become a replay prefix and CPython Timsort
 evaluates only the remaining keys.
 
-The module is installed for wheel-level validation but remains private.  It is
-not imported by either public package and carries no compatibility commitment.
+The module remains an internal implementation detail.  The canonical public
+wrapper may call it, but its direct names are not exported and carry no
+compatibility commitment.
 """
 
 import struct

@@ -20,7 +20,7 @@ The native core selects among:
 - stable counting sort for large, dense signed 64-bit integer ranges;
 - stable LSD radix sort with 11-bit digits for other signed 64-bit integers;
 - CPython's Timsort for small, nearly monotonic, non-integer, arbitrary-size
-  integer, `key=`, and `reverse=` workloads.
+  integer, and general Python-key workloads.
 
 It provides separate APIs to compete fairly with both `sorted()` and
 `list.sort()`.
@@ -29,6 +29,7 @@ It provides separate APIs to compete fairly with both `sorted()` and
 
 - Development stage: beta (`0.1.0`)
 - Published: PyPI and GitHub Releases
+- Unreleased research: adaptive `sort(key=...)` candidate for 0.2
 - Runtime: CPython 3.9+
 - Native language: C
 - Fast path: exact Python integers in signed 64-bit range
@@ -88,7 +89,10 @@ Using the package namespace keeps the calls visually distinct from Python's
 `sorted()` function and `list.sort()` method. Python has no standalone built-in
 function named `sort()`.
 
-`key=` and `reverse=` are supported and deliberately use the Timsort fallback:
+`key=` and `reverse=` are supported. In the unreleased 0.2 candidate,
+`sort(..., key=...)` can accelerate exact signed-int64 key results with stable
+Counting or Radix while retaining Timsort for other keys. The stable 0.1 wheel
+and the in-place key API continue to use Timsort:
 
 ```python
 import bielsort
@@ -109,6 +113,11 @@ import bielsort
 ordered, strategy = bielsort.sort_with_strategy([3, 1, 2] * 10_000)
 print(strategy)
 ```
+
+The unreleased public-key candidate measured `2.37x–5.13x` over
+`sorted(key=...)` for the sampled integer-key workloads, while its string-key
+fallback stayed between `0.98x` and `1.04x`. See the
+[candidate report](benchmarks/results/2026-08-04-keyed-public-api-candidate.md).
 
 The earlier `biel_sort*` names remain compatibility aliases for the 0.1
 series. New code should use the four `sort*` names shown above.
@@ -187,9 +196,10 @@ python benchmarks/workload_evaluator.py \
 ## Scope and limitations
 
 - The accelerated path currently supports exact `int` objects in signed
-  64-bit range.
-- Floats, strings, subclasses, mixed types, huge integers, `key=`, and
-  `reverse=` use Timsort.
+  64-bit range, including eligible key results in the unreleased new-list
+  candidate.
+- Floats, strings, subclasses, mixed types, huge integers, `reverse=True`
+  without a key, and in-place key calls use Timsort.
 - The project is CPython-specific because its native module uses the CPython C
   API.
 - Prebuilt wheels currently target Linux x86-64, Windows x86/x64, and macOS
@@ -239,6 +249,10 @@ e recorre ao Timsort nos casos em que o algoritmo padrão é mais adequado.
 A primeira versão pública estável é a `0.1.0`, distribuída sob a licença MIT.
 A compilação e os testes de wheels foram validados no CI para CPython 3.9 até
 3.14 em Linux, Windows, macOS Intel e macOS Apple Silicon.
+
+A branch de pesquisa contém uma candidata 0.2 ainda não publicada que também
+pode acelerar `bielsort.sort(..., key=...)` quando a chave retorna um inteiro
+exato signed 64-bit. A API in-place com chave continua usando Timsort.
 
 Instalação e uso recomendado:
 

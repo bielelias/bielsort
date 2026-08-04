@@ -1,21 +1,23 @@
 # Use cases and adoption
 
-BielSort has a deliberately narrow promise: make some large `list[int]`
-sorting workloads faster without requiring callers to migrate their data to a
-different container. The only reliable way to decide whether it helps is to
-measure the complete operation in the application that owns the data.
+BielSort has a deliberately narrow promise: make some large `list[int]` and,
+in the unreleased 0.2 candidate, new-list signed-int64 `key=` workloads faster
+without requiring callers to migrate their data to a different container. The
+only reliable way to decide whether it helps is to measure the complete
+operation in the application that owns the data.
 
 !!! success "A promising fit"
 
     Your data already exists as a large Python list, contains exact integers in
     the signed 64-bit range, needs natural ascending order, and is sufficiently
-    unsorted. Sorting must also account for a meaningful share of the pipeline
-    runtime.
+    unsorted. In the candidate API, records with an exact signed-int64 key are
+    also eligible for new-list sorting. Sorting must account for a meaningful
+    share of the pipeline runtime.
 
 !!! warning "Usually not a fit"
 
     Prefer Python's built-in sort for small, nearly ordered, mixed-object,
-    arbitrary-size-integer, `key=`, or `reverse=` workloads. If the pipeline
+    generic-key, in-place-key, or keyless-reverse workloads. If the pipeline
     already uses NumPy, Polars, Pandas, or a database, keeping the data in that
     system is normally more valuable than converting it only for BielSort.
 
@@ -40,7 +42,8 @@ Native buffers are most relevant for tens or hundreds of thousands of values.
 
 <div class="biel-card" markdown>
 ### Natural ascending order?
-`key=` and `reverse=` use the compatible Timsort fallback.
+Natural integers are the original target. The candidate also supports an
+explicit new-list key returning exact signed-int64 integers.
 </div>
 
 <div class="biel-card" markdown>

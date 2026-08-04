@@ -1,5 +1,11 @@
 # API reference
 
+!!! warning "Unreleased 0.2 candidate"
+
+    The repository's research branch can accelerate eligible signed-int64
+    results from `sort(key=...)`. The published 0.1.0 wheel still sends every
+    key call to Timsort.
+
 The canonical public package is `bielsort`:
 
 ```python
@@ -49,8 +55,11 @@ result = bielsort.sort(source)
 assert result == [-2, 5, 5, 8]
 ```
 
-When `key` is not `None` or `reverse` is true, the function deliberately uses
-`sorted()` to preserve Python's behavior.
+When `key` is not `None`, the 0.2 candidate evaluates it exactly once per item
+and may select stable native Counting or Radix if every result is an exact
+signed-int64 integer. Generic, overflow, small, and unsuitable ordered-run
+cases use Timsort replay. `reverse=True` participates in the same adaptive
+selection when a key is present; without a key it uses `sorted()`.
 
 ## `sort_in_place`
 
@@ -84,6 +93,10 @@ assert result is None
 ```
 
 Passing a non-list value is an error for the in-place API.
+
+Calls using `key=` or `reverse=True` deliberately remain direct
+`list.sort()` operations in this candidate. An adaptive in-place experiment
+was faster for integer keys but slower for generic keys, so it was not exposed.
 
 ## `sort_with_strategy`
 
@@ -164,7 +177,10 @@ New code should use `import bielsort`.
 ## Behavior summary
 
 - natural ascending exact signed 64-bit integers may use a native fast path;
-- `key=` and `reverse=` use Python's Timsort;
+- eligible exact signed-int64 results from new-list `sort(key=...)` may use a
+  native stable path in the unreleased 0.2 candidate;
+- generic new-list keys, keyless reverse calls, and in-place key/reverse calls
+  use Python's Timsort;
 - non-integers, integer subclasses, and arbitrary-size integers use Timsort;
 - sorting is stable in every path;
 - `sort()` preserves the source iterable;
