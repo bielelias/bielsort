@@ -27,6 +27,18 @@ Pin the current stable release when reproducibility matters:
 python -m pip install bielsort==0.1.0
 ```
 
+### Test the 0.2 release candidate
+
+The `0.2.0rc1` candidate is isolated on TestPyPI and is not selected by the
+normal stable installation command:
+
+```bash
+python -m pip install \
+  --index-url https://test.pypi.org/simple/ \
+  --no-deps \
+  bielsort==0.2.0rc1
+```
+
 ### Optional: use an isolated environment
 
 === "Linux and macOS"
@@ -97,7 +109,7 @@ assert numbers == [8, -4, 10, 3, -4]
 
 ## `key=` and `reverse=`
 
-Both options are supported. In the unreleased 0.2 candidate, new-list
+Both options are supported. In the `0.2.0rc1` TestPyPI candidate, new-list
 `sort(key=...)` may use stable native Counting or Radix when the key returns
 exact signed-int64 integers. Other new-list keys and every in-place key call
 retain Timsort behavior. The published 0.1.0 wheel still uses Timsort for all

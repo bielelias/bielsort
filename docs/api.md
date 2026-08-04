@@ -1,11 +1,10 @@
 # API reference
 
-!!! warning "Unreleased 0.2 candidate"
+!!! warning "TestPyPI 0.2 candidate"
 
-    The repository's research branch can accelerate eligible signed-int64
-    results from `sort(key=...)`. The published 0.1.0 wheel still sends every
-    key call to Timsort. The repository metadata identifies the candidate as
-    `0.2.0rc1`; it has not been published yet.
+    The `0.2.0rc1` candidate is published on TestPyPI and can accelerate
+    eligible signed-int64 results from `sort(key=...)`. The stable 0.1.0 PyPI
+    wheel still sends every key call to Timsort.
 
 The canonical public package is `bielsort`:
 
@@ -13,10 +12,10 @@ The canonical public package is `bielsort`:
 import bielsort
 ```
 
-The four stable functions mirror the two common Python sorting styles and add
-optional diagnostic variants. The research branch also contains the
-`sort_with_info()` candidate described below; it is not present in the
-published 0.1.0 wheel.
+The four stable 0.1 functions mirror the two common Python sorting styles and
+add optional diagnostic variants. The TestPyPI candidate also contains the
+`sort_with_info()` API described below; it is not present in the stable 0.1.0
+PyPI wheel.
 
 ## At a glance
 
@@ -28,7 +27,7 @@ published 0.1.0 wheel.
 | `sort_in_place_with_strategy()` | Yes | `str` | diagnostics |
 | `sort_with_info()` | No | `(list, SortInfo)` | keyed diagnostics and memory guard |
 
-All four operations are stable: elements that compare equal retain their
+All sorting operations are stable: elements that compare equal retain their
 original relative order.
 
 ## `sort`
@@ -151,7 +150,7 @@ print(strategy)
     reports. Their wording may evolve as heuristics improve before 1.0. Do not
     make application correctness depend on an exact diagnostic string.
 
-## `sort_with_info` — unreleased candidate
+## `sort_with_info` — TestPyPI candidate
 
 ```python
 bielsort.sort_with_info(
@@ -254,7 +253,7 @@ New code should use `import bielsort`.
 
 - natural ascending exact signed 64-bit integers may use a native fast path;
 - eligible exact signed-int64 results from new-list `sort(key=...)` may use a
-  native stable path in the unreleased 0.2 candidate;
+  native stable path in the `0.2.0rc1` TestPyPI candidate;
 - generic new-list keys, keyless reverse calls, and in-place key/reverse calls
   use Python's Timsort;
 - non-integers, integer subclasses, and arbitrary-size integers use Timsort;

@@ -12,7 +12,7 @@ platforms, not about producing a different sorted order.
 | Python versions | 3.9–3.14 |
 | Fast-path values or key results | exact `int` in signed 64-bit range |
 | Stable sorting | yes, every path |
-| `key=` and `reverse=` | yes; unreleased new-list int64-key candidate |
+| `key=` and `reverse=` | yes; TestPyPI 0.2 new-list int64-key candidate |
 | New-list API | any compatible iterable |
 | In-place API | exact `list` |
 | Runtime dependencies | none |
@@ -37,7 +37,7 @@ headers.
 The accelerated Counting and Radix paths require all of the following:
 
 - natural ascending exact integers, or an explicit new-list `key` returning
-  exact signed-int64 integers in the unreleased candidate;
+  exact signed-int64 integers in the `0.2.0rc1` candidate;
 - exact Python `int` objects, not subclasses;
 - every value fitting between `-(2**63)` and `2**63 - 1`;
 - enough elements and a distribution that makes native work worthwhile.
@@ -68,7 +68,7 @@ Measured favorable workloads used more peak memory than `sorted()` and
 If memory is more constrained than latency, benchmark peak RSS as well as
 execution time before adopting BielSort.
 
-The unreleased `sort_with_info()` candidate can apply a conservative limit to
+The TestPyPI `sort_with_info()` candidate can apply a conservative limit to
 BielSort's variable native auxiliary buffers before calling the user key. This
 is not a total-process limit: it excludes input and key objects, allocator
 overhead, fixed stack storage, and any memory later used by a Timsort fallback.
@@ -90,11 +90,10 @@ caller. BielSort does not promise parallel sorting of one list.
 ## Pre-1.0 stability
 
 The four canonical 0.1 function names are stable for that series. The
-`sort_with_info()` and `SortInfo` additions exist only in the unreleased 0.2
-candidate, currently identified in the repository as unpublished
-`0.2.0rc1`. Performance heuristics and human-readable diagnostic wording may
-evolve before 1.0. Keep correctness independent of the exact reason or
-strategy text.
+`sort_with_info()` and `SortInfo` additions are available in the `0.2.0rc1`
+TestPyPI candidate, not the stable `0.1.0` PyPI wheel. Performance heuristics
+and human-readable diagnostic wording may evolve before 1.0. Keep correctness
+independent of the exact reason or strategy text.
 
 ## Decision guide
 

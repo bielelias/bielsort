@@ -1,7 +1,7 @@
 # Casos de uso e adoção
 
 A promessa do BielSort é propositalmente específica: acelerar algumas
-ordenações de grandes `list[int]` e, na candidata 0.2 ainda não publicada,
+ordenações de grandes `list[int]` e, na candidata `0.2.0rc1` do TestPyPI,
 listas novas de objetos com `key` signed-int64, sem obrigar a aplicação a
 migrar os dados para outro contêiner. A única forma confiável de saber se ele
 ajuda é medir a operação completa dentro da aplicação que possui os dados.

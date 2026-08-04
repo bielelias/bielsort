@@ -27,10 +27,9 @@ It provides separate APIs to compete fairly with both `sorted()` and
 
 ## Status
 
-- Development stage: beta (`0.2.0rc1` repository candidate)
-- Published: PyPI and GitHub Releases
-- Repository candidate: `0.2.0rc1` (not yet published)
-- Unreleased research: adaptive `sort(key=...)` candidate for 0.2
+- Development stage: beta (`0.2.0rc1` TestPyPI candidate)
+- Published stable: PyPI and GitHub Releases (`0.1.0`)
+- Published candidate: [TestPyPI `0.2.0rc1`](https://test.pypi.org/project/bielsort/0.2.0rc1/)
 - Runtime: CPython 3.9+
 - Native language: C
 - Fast path: exact Python integers in signed 64-bit range
@@ -54,6 +53,16 @@ python -m pip install bielsort==0.1.0
 ```
 
 The package has no runtime dependencies. The canonical import is `bielsort`.
+
+To test the exact 0.2 release candidate from TestPyPI in an isolated
+environment:
+
+```bash
+python -m pip install \
+  --index-url https://test.pypi.org/simple/ \
+  --no-deps \
+  bielsort==0.2.0rc1
+```
 
 ### Installing from a source checkout
 
@@ -90,7 +99,7 @@ Using the package namespace keeps the calls visually distinct from Python's
 `sorted()` function and `list.sort()` method. Python has no standalone built-in
 function named `sort()`.
 
-`key=` and `reverse=` are supported. In the unreleased 0.2 candidate,
+`key=` and `reverse=` are supported. In the `0.2.0rc1` TestPyPI candidate,
 `sort(..., key=...)` can accelerate exact signed-int64 key results with stable
 Counting or Radix while retaining Timsort for other keys. The stable 0.1 wheel
 and the in-place key API continue to use Timsort:
@@ -115,7 +124,7 @@ ordered, strategy = bielsort.sort_with_strategy([3, 1, 2] * 10_000)
 print(strategy)
 ```
 
-The unreleased 0.2 candidate also provides structured keyed diagnostics and an
+The `0.2.0rc1` candidate also provides structured keyed diagnostics and an
 optional native-memory guard:
 
 ```python
@@ -135,7 +144,7 @@ When a limit is set, the input must be an exact `list` or `tuple` so the guard
 can decide before calling `key`. Use `on_memory_limit="raise"` to reject the
 operation instead of falling back to Timsort.
 
-The unreleased public-key candidate measured `2.37x–5.13x` over
+The public-key candidate measured `2.37x–5.13x` over
 `sorted(key=...)` for the sampled integer-key workloads, while its string-key
 fallback stayed between `0.98x` and `1.04x`. See the
 [candidate report](benchmarks/results/2026-08-04-keyed-public-api-candidate.md).
@@ -217,7 +226,7 @@ python benchmarks/workload_evaluator.py \
 ## Scope and limitations
 
 - The accelerated path currently supports exact `int` objects in signed
-  64-bit range, including eligible key results in the unreleased new-list
+  64-bit range, including eligible key results in the `0.2.0rc1` new-list
   candidate.
 - Floats, strings, subclasses, mixed types, huge integers, `reverse=True`
   without a key, and in-place key calls use Timsort.
@@ -250,7 +259,8 @@ python benchmarks/workload_evaluator.py \
 - [Roadmap](ROADMAP.md)
 - [Changelog](CHANGELOG.md)
 - [Release guide](docs/RELEASING.md)
-- [TestPyPI release-candidate archive](https://test.pypi.org/project/bielsort/0.1.0rc1/)
+- [TestPyPI candidate `0.2.0rc1`](https://test.pypi.org/project/bielsort/0.2.0rc1/)
+- [Earlier TestPyPI candidate `0.1.0rc1`](https://test.pypi.org/project/bielsort/0.1.0rc1/)
 - [Benchmark results](benchmarks/results/2026-07-30-linux-x86_64.md)
 - [Counting Sort memory optimization](benchmarks/results/2026-07-30-counting-memory.md)
 - [Corrected hosted validation](benchmarks/results/2026-07-31-fallback-investigation.md)
@@ -268,14 +278,14 @@ Ela acelera listas grandes de inteiros usando Counting Sort ou Radix Sort em C
 e recorre ao Timsort nos casos em que o algoritmo padrão é mais adequado.
 
 A primeira versão pública estável é a `0.1.0`, distribuída sob a licença MIT.
-A branch de pesquisa está identificada como `0.2.0rc1`, mas essa candidata
-ainda não foi publicada.
+A candidata `0.2.0rc1` está publicada no TestPyPI para testes de instalação;
+ela ainda não é a versão estável do PyPI principal.
 A compilação e os testes de wheels foram validados no CI para CPython 3.9 até
 3.14 em Linux, Windows, macOS Intel e macOS Apple Silicon.
 
-A branch de pesquisa contém uma candidata 0.2 ainda não publicada que também
-pode acelerar `bielsort.sort(..., key=...)` quando a chave retorna um inteiro
-exato signed 64-bit. A API in-place com chave continua usando Timsort.
+A candidata 0.2 também pode acelerar `bielsort.sort(..., key=...)` quando a
+chave retorna um inteiro exato signed 64-bit. A API in-place com chave continua
+usando Timsort.
 
 Instalação e uso recomendado:
 
