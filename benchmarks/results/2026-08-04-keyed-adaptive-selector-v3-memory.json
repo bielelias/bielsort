@@ -1,0 +1,252 @@
+{
+  "platform": "linux",
+  "python": "3.11.2 (main, Apr  8 2026, 01:58:00) [GCC 12.2.0]",
+  "repetitions": 3,
+  "rows": [
+    {
+      "adaptive_peak_bytes": 31940608,
+      "adaptive_to_sorted_ratio": 1.2257151839044325,
+      "case": "int64",
+      "samples": {
+        "adaptive-key": {
+          "median_incremental_peak_bytes": 31940608,
+          "samples": [
+            {
+              "algorithm": "adaptive-key",
+              "case": "int64",
+              "elapsed_seconds": 0.0910043769999902,
+              "incremental_peak_bytes": 31940608,
+              "size": 1000000
+            },
+            {
+              "algorithm": "adaptive-key",
+              "case": "int64",
+              "elapsed_seconds": 0.08769949899988205,
+              "incremental_peak_bytes": 31932416,
+              "size": 1000000
+            },
+            {
+              "algorithm": "adaptive-key",
+              "case": "int64",
+              "elapsed_seconds": 0.09840508399975079,
+              "incremental_peak_bytes": 32051200,
+              "size": 1000000
+            }
+          ]
+        },
+        "sorted-key": {
+          "median_incremental_peak_bytes": 26058752,
+          "samples": [
+            {
+              "algorithm": "sorted-key",
+              "case": "int64",
+              "elapsed_seconds": 0.34355110399974365,
+              "incremental_peak_bytes": 25067520,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "int64",
+              "elapsed_seconds": 0.33375492200002554,
+              "incremental_peak_bytes": 28053504,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "int64",
+              "elapsed_seconds": 0.3309533719998399,
+              "incremental_peak_bytes": 26058752,
+              "size": 1000000
+            }
+          ]
+        }
+      },
+      "size": 1000000,
+      "sorted_peak_bytes": 26058752
+    },
+    {
+      "adaptive_peak_bytes": 23052288,
+      "adaptive_to_sorted_ratio": 0.8533737680060652,
+      "case": "nearly-sorted-wide-int64",
+      "samples": {
+        "adaptive-key": {
+          "median_incremental_peak_bytes": 23052288,
+          "samples": [
+            {
+              "algorithm": "adaptive-key",
+              "case": "nearly-sorted-wide-int64",
+              "elapsed_seconds": 0.1019494410002153,
+              "incremental_peak_bytes": 23609344,
+              "size": 1000000
+            },
+            {
+              "algorithm": "adaptive-key",
+              "case": "nearly-sorted-wide-int64",
+              "elapsed_seconds": 0.10878290599976026,
+              "incremental_peak_bytes": 22003712,
+              "size": 1000000
+            },
+            {
+              "algorithm": "adaptive-key",
+              "case": "nearly-sorted-wide-int64",
+              "elapsed_seconds": 0.11537305399997422,
+              "incremental_peak_bytes": 23052288,
+              "size": 1000000
+            }
+          ]
+        },
+        "sorted-key": {
+          "median_incremental_peak_bytes": 27013120,
+          "samples": [
+            {
+              "algorithm": "sorted-key",
+              "case": "nearly-sorted-wide-int64",
+              "elapsed_seconds": 0.1017721260000144,
+              "incremental_peak_bytes": 27635712,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "nearly-sorted-wide-int64",
+              "elapsed_seconds": 0.10780078600009801,
+              "incremental_peak_bytes": 26013696,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "nearly-sorted-wide-int64",
+              "elapsed_seconds": 0.11918237000008958,
+              "incremental_peak_bytes": 27013120,
+              "size": 1000000
+            }
+          ]
+        }
+      },
+      "size": 1000000,
+      "sorted_peak_bytes": 27013120
+    },
+    {
+      "adaptive_peak_bytes": 32088064,
+      "adaptive_to_sorted_ratio": 1.3320863798673694,
+      "case": "nearly-sorted-spaced-int64",
+      "samples": {
+        "adaptive-key": {
+          "median_incremental_peak_bytes": 32088064,
+          "samples": [
+            {
+              "algorithm": "adaptive-key",
+              "case": "nearly-sorted-spaced-int64",
+              "elapsed_seconds": 0.06987532800030749,
+              "incremental_peak_bytes": 32223232,
+              "size": 1000000
+            },
+            {
+              "algorithm": "adaptive-key",
+              "case": "nearly-sorted-spaced-int64",
+              "elapsed_seconds": 0.07384394800010341,
+              "incremental_peak_bytes": 32083968,
+              "size": 1000000
+            },
+            {
+              "algorithm": "adaptive-key",
+              "case": "nearly-sorted-spaced-int64",
+              "elapsed_seconds": 0.07408281500011071,
+              "incremental_peak_bytes": 32088064,
+              "size": 1000000
+            }
+          ]
+        },
+        "sorted-key": {
+          "median_incremental_peak_bytes": 24088576,
+          "samples": [
+            {
+              "algorithm": "sorted-key",
+              "case": "nearly-sorted-spaced-int64",
+              "elapsed_seconds": 0.07293258300023808,
+              "incremental_peak_bytes": 24223744,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "nearly-sorted-spaced-int64",
+              "elapsed_seconds": 0.0708856379997087,
+              "incremental_peak_bytes": 24088576,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "nearly-sorted-spaced-int64",
+              "elapsed_seconds": 0.06642751699973815,
+              "incremental_peak_bytes": 24076288,
+              "size": 1000000
+            }
+          ]
+        }
+      },
+      "size": 1000000,
+      "sorted_peak_bytes": 24088576
+    },
+    {
+      "adaptive_peak_bytes": 31924224,
+      "adaptive_to_sorted_ratio": 1.274362328319163,
+      "case": "noisy-ordered-prefix-random-int64",
+      "samples": {
+        "adaptive-key": {
+          "median_incremental_peak_bytes": 31924224,
+          "samples": [
+            {
+              "algorithm": "adaptive-key",
+              "case": "noisy-ordered-prefix-random-int64",
+              "elapsed_seconds": 0.1058225480001056,
+              "incremental_peak_bytes": 32047104,
+              "size": 1000000
+            },
+            {
+              "algorithm": "adaptive-key",
+              "case": "noisy-ordered-prefix-random-int64",
+              "elapsed_seconds": 0.11094297500039829,
+              "incremental_peak_bytes": 31920128,
+              "size": 1000000
+            },
+            {
+              "algorithm": "adaptive-key",
+              "case": "noisy-ordered-prefix-random-int64",
+              "elapsed_seconds": 0.10986738099973081,
+              "incremental_peak_bytes": 31924224,
+              "size": 1000000
+            }
+          ]
+        },
+        "sorted-key": {
+          "median_incremental_peak_bytes": 25051136,
+          "samples": [
+            {
+              "algorithm": "sorted-key",
+              "case": "noisy-ordered-prefix-random-int64",
+              "elapsed_seconds": 0.5846010759996716,
+              "incremental_peak_bytes": 25063424,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "noisy-ordered-prefix-random-int64",
+              "elapsed_seconds": 0.35402909999993426,
+              "incremental_peak_bytes": 24178688,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "noisy-ordered-prefix-random-int64",
+              "elapsed_seconds": 0.3623997090003286,
+              "incremental_peak_bytes": 25051136,
+              "size": 1000000
+            }
+          ]
+        }
+      },
+      "size": 1000000,
+      "sorted_peak_bytes": 25051136
+    }
+  ],
+  "schema": "bielsort-keyed-adaptive-memory-v1"
+}

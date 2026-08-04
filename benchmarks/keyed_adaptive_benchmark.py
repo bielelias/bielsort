@@ -22,6 +22,7 @@ CASES = (
     "nearly-sorted-wide-int64",
     "nearly-sorted-spaced-int64",
     "ordered-prefix-random-int64",
+    "noisy-ordered-prefix-random-int64",
     "string",
     "huge-int",
 )
@@ -56,12 +57,20 @@ def create_data(size, case, seed):
             )
         return data
 
-    if case == "ordered-prefix-random-int64":
+    if case in (
+        "ordered-prefix-random-int64",
+        "noisy-ordered-prefix-random-int64",
+    ):
         prefix_size = min(size, 512)
         data = [
             Record(position * 1_000_000, position)
             for position in range(prefix_size)
         ]
+        if case == "noisy-ordered-prefix-random-int64" and prefix_size >= 32:
+            data[10].sort_key, data[20].sort_key = (
+                data[20].sort_key,
+                data[10].sort_key,
+            )
         data.extend(
             Record(
                 rng.randint(-(1 << 63), (1 << 63) - 1),

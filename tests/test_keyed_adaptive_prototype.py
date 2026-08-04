@@ -166,9 +166,11 @@ class KeyedAdaptivePrototypeTests(unittest.TestCase):
         self.assertEqual(boundary_info["algorithm"], "counting")
 
     def test_sparse_nearly_ordered_prefix_selects_timsort_once(self):
+        size = 10_000
+        step = (1 << 64) // size
         values = [
-            Record(position * 1_000_000, position)
-            for position in range(10_000)
+            Record(-(1 << 63) + position * step, position)
+            for position in range(size)
         ]
         values[10].key, values[4_000].key = (
             values[4_000].key,
@@ -192,9 +194,11 @@ class KeyedAdaptivePrototypeTests(unittest.TestCase):
         self.assertEqual(info["cached_key_mode"], "adaptive-prefix")
 
     def test_reverse_sparse_nearly_ordered_prefix_selects_timsort(self):
+        size = 10_000
+        step = (1 << 64) // size
         values = [
-            Record((10_000 - position) * 1_000_000, position)
-            for position in range(10_000)
+            Record((1 << 63) - 1 - position * step, position)
+            for position in range(size)
         ]
         values[10].key, values[4_000].key = (
             values[4_000].key,
@@ -221,6 +225,44 @@ class KeyedAdaptivePrototypeTests(unittest.TestCase):
         self.assertEqual(info["algorithm"], "timsort-sparse-run-replay")
         self.assertTrue(info["reverse"])
 
+    def test_sparse_opposite_direction_runs_select_timsort(self):
+        size = 10_000
+        step = (1 << 64) // size
+        cases = (
+            (False, range(size - 1, -1, -1)),
+            (True, range(size)),
+        )
+        for reverse, positions in cases:
+            with self.subTest(reverse=reverse):
+                values = [
+                    Record(-(1 << 63) + position * step, index)
+                    for index, position in enumerate(positions)
+                ]
+                values[10].key, values[4_000].key = (
+                    values[4_000].key,
+                    values[10].key,
+                )
+
+                result, info = sort_by_key_adaptive(
+                    values,
+                    attrgetter("key"),
+                    reverse=reverse,
+                    return_info=True,
+                )
+
+                self.assertEqual(
+                    result,
+                    sorted(
+                        values,
+                        key=attrgetter("key"),
+                        reverse=reverse,
+                    ),
+                )
+                self.assertEqual(
+                    info["algorithm"],
+                    "timsort-sparse-run-replay",
+                )
+
     def test_ordered_prefix_with_random_tail_stays_native(self):
         rng = random.Random(2026080403)
         keys = [position * 1_000_000 for position in range(512)]
@@ -241,6 +283,90 @@ class KeyedAdaptivePrototypeTests(unittest.TestCase):
 
         self.assertEqual(result, sorted(values, key=attrgetter("key")))
         self.assertEqual(info["algorithm"], "radix")
+
+    def test_large_noisy_ordered_prefix_with_random_tail_stays_native(self):
+        size = 300_000
+        rng = random.Random(2026080406)
+        keys = [position * 1_000_000 for position in range(512)]
+        keys[10], keys[20] = keys[20], keys[10]
+        keys.extend(
+            rng.randint(-(1 << 63), (1 << 63) - 1)
+            for _ in range(size - len(keys))
+        )
+        values = [
+            Record(key, position)
+            for position, key in enumerate(keys)
+        ]
+
+        result, info = sort_by_key_adaptive(
+            values,
+            attrgetter("key"),
+            return_info=True,
+        )
+
+        self.assertEqual(result, sorted(values, key=attrgetter("key")))
+        self.assertEqual(info["algorithm"], "radix")
+
+    def test_large_sparse_run_waits_for_long_sample_before_replay(self):
+        size = 300_000
+        step = (1 << 64) // size
+        values = [
+            Record(-(1 << 63) + position * step, position)
+            for position in range(size)
+        ]
+        values[10].key, values[20].key = values[20].key, values[10].key
+        cached_keys = []
+        calls = []
+
+        def key(record):
+            calls.append(record.position)
+            return record.key
+
+        result = (
+            _bielsort._try_sort_by_prefix_cached_int64_keys_prototype(
+                values,
+                cached_keys,
+                key,
+            )
+        )
+
+        self.assertIs(result, False)
+        self.assertEqual(len(cached_keys), 2_048)
+        self.assertEqual(calls, list(range(2_048)))
+
+    def test_regularly_spaced_nearly_ordered_keys_stay_native(self):
+        size = 300_000
+        values = [
+            Record(position * 1_000_000, position)
+            for position in range(size)
+        ]
+        values[10].key, values[20].key = values[20].key, values[10].key
+
+        result, info = sort_by_key_adaptive(
+            values,
+            attrgetter("key"),
+            return_info=True,
+        )
+
+        self.assertEqual(result, sorted(values, key=attrgetter("key")))
+        self.assertEqual(info["algorithm"], "radix")
+
+    def test_small_regularly_spaced_run_uses_timsort(self):
+        size = 10_000
+        values = [
+            Record(position * 1_000_000, position)
+            for position in range(size)
+        ]
+        values[10].key, values[20].key = values[20].key, values[10].key
+
+        result, info = sort_by_key_adaptive(
+            values,
+            attrgetter("key"),
+            return_info=True,
+        )
+
+        self.assertEqual(result, sorted(values, key=attrgetter("key")))
+        self.assertEqual(info["algorithm"], "timsort-sparse-run-replay")
 
     def test_sparse_monotonic_input_keeps_native_result(self):
         values = [

@@ -13,11 +13,10 @@
 #define KEYED_CONTAGEM_MINIMO_ELEMENTOS 8192
 #define CONTAGEM_LIMITE UINT64_C(4000000)
 #define CONTAGEM_FATOR UINT64_C(4)
-#define KEYED_ADAPTIVE_TIMSORT_MAX 262144
-#define KEYED_ADAPTIVE_SAMPLE_MIN 64
-#define KEYED_ADAPTIVE_SAMPLE_MAX 512
 #define KEYED_ADAPTIVE_SAMPLE_LONG 2048
 #define KEYED_ADAPTIVE_DESCENT_DIVISOR 32
+#define KEYED_ADAPTIVE_MIN_RADIX_PASSES 5
+#define KEYED_ADAPTIVE_SMALL_RUN_TIMSORT_MAX 32768
 
 typedef struct {
     PyObject *objeto;
@@ -769,9 +768,9 @@ biel_sort_impl(PyObject *iteravel, TipoRetorno tipo, int copiar)
  * user's key function again would violate the one-call-per-object contract.
  * A second private entry point accepts a complete cache list.  A third fuses
  * key evaluation with int64 extraction.  If that progressive path encounters
- * a generic key, it reconstructs the preceding exact integer values in a
- * replay prefix and returns None so CPython Timsort evaluates only the
- * remaining user keys.
+ * a generic key, it preserves the preceding exact key objects in a replay
+ * prefix and returns None so CPython Timsort evaluates only the remaining
+ * user keys.
  */
 typedef enum {
     KEYED_CHAVE_DIRETA,
@@ -938,6 +937,7 @@ sort_by_int64_key_prototype_impl(
     long long menor_valor = LLONG_MAX;
     long long maior_valor = LLONG_MIN;
     Py_ssize_t descidas = 0;
+    Py_ssize_t subidas = 0;
 
     for (Py_ssize_t i = 0; i < n; i++) {
         PyObject *resultado_chave;
@@ -1117,33 +1117,50 @@ sort_by_int64_key_prototype_impl(
             variacao |= chave ^ primeira_chave;
             if (chave < chave_anterior) {
                 descidas++;
+            } else if (chave > chave_anterior) {
+                subidas++;
             }
         }
         chave_anterior = chave;
 
         const Py_ssize_t quantidade_amostrada = i + 1;
+        /*
+         * A single short ordered prefix can hide a random tail.  Wait for a
+         * 2,048-key sample, recognize runs in either direction, and delegate
+         * only small sparse inputs or wide inputs that predict expensive
+         * multi-pass Radix work.  Dense ranges remain eligible for Counting.
+         */
         const int checkpoint_adaptativo =
+            quantidade_amostrada == KEYED_ADAPTIVE_SAMPLE_LONG;
+        const Py_ssize_t limite_mudancas_direcao =
+            quantidade_amostrada / KEYED_ADAPTIVE_DESCENT_DIVISOR;
+        const int prefixo_quase_monotono =
             (
-                quantidade_amostrada >= KEYED_ADAPTIVE_SAMPLE_MIN
-                && quantidade_amostrada <= KEYED_ADAPTIVE_SAMPLE_MAX
-                && (
-                    quantidade_amostrada
-                    & (quantidade_amostrada - 1)
-                ) == 0
+                descidas > 0
+                && descidas <= limite_mudancas_direcao
             )
-            || quantidade_amostrada == KEYED_ADAPTIVE_SAMPLE_LONG;
+            || (
+                subidas > 0
+                && subidas <= limite_mudancas_direcao
+            )
+            || (
+                quantidade_amostrada == KEYED_ADAPTIVE_SAMPLE_LONG
+                && subidas == 0
+                && descidas > 0
+            );
         if (
             modo_chave == KEYED_CACHE_PREFIXO
             && tamanho_cache_inicial == 0
-            && n <= KEYED_ADAPTIVE_TIMSORT_MAX
             && checkpoint_adaptativo
-            && descidas > 0
-            && descidas
-                <= quantidade_amostrada
-                    / KEYED_ADAPTIVE_DESCENT_DIVISOR
+            && prefixo_quase_monotono
             && (uint64_t)n <= UINT64_MAX / CONTAGEM_FATOR
             && maior_chave - menor_chave
                 > CONTAGEM_FATOR * (uint64_t)n
+            && (
+                n <= KEYED_ADAPTIVE_SMALL_RUN_TIMSORT_MAX
+                || contar_digitos_variaveis(variacao)
+                    >= KEYED_ADAPTIVE_MIN_RADIX_PASSES
+            )
         ) {
             if (preservar_cache_prefixado(
                 chaves_cacheadas,

@@ -96,7 +96,8 @@ def _fallback_info(
         )
         cache_mode = "adaptive-prefix"
         reason = (
-            "a sparse, low-descent int64 prefix is better suited to Timsort"
+            "a sparse, nearly monotonic int64 prefix is small or would "
+            "require many Radix passes, favoring Timsort"
         )
         decision = "adaptive-sparse-timsort"
         native_eligible = None

@@ -198,8 +198,14 @@ internal module `bielsort_native._keyed_adaptive`, so wheel-level tests can
 exercise the real packaging boundary without adding it to either public
 package's `__all__`.
 
+Selector v3 adds `noisy-ordered-prefix-random-int64` to the timing matrix. It
+prevents a short nearly ordered prefix from hiding a disordered tail and
+records whether the conservative 2,048-key policy preserves the native Radix
+path.
+
 ## Versioned results
 
+- [Adaptive generic-key selector v3 — 2026-08-04](results/2026-08-04-keyed-adaptive-selector-v3.md)
 - [Exact key-identity replay — 2026-08-04](results/2026-08-04-key-identity-replay.md)
 - [Stable reverse keyed selector — 2026-08-04](results/2026-08-04-keyed-adaptive-reverse.md)
 - [Adaptive generic-key selector v2 — 2026-08-04](results/2026-08-04-keyed-adaptive-selector-v2.md)

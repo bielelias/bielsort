@@ -1,5 +1,9 @@
 # Adaptive keyed selector v2 — 2026-08-04
 
+> Superseded by the [selector v3 report](2026-08-04-keyed-adaptive-selector-v3.md),
+> which adds direction-symmetric run detection, a 2,048-key decision sample,
+> Radix-pass awareness, and an adversarial ordered-prefix workload.
+
 ## Decision
 
 **Keep the direction and keep it private.** Progressive native extraction,
