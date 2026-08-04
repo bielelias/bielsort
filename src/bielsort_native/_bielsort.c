@@ -2,6 +2,7 @@
 /* Native core for the bielsort_native CPython package. */
 #include <Python.h>
 #include <limits.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -9,8 +10,14 @@
 #define RADIX_BASE (1U << RADIX_BITS)
 #define RADIX_MASCARA (RADIX_BASE - 1U)
 #define CONTAGEM_MINIMO_ELEMENTOS 250000
+#define KEYED_CONTAGEM_MINIMO_ELEMENTOS 8192
 #define CONTAGEM_LIMITE UINT64_C(4000000)
 #define CONTAGEM_FATOR UINT64_C(4)
+#define KEYED_ADAPTIVE_TIMSORT_MAX 262144
+#define KEYED_ADAPTIVE_SAMPLE_MIN 64
+#define KEYED_ADAPTIVE_SAMPLE_MAX 512
+#define KEYED_ADAPTIVE_SAMPLE_LONG 2048
+#define KEYED_ADAPTIVE_DESCENT_DIVISOR 32
 
 typedef struct {
     PyObject *objeto;
@@ -754,32 +761,76 @@ biel_sort_impl(PyObject *iteravel, TipoRetorno tipo, int copiar)
  *
  * The strict entry point deliberately has no Timsort fallback: calling the
  * user's key function again would violate the one-call-per-object contract.
- * A second private entry point accepts an owned cache list.  It returns None
- * without mutating either list when a key is not exact int64, allowing the
- * Python research selector to reuse the cache in a generic Timsort fallback.
+ * A second private entry point accepts a complete cache list.  A third fuses
+ * key evaluation with int64 extraction.  If that progressive path encounters
+ * a generic key, it reconstructs the preceding exact integer values in a
+ * replay prefix and returns None so CPython Timsort evaluates only the
+ * remaining user keys.
  */
+typedef enum {
+    KEYED_CHAVE_DIRETA,
+    KEYED_CACHE_COMPLETO,
+    KEYED_CACHE_PREFIXO
+} ModoChaveKeyed;
+
+static int
+preservar_cache_prefixado(
+    PyObject *destino,
+    const uint64_t *chaves_normalizadas,
+    Py_ssize_t inicio,
+    Py_ssize_t fim
+)
+{
+    for (Py_ssize_t i = inicio; i < fim; i++) {
+        const uint64_t bits =
+            chaves_normalizadas[i] ^ (UINT64_C(1) << 63);
+        PyObject *chave;
+        if ((bits & (UINT64_C(1) << 63)) == 0) {
+            chave = PyLong_FromUnsignedLongLong(bits);
+        } else {
+            const uint64_t magnitude = (~bits) + 1;
+            PyObject *positivo = PyLong_FromUnsignedLongLong(magnitude);
+            if (positivo == NULL) {
+                return -1;
+            }
+            chave = PyNumber_Negative(positivo);
+            Py_DECREF(positivo);
+        }
+        if (chave == NULL) {
+            return -1;
+        }
+        const int resultado = PyList_Append(destino, chave);
+        Py_DECREF(chave);
+        if (resultado < 0) {
+            return -1;
+        }
+    }
+    return 0;
+}
+
 static PyObject *
 sort_by_int64_key_prototype_impl(
     PyObject *iteravel,
-    PyObject *funcao_ou_chaves,
+    PyObject *funcao_chave,
+    PyObject *chaves_cacheadas,
     TipoRetorno tipo,
-    int usar_chaves_cacheadas
+    ModoChaveKeyed modo_chave
 )
 {
     if (
-        !usar_chaves_cacheadas
-        && !PyCallable_Check(funcao_ou_chaves)
+        modo_chave != KEYED_CACHE_COMPLETO
+        && !PyCallable_Check(funcao_chave)
     ) {
         PyErr_SetString(PyExc_TypeError, "key deve ser chamável");
         return NULL;
     }
 
     PyObject *lista;
-    if (usar_chaves_cacheadas) {
+    if (modo_chave != KEYED_CHAVE_DIRETA) {
         if (
             !PyList_CheckExact(iteravel)
-            || !PyList_CheckExact(funcao_ou_chaves)
-            || iteravel == funcao_ou_chaves
+            || !PyList_CheckExact(chaves_cacheadas)
+            || iteravel == chaves_cacheadas
         ) {
             PyErr_SetString(
                 PyExc_TypeError,
@@ -800,8 +851,8 @@ sort_by_int64_key_prototype_impl(
 
     const Py_ssize_t n = PyList_GET_SIZE(lista);
     if (
-        usar_chaves_cacheadas
-        && PyList_GET_SIZE(funcao_ou_chaves) != n
+        modo_chave == KEYED_CACHE_COMPLETO
+        && PyList_GET_SIZE(chaves_cacheadas) != n
     ) {
         Py_DECREF(lista);
         PyErr_SetString(
@@ -810,6 +861,22 @@ sort_by_int64_key_prototype_impl(
         );
         return NULL;
     }
+    if (
+        modo_chave == KEYED_CACHE_PREFIXO
+        && PyList_GET_SIZE(chaves_cacheadas) > n
+    ) {
+        Py_DECREF(lista);
+        PyErr_SetString(
+            PyExc_ValueError,
+            "cached_keys não pode ser maior que items"
+        );
+        return NULL;
+    }
+
+    const Py_ssize_t tamanho_cache_inicial =
+        modo_chave == KEYED_CACHE_PREFIXO
+            ? PyList_GET_SIZE(chaves_cacheadas)
+            : 0;
 
     if (n == 0) {
         return finalizar_resultado_keyed(
@@ -856,20 +923,61 @@ sort_by_int64_key_prototype_impl(
 
     for (Py_ssize_t i = 0; i < n; i++) {
         PyObject *resultado_chave;
-        if (usar_chaves_cacheadas) {
-            resultado_chave = PyList_GET_ITEM(funcao_ou_chaves, i);
+        int resultado_novo = 0;
+        if (
+            modo_chave == KEYED_CACHE_COMPLETO
+        ) {
+            resultado_chave = PyList_GET_ITEM(chaves_cacheadas, i);
+        } else if (
+            modo_chave == KEYED_CACHE_PREFIXO
+            && i < tamanho_cache_inicial
+        ) {
+            resultado_chave = PyList_GET_ITEM(chaves_cacheadas, i);
         } else {
             PyObject *objeto = PyList_GET_ITEM(lista, i);
-            resultado_chave = PyObject_CallOneArg(funcao_ou_chaves, objeto);
+            resultado_chave = PyObject_CallOneArg(funcao_chave, objeto);
             if (resultado_chave == NULL) {
                 PyMem_Free(chaves_origem);
                 Py_DECREF(lista);
                 return NULL;
             }
+            resultado_novo = 1;
         }
 
         if (!PyLong_CheckExact(resultado_chave)) {
-            if (usar_chaves_cacheadas) {
+            if (modo_chave != KEYED_CHAVE_DIRETA) {
+                if (
+                    modo_chave == KEYED_CACHE_PREFIXO
+                    && preservar_cache_prefixado(
+                        chaves_cacheadas,
+                        chaves_origem,
+                        tamanho_cache_inicial,
+                        i
+                    ) < 0
+                ) {
+                    if (resultado_novo) {
+                        Py_DECREF(resultado_chave);
+                    }
+                    PyMem_Free(chaves_origem);
+                    Py_DECREF(lista);
+                    return NULL;
+                }
+                if (
+                    modo_chave == KEYED_CACHE_PREFIXO
+                    && resultado_novo
+                    && PyList_Append(
+                        chaves_cacheadas,
+                        resultado_chave
+                    ) < 0
+                ) {
+                    Py_DECREF(resultado_chave);
+                    PyMem_Free(chaves_origem);
+                    Py_DECREF(lista);
+                    return NULL;
+                }
+                if (resultado_novo) {
+                    Py_DECREF(resultado_chave);
+                }
                 PyMem_Free(chaves_origem);
                 Py_DECREF(lista);
                 Py_RETURN_NONE;
@@ -880,22 +988,53 @@ sort_by_int64_key_prototype_impl(
                 i,
                 Py_TYPE(resultado_chave)->tp_name
             );
-            Py_DECREF(resultado_chave);
+            if (resultado_novo) {
+                Py_DECREF(resultado_chave);
+            }
             PyMem_Free(chaves_origem);
             Py_DECREF(lista);
             return NULL;
         }
 
         long long valor = PyLong_AsLongLong(resultado_chave);
-        if (!usar_chaves_cacheadas) {
-            Py_DECREF(resultado_chave);
-        }
         if (valor == -1 && PyErr_Occurred()) {
             if (
-                usar_chaves_cacheadas
+                modo_chave != KEYED_CHAVE_DIRETA
                 && PyErr_ExceptionMatches(PyExc_OverflowError)
             ) {
                 PyErr_Clear();
+                if (
+                    modo_chave == KEYED_CACHE_PREFIXO
+                    && preservar_cache_prefixado(
+                        chaves_cacheadas,
+                        chaves_origem,
+                        tamanho_cache_inicial,
+                        i
+                    ) < 0
+                ) {
+                    if (resultado_novo) {
+                        Py_DECREF(resultado_chave);
+                    }
+                    PyMem_Free(chaves_origem);
+                    Py_DECREF(lista);
+                    return NULL;
+                }
+                if (
+                    modo_chave == KEYED_CACHE_PREFIXO
+                    && resultado_novo
+                    && PyList_Append(
+                        chaves_cacheadas,
+                        resultado_chave
+                    ) < 0
+                ) {
+                    Py_DECREF(resultado_chave);
+                    PyMem_Free(chaves_origem);
+                    Py_DECREF(lista);
+                    return NULL;
+                }
+                if (resultado_novo) {
+                    Py_DECREF(resultado_chave);
+                }
                 PyMem_Free(chaves_origem);
                 Py_DECREF(lista);
                 Py_RETURN_NONE;
@@ -908,9 +1047,15 @@ sort_by_int64_key_prototype_impl(
                     i
                 );
             }
+            if (resultado_novo) {
+                Py_DECREF(resultado_chave);
+            }
             PyMem_Free(chaves_origem);
             Py_DECREF(lista);
             return NULL;
+        }
+        if (resultado_novo) {
+            Py_DECREF(resultado_chave);
         }
 
         const uint64_t chave =
@@ -940,11 +1085,50 @@ sort_by_int64_key_prototype_impl(
             }
         }
         chave_anterior = chave;
+
+        const Py_ssize_t quantidade_amostrada = i + 1;
+        const int checkpoint_adaptativo =
+            (
+                quantidade_amostrada >= KEYED_ADAPTIVE_SAMPLE_MIN
+                && quantidade_amostrada <= KEYED_ADAPTIVE_SAMPLE_MAX
+                && (
+                    quantidade_amostrada
+                    & (quantidade_amostrada - 1)
+                ) == 0
+            )
+            || quantidade_amostrada == KEYED_ADAPTIVE_SAMPLE_LONG;
+        if (
+            modo_chave == KEYED_CACHE_PREFIXO
+            && tamanho_cache_inicial == 0
+            && n <= KEYED_ADAPTIVE_TIMSORT_MAX
+            && checkpoint_adaptativo
+            && descidas > 0
+            && descidas
+                <= quantidade_amostrada
+                    / KEYED_ADAPTIVE_DESCENT_DIVISOR
+            && (uint64_t)n <= UINT64_MAX / CONTAGEM_FATOR
+            && maior_chave - menor_chave
+                > CONTAGEM_FATOR * (uint64_t)n
+        ) {
+            if (preservar_cache_prefixado(
+                chaves_cacheadas,
+                chaves_origem,
+                0,
+                quantidade_amostrada
+            ) < 0) {
+                PyMem_Free(chaves_origem);
+                Py_DECREF(lista);
+                return NULL;
+            }
+            PyMem_Free(chaves_origem);
+            Py_DECREF(lista);
+            Py_RETURN_FALSE;
+        }
     }
 
     if (
-        usar_chaves_cacheadas
-        && PyList_SetSlice(funcao_ou_chaves, 0, n, NULL) < 0
+        modo_chave != KEYED_CHAVE_DIRETA
+        && PyList_SetSlice(chaves_cacheadas, 0, n, NULL) < 0
     ) {
         PyMem_Free(chaves_origem);
         Py_DECREF(lista);
@@ -1003,7 +1187,7 @@ sort_by_int64_key_prototype_impl(
     }
 
     const int usar_contagem =
-        n >= CONTAGEM_MINIMO_ELEMENTOS
+        n >= KEYED_CONTAGEM_MINIMO_ELEMENTOS
         && amplitude < CONTAGEM_LIMITE
         && (
             (uint64_t)n >= CONTAGEM_LIMITE / CONTAGEM_FATOR
@@ -1217,42 +1401,64 @@ parse_keyed_prototype_args(
     );
 }
 
-#define CACHE_REPLAY_CAPSULE "bielsort.cached-key-replay"
-
 typedef struct {
+    PyObject_HEAD
+    vectorcallfunc vectorcall;
     PyObject *chaves;
     PyObject *funcao_chave;
     Py_ssize_t quantidade;
     Py_ssize_t proximo;
 } EstadoReplayChaves;
 
-static void
-destruir_replay_chaves(PyObject *capsula)
+static int
+visitar_replay_chaves(PyObject *objeto, visitproc visit, void *arg)
 {
-    EstadoReplayChaves *estado = PyCapsule_GetPointer(
-        capsula,
-        CACHE_REPLAY_CAPSULE
-    );
-    if (estado == NULL) {
-        PyErr_Clear();
-        return;
-    }
-    Py_XDECREF(estado->funcao_chave);
-    Py_DECREF(estado->chaves);
-    PyMem_Free(estado);
+    EstadoReplayChaves *estado = (EstadoReplayChaves *)objeto;
+    Py_VISIT(estado->chaves);
+    Py_VISIT(estado->funcao_chave);
+    return 0;
+}
+
+static int
+limpar_replay_chaves(PyObject *objeto)
+{
+    EstadoReplayChaves *estado = (EstadoReplayChaves *)objeto;
+    Py_CLEAR(estado->funcao_chave);
+    Py_CLEAR(estado->chaves);
+    return 0;
+}
+
+static void
+destruir_replay_chaves(PyObject *objeto)
+{
+    PyObject_GC_UnTrack(objeto);
+    limpar_replay_chaves(objeto);
+    Py_TYPE(objeto)->tp_free(objeto);
 }
 
 static PyObject *
-reproduzir_chave_cacheada(PyObject *capsula, PyObject *item)
+reproduzir_chave_cacheada(
+    PyObject *objeto,
+    PyObject *const *argumentos,
+    size_t nargsf,
+    PyObject *nomes_argumentos
+)
 {
-    EstadoReplayChaves *estado = PyCapsule_GetPointer(
-        capsula,
-        CACHE_REPLAY_CAPSULE
-    );
-    if (estado == NULL) {
+    if (
+        PyVectorcall_NARGS(nargsf) != 1
+        || (
+            nomes_argumentos != NULL
+            && PyTuple_GET_SIZE(nomes_argumentos) != 0
+        )
+    ) {
+        PyErr_SetString(
+            PyExc_TypeError,
+            "o replay de chaves recebe exatamente um argumento posicional"
+        );
         return NULL;
     }
 
+    EstadoReplayChaves *estado = (EstadoReplayChaves *)objeto;
     const Py_ssize_t indice = estado->proximo;
     if (indice >= estado->quantidade) {
         PyErr_SetString(
@@ -1262,7 +1468,6 @@ reproduzir_chave_cacheada(PyObject *capsula, PyObject *item)
         return NULL;
     }
 
-    (void)item;
     estado->proximo++;
     if (indice < PyList_GET_SIZE(estado->chaves)) {
         PyObject *chave = PyList_GET_ITEM(estado->chaves, indice);
@@ -1276,14 +1481,29 @@ reproduzir_chave_cacheada(PyObject *capsula, PyObject *item)
         );
         return NULL;
     }
-    return PyObject_CallOneArg(estado->funcao_chave, item);
+    return PyObject_Vectorcall(
+        estado->funcao_chave,
+        argumentos,
+        1,
+        NULL
+    );
 }
 
-static PyMethodDef metodo_replay_chaves = {
-    "_cached_key_replay",
-    reproduzir_chave_cacheada,
-    METH_O,
-    "Callable interno de uso único para reproduzir chaves cacheadas."
+static PyTypeObject tipo_replay_chaves = {
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "bielsort_native._CachedKeyReplay",
+    .tp_basicsize = sizeof(EstadoReplayChaves),
+    .tp_dealloc = destruir_replay_chaves,
+    .tp_call = PyVectorcall_Call,
+    .tp_flags = (
+        Py_TPFLAGS_DEFAULT
+        | Py_TPFLAGS_HAVE_VECTORCALL
+        | Py_TPFLAGS_HAVE_GC
+    ),
+    .tp_doc = "Callable interno de uso único para replay de chaves.",
+    .tp_traverse = visitar_replay_chaves,
+    .tp_clear = limpar_replay_chaves,
+    .tp_vectorcall_offset = offsetof(EstadoReplayChaves, vectorcall),
 };
 
 static PyObject *
@@ -1328,36 +1548,21 @@ criar_replay_chaves_cacheadas(
         return NULL;
     }
 
-    EstadoReplayChaves *estado = PyMem_Malloc(sizeof(*estado));
+    EstadoReplayChaves *estado = (EstadoReplayChaves *)PyType_GenericAlloc(
+        &tipo_replay_chaves,
+        0
+    );
     if (estado == NULL) {
-        return PyErr_NoMemory();
+        return NULL;
     }
+    estado->vectorcall = reproduzir_chave_cacheada;
     estado->chaves = chaves;
     estado->funcao_chave = funcao_chave;
     estado->quantidade = PyList_GET_SIZE(itens);
     estado->proximo = 0;
     Py_INCREF(chaves);
     Py_XINCREF(funcao_chave);
-
-    PyObject *capsula = PyCapsule_New(
-        estado,
-        CACHE_REPLAY_CAPSULE,
-        destruir_replay_chaves
-    );
-    if (capsula == NULL) {
-        Py_XDECREF(funcao_chave);
-        Py_DECREF(chaves);
-        PyMem_Free(estado);
-        return NULL;
-    }
-
-    PyObject *replay = PyCFunction_NewEx(
-        &metodo_replay_chaves,
-        capsula,
-        NULL
-    );
-    Py_DECREF(capsula);
-    return replay;
+    return (PyObject *)estado;
 }
 
 static PyObject *
@@ -1395,8 +1600,9 @@ py_sort_by_int64_key_prototype(PyObject *Py_UNUSED(modulo), PyObject *args)
     return sort_by_int64_key_prototype_impl(
         iteravel,
         funcao_chave,
+        NULL,
         RETORNO_LISTA,
-        0
+        KEYED_CHAVE_DIRETA
     );
 }
 
@@ -1414,8 +1620,9 @@ py_sort_by_int64_key_prototype_with_strategy(
     return sort_by_int64_key_prototype_impl(
         iteravel,
         funcao_chave,
+        NULL,
         RETORNO_DIAGNOSTICO,
-        0
+        KEYED_CHAVE_DIRETA
     );
 }
 
@@ -1433,8 +1640,9 @@ py_sort_by_int64_key_prototype_with_info(
     return sort_by_int64_key_prototype_impl(
         iteravel,
         funcao_chave,
+        NULL,
         RETORNO_DIAGNOSTICO_ESTRUTURADO,
-        0
+        KEYED_CHAVE_DIRETA
     );
 }
 
@@ -1456,9 +1664,10 @@ py_try_sort_by_cached_int64_keys_prototype(
     }
     return sort_by_int64_key_prototype_impl(
         itens,
+        NULL,
         chaves,
         RETORNO_LISTA,
-        1
+        KEYED_CACHE_COMPLETO
     );
 }
 
@@ -1480,9 +1689,64 @@ py_try_sort_by_cached_int64_keys_prototype_with_info(
     }
     return sort_by_int64_key_prototype_impl(
         itens,
+        NULL,
         chaves,
         RETORNO_DIAGNOSTICO_ESTRUTURADO,
-        1
+        KEYED_CACHE_COMPLETO
+    );
+}
+
+static PyObject *
+py_try_sort_by_prefix_cached_int64_keys_prototype(
+    PyObject *Py_UNUSED(modulo),
+    PyObject *args
+)
+{
+    PyObject *itens;
+    PyObject *chaves;
+    PyObject *funcao_chave;
+    if (!PyArg_ParseTuple(
+        args,
+        "OOO:_try_sort_by_prefix_cached_int64_keys_prototype",
+        &itens,
+        &chaves,
+        &funcao_chave
+    )) {
+        return NULL;
+    }
+    return sort_by_int64_key_prototype_impl(
+        itens,
+        funcao_chave,
+        chaves,
+        RETORNO_LISTA,
+        KEYED_CACHE_PREFIXO
+    );
+}
+
+static PyObject *
+py_try_sort_by_prefix_cached_int64_keys_prototype_with_info(
+    PyObject *Py_UNUSED(modulo),
+    PyObject *args
+)
+{
+    PyObject *itens;
+    PyObject *chaves;
+    PyObject *funcao_chave;
+    if (!PyArg_ParseTuple(
+        args,
+        "OOO:_try_sort_by_prefix_cached_int64_keys_prototype_with_info",
+        &itens,
+        &chaves,
+        &funcao_chave
+    )) {
+        return NULL;
+    }
+    return sort_by_int64_key_prototype_impl(
+        itens,
+        funcao_chave,
+        chaves,
+        RETORNO_DIAGNOSTICO_ESTRUTURADO,
+        KEYED_CACHE_PREFIXO
     );
 }
 
@@ -1594,6 +1858,21 @@ PyDoc_STRVAR(
 );
 
 PyDoc_STRVAR(
+    prefix_cached_keyed_prototype_doc,
+    "_try_sort_by_prefix_cached_int64_keys_prototype(items, keys, key, /)\n"
+    "--\n\n"
+    "Protótipo interno: completa o cache enquanto extrai int64."
+);
+
+PyDoc_STRVAR(
+    prefix_cached_keyed_prototype_info_doc,
+    "_try_sort_by_prefix_cached_int64_keys_prototype_with_info(items, keys, "
+    "key, /)\n"
+    "--\n\n"
+    "Protótipo prefixado com diagnóstico estruturado."
+);
+
+PyDoc_STRVAR(
     cached_key_replay_prototype_doc,
     "_make_cached_key_replay_prototype(items, cached_keys, /)\n"
     "--\n\n"
@@ -1648,6 +1927,18 @@ static PyMethodDef metodos[] = {
         cached_keyed_prototype_info_doc
     },
     {
+        "_try_sort_by_prefix_cached_int64_keys_prototype",
+        py_try_sort_by_prefix_cached_int64_keys_prototype,
+        METH_VARARGS,
+        prefix_cached_keyed_prototype_doc
+    },
+    {
+        "_try_sort_by_prefix_cached_int64_keys_prototype_with_info",
+        py_try_sort_by_prefix_cached_int64_keys_prototype_with_info,
+        METH_VARARGS,
+        prefix_cached_keyed_prototype_info_doc
+    },
+    {
         "_make_cached_key_replay_prototype",
         py_make_cached_key_replay_prototype,
         METH_VARARGS,
@@ -1677,5 +1968,8 @@ static struct PyModuleDef modulo = {
 PyMODINIT_FUNC
 PyInit__bielsort(void)
 {
+    if (PyType_Ready(&tipo_replay_chaves) < 0) {
+        return NULL;
+    }
     return PyModule_Create(&modulo);
 }

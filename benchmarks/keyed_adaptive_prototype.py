@@ -1,12 +1,12 @@
 """Research-only adaptive generic-key sorting prototype.
 
-User keys are evaluated exactly once.  Exact signed-int64 caches are consumed
-by the private native Counting/Radix path; every other mutually orderable key
-domain uses Timsort over cached keys without evaluating user code again.
+User keys are evaluated exactly once.  The private native path progressively
+extracts exact signed-int64 values for Counting/Radix sorting.  On the first
+generic key, the extracted integer values become a replay prefix and CPython
+Timsort evaluates only the remaining keys.
 """
 
 import struct
-from itertools import islice
 
 from benchmarks.keyed_int64_guard import (
     native_worst_case_variable_auxiliary_bytes,
@@ -15,11 +15,8 @@ from bielsort_native import _bielsort
 
 
 _EXCEEDED_POLICIES = ("timsort", "raise")
-_INT64_MIN = -(1 << 63)
-_INT64_MAX = (1 << 63) - 1
-_PREFIX_SAMPLE_SIZE = 64
 _SMALL_INPUT_LIMIT = 2_048
-_NATIVE_EXTRACTION_BYTES_PER_ITEM = 2 * struct.calcsize("P") + 8
+_NATIVE_EXTRACTION_BYTES_PER_ITEM = struct.calcsize("P") + 8
 
 
 def _validate_options(key, max_native_auxiliary_bytes, on_exceeded, return_info):
@@ -67,26 +64,32 @@ def _fallback_info(
     *,
     fallback_mode,
 ):
-    if fallback_mode == "full-cache":
-        algorithm = "timsort-cached-key-replay"
-        strategy = "prototype adaptive-key: Timsort with cached-key replay"
-        reason = "at least one cached key is outside exact signed-int64"
-        decision = "cached-key-timsort"
-        cache_mode = "full"
-        native_eligible = False
-        memory_scope = (
-            "native int64 estimate only; excludes cached generic key "
-            "objects and Timsort allocations"
+    if fallback_mode == "progressive-generic":
+        algorithm = "timsort-progressive-key-replay"
+        strategy = (
+            "prototype adaptive-key: Timsort with progressive-key replay"
         )
-    elif fallback_mode == "prefix-generic":
-        algorithm = "timsort-prefix-key-replay"
-        strategy = "prototype adaptive-key: Timsort with prefix-key replay"
-        cache_mode = "prefix"
-        reason = "the ordered key prefix is outside exact signed-int64"
-        decision = "prefix-key-timsort"
+        cache_mode = "progressive-prefix"
+        reason = "native extraction encountered a generic Python key"
+        decision = "progressive-key-timsort"
         native_eligible = False
         memory_scope = (
-            "native int64 estimate only; excludes the small cached prefix "
+            "native int64 estimate only; excludes the progressively cached "
+            "prefix and Timsort allocations"
+        )
+    elif fallback_mode == "adaptive-sparse":
+        algorithm = "timsort-sparse-run-replay"
+        strategy = (
+            "prototype adaptive-key: Timsort for sparse ordered runs"
+        )
+        cache_mode = "adaptive-prefix"
+        reason = (
+            "a sparse, low-descent int64 prefix is better suited to Timsort"
+        )
+        decision = "adaptive-sparse-timsort"
+        native_eligible = None
+        memory_scope = (
+            "native int64 estimate only; excludes the adaptive replay prefix "
             "and Timsort allocations"
         )
     else:
@@ -152,9 +155,8 @@ def _decorate_native_info(info, limit, worst_case, on_exceeded):
             extraction_estimate,
         )
     info["memory_estimate_scope"] = (
-        "result-list items, cached-key pointers, and native variable "
-        "buffers; excludes key-result objects, allocator overhead, and "
-        "fixed stack"
+        "result-list items and native variable buffers; excludes allocator "
+        "overhead and fixed stack"
     )
     info["guard"] = _guard_details(
         limit,
@@ -243,15 +245,26 @@ def sort_by_key_adaptive(
             fallback_mode="pre-key-small",
         )
 
-    prefix_size = min(size, _PREFIX_SAMPLE_SIZE)
-    cached_keys = list(map(key, islice(items, prefix_size)))
-    prefix_is_int64 = all(
-        type(cached_key) is int
-        and _INT64_MIN <= cached_key <= _INT64_MAX
-        for cached_key in cached_keys
-    )
+    cached_keys = []
 
-    if not prefix_is_int64:
+    if return_info:
+        native_attempt = (
+            _bielsort._try_sort_by_prefix_cached_int64_keys_prototype_with_info(
+                items,
+                cached_keys,
+                key,
+            )
+        )
+    else:
+        native_attempt = (
+            _bielsort._try_sort_by_prefix_cached_int64_keys_prototype(
+                items,
+                cached_keys,
+                key,
+            )
+        )
+
+    if native_attempt is False:
         result = _sort_with_prefix_replay(items, cached_keys, key)
         if not return_info:
             return result
@@ -260,22 +273,7 @@ def sort_by_key_adaptive(
             worst_case,
             max_native_auxiliary_bytes,
             on_exceeded,
-            fallback_mode="prefix-generic",
-        )
-
-    cached_keys.extend(map(key, islice(items, prefix_size, None)))
-
-    if return_info:
-        native_attempt = (
-            _bielsort._try_sort_by_cached_int64_keys_prototype_with_info(
-                items,
-                cached_keys,
-            )
-        )
-    else:
-        native_attempt = _bielsort._try_sort_by_cached_int64_keys_prototype(
-            items,
-            cached_keys,
+            fallback_mode="adaptive-sparse",
         )
 
     if native_attempt is not None:
@@ -289,16 +287,12 @@ def sort_by_key_adaptive(
             on_exceeded,
         )
 
-    # CPython Timsort receives a one-shot native callable that replays the
-    # original cached objects.  This CPython-specific research path relies on
-    # listsort requesting keys in input order and never invokes the user key
-    # again.
-    replay = _bielsort._make_cached_key_replay_prototype(
-        items,
-        cached_keys,
-    )
-    items.sort(key=replay)
-    result = items
+    # The fused native extraction materializes ``cached_keys`` only through
+    # the first incompatible result.  Exact int64 values are reconstructed by
+    # value; the incompatible object itself is retained.  Timsort replays that
+    # evaluated prefix and calls the user key exactly once for every remaining
+    # item.
+    result = _sort_with_prefix_replay(items, cached_keys, key)
     if not return_info:
         return result
     return result, _fallback_info(
@@ -306,5 +300,5 @@ def sort_by_key_adaptive(
         worst_case,
         max_native_auxiliary_bytes,
         on_exceeded,
-        fallback_mode="full-cache",
+        fallback_mode="progressive-generic",
     )

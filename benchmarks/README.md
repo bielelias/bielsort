@@ -173,9 +173,10 @@ redesigned before publication.
 
 ## Research: adaptive generic keys
 
-The follow-up selector keeps `key` generic, caches user results exactly once,
-and uses the native int64 path only when eligible. Reproduce its timing and
-isolated peak-RSS reports with:
+The follow-up selector keeps `key` generic, calls user code exactly once, and
+uses progressive native int64 extraction only when eligible. Sparse ordered
+runs can return conservatively to Timsort through a private vectorcall replay
+object. Reproduce its timing and isolated peak-RSS reports with:
 
 ```bash
 python -m benchmarks.keyed_adaptive_benchmark \
@@ -186,12 +187,13 @@ python -m benchmarks.keyed_adaptive_memory \
   --output keyed-adaptive-memory.json
 ```
 
-This remains a private prototype. Its prefix-key replay deliberately targets
-CPython and must pass the supported-version wheel matrix before it can back the
-public `sort(key=...)` implementation.
+This remains a private prototype. Its key replay deliberately targets CPython
+and must pass the supported-version wheel matrix before it can back the public
+`sort(key=...)` implementation.
 
 ## Versioned results
 
+- [Adaptive generic-key selector v2 — 2026-08-04](results/2026-08-04-keyed-adaptive-selector-v2.md)
 - [Adaptive generic-key selector — 2026-08-04](results/2026-08-04-keyed-adaptive-selector.md)
 - [Keyed-int64 native-memory guard — 2026-08-04](results/2026-08-04-keyed-int64-memory-guard.md)
 - [Structured keyed-int64 diagnostics — 2026-08-04](results/2026-08-04-keyed-int64-diagnostics.md)

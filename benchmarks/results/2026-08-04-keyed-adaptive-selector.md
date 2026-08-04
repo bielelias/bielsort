@@ -1,5 +1,8 @@
 # Adaptive generic-key selector — 2026-08-04
 
+> Superseded by the
+> [progressive selector v2](2026-08-04-keyed-adaptive-selector-v2.md).
+
 ## Decision
 
 **Continue with the generic API direction, but keep it private.** The selector

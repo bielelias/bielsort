@@ -16,13 +16,37 @@ from benchmarks.keyed_int64_prototype import KEY, Record, ensure_correct
 
 
 ALGORITHMS = ("sorted-key", "adaptive-key")
-CASES = ("int64", "nearly-sorted-int64", "string", "huge-int")
+CASES = (
+    "int64",
+    "nearly-sorted-int64",
+    "nearly-sorted-wide-int64",
+    "nearly-sorted-spaced-int64",
+    "ordered-prefix-random-int64",
+    "string",
+    "huge-int",
+)
 
 
 def create_data(size, case, seed):
     rng = random.Random(seed)
-    if case == "nearly-sorted-int64":
-        data = [Record(position, position) for position in range(size)]
+    if case.startswith("nearly-sorted-"):
+        if case == "nearly-sorted-int64":
+            data = [Record(position, position) for position in range(size)]
+        elif case == "nearly-sorted-wide-int64":
+            data = [
+                rng.randint(-(1 << 63), (1 << 63) - 1)
+                for _ in range(size)
+            ]
+            data.sort()
+            for position, key in enumerate(data):
+                data[position] = Record(key, position)
+        elif case == "nearly-sorted-spaced-int64":
+            data = [
+                Record(position * 1_000_000, position)
+                for position in range(size)
+            ]
+        else:
+            raise ValueError(f"unknown case: {case}")
         for _ in range(max(1, size // 500)):
             left = rng.randrange(size)
             right = rng.randrange(size)
@@ -30,6 +54,21 @@ def create_data(size, case, seed):
                 data[right].sort_key,
                 data[left].sort_key,
             )
+        return data
+
+    if case == "ordered-prefix-random-int64":
+        prefix_size = min(size, 512)
+        data = [
+            Record(position * 1_000_000, position)
+            for position in range(prefix_size)
+        ]
+        data.extend(
+            Record(
+                rng.randint(-(1 << 63), (1 << 63) - 1),
+                position,
+            )
+            for position in range(prefix_size, size)
+        )
         return data
 
     values = (
