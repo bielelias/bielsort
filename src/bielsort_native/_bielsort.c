@@ -208,6 +208,7 @@ finalizar_resultado_keyed(
     uint64_t amplitude,
     int passagens,
     int normalizado,
+    int reverso,
     AlgoritmoKeyed codigo_algoritmo
 )
 {
@@ -294,6 +295,11 @@ finalizar_resultado_keyed(
             diagnostico,
             "stable",
             PyBool_FromLong(1)
+        ) < 0
+        || adicionar_item_diagnostico(
+            diagnostico,
+            "reverse",
+            PyBool_FromLong(reverso)
         ) < 0
         || adicionar_item_diagnostico(
             diagnostico,
@@ -778,12 +784,16 @@ preservar_cache_prefixado(
     PyObject *destino,
     const uint64_t *chaves_normalizadas,
     Py_ssize_t inicio,
-    Py_ssize_t fim
+    Py_ssize_t fim,
+    int reverso
 )
 {
     for (Py_ssize_t i = inicio; i < fim; i++) {
-        const uint64_t bits =
-            chaves_normalizadas[i] ^ (UINT64_C(1) << 63);
+        uint64_t bits = chaves_normalizadas[i];
+        if (reverso) {
+            bits = ~bits;
+        }
+        bits ^= UINT64_C(1) << 63;
         PyObject *chave;
         if ((bits & (UINT64_C(1) << 63)) == 0) {
             chave = PyLong_FromUnsignedLongLong(bits);
@@ -814,7 +824,8 @@ sort_by_int64_key_prototype_impl(
     PyObject *funcao_chave,
     PyObject *chaves_cacheadas,
     TipoRetorno tipo,
-    ModoChaveKeyed modo_chave
+    ModoChaveKeyed modo_chave,
+    int reverso
 )
 {
     if (
@@ -892,6 +903,7 @@ sort_by_int64_key_prototype_impl(
             0,
             0,
             0,
+            reverso,
             KEYED_TRIVIAL
         );
     }
@@ -952,7 +964,8 @@ sort_by_int64_key_prototype_impl(
                         chaves_cacheadas,
                         chaves_origem,
                         tamanho_cache_inicial,
-                        i
+                        i,
+                        reverso
                     ) < 0
                 ) {
                     if (resultado_novo) {
@@ -1009,7 +1022,8 @@ sort_by_int64_key_prototype_impl(
                         chaves_cacheadas,
                         chaves_origem,
                         tamanho_cache_inicial,
-                        i
+                        i,
+                        reverso
                     ) < 0
                 ) {
                     if (resultado_novo) {
@@ -1058,8 +1072,11 @@ sort_by_int64_key_prototype_impl(
             Py_DECREF(resultado_chave);
         }
 
-        const uint64_t chave =
+        uint64_t chave =
             ((uint64_t)(int64_t)valor) ^ (UINT64_C(1) << 63);
+        if (reverso) {
+            chave = ~chave;
+        }
         chaves_origem[i] = chave;
 
         if (valor < menor_valor) {
@@ -1114,7 +1131,8 @@ sort_by_int64_key_prototype_impl(
                 chaves_cacheadas,
                 chaves_origem,
                 0,
-                quantidade_amostrada
+                quantidade_amostrada,
+                reverso
             ) < 0) {
                 PyMem_Free(chaves_origem);
                 Py_DECREF(lista);
@@ -1145,7 +1163,11 @@ sort_by_int64_key_prototype_impl(
             n == 1 ? "trivial" : "already-sorted",
             n == 1
                 ? "um único elemento"
-                : "chaves já estão em ordem não decrescente",
+                : (
+                    reverso
+                        ? "chaves já estão em ordem não crescente"
+                        : "chaves já estão em ordem não decrescente"
+                ),
             tipo,
             n,
             1,
@@ -1154,6 +1176,7 @@ sort_by_int64_key_prototype_impl(
             maior_chave - menor_chave,
             0,
             0,
+            reverso,
             n == 1 ? KEYED_TRIVIAL : KEYED_JA_ORDENADO
         );
     }
@@ -1174,6 +1197,7 @@ sort_by_int64_key_prototype_impl(
             0,
             0,
             0,
+            reverso,
             KEYED_JA_ORDENADO
         );
     }
@@ -1264,6 +1288,7 @@ sort_by_int64_key_prototype_impl(
                     amplitude,
                     0,
                     normalizado,
+                    reverso,
                     KEYED_COUNTING
                 );
             }
@@ -1382,6 +1407,7 @@ sort_by_int64_key_prototype_impl(
         amplitude,
         passagens,
         normalizado,
+        reverso,
         KEYED_RADIX
     );
 }
@@ -1390,14 +1416,16 @@ static int
 parse_keyed_prototype_args(
     PyObject *args,
     PyObject **iteravel,
-    PyObject **funcao_chave
+    PyObject **funcao_chave,
+    int *reverso
 )
 {
     return PyArg_ParseTuple(
         args,
-        "OO:_sort_by_int64_key_prototype",
+        "OO|p:_sort_by_int64_key_prototype",
         iteravel,
-        funcao_chave
+        funcao_chave,
+        reverso
     );
 }
 
@@ -1594,7 +1622,13 @@ py_sort_by_int64_key_prototype(PyObject *Py_UNUSED(modulo), PyObject *args)
 {
     PyObject *iteravel;
     PyObject *funcao_chave;
-    if (!parse_keyed_prototype_args(args, &iteravel, &funcao_chave)) {
+    int reverso = 0;
+    if (!parse_keyed_prototype_args(
+        args,
+        &iteravel,
+        &funcao_chave,
+        &reverso
+    )) {
         return NULL;
     }
     return sort_by_int64_key_prototype_impl(
@@ -1602,7 +1636,8 @@ py_sort_by_int64_key_prototype(PyObject *Py_UNUSED(modulo), PyObject *args)
         funcao_chave,
         NULL,
         RETORNO_LISTA,
-        KEYED_CHAVE_DIRETA
+        KEYED_CHAVE_DIRETA,
+        reverso
     );
 }
 
@@ -1614,7 +1649,13 @@ py_sort_by_int64_key_prototype_with_strategy(
 {
     PyObject *iteravel;
     PyObject *funcao_chave;
-    if (!parse_keyed_prototype_args(args, &iteravel, &funcao_chave)) {
+    int reverso = 0;
+    if (!parse_keyed_prototype_args(
+        args,
+        &iteravel,
+        &funcao_chave,
+        &reverso
+    )) {
         return NULL;
     }
     return sort_by_int64_key_prototype_impl(
@@ -1622,7 +1663,8 @@ py_sort_by_int64_key_prototype_with_strategy(
         funcao_chave,
         NULL,
         RETORNO_DIAGNOSTICO,
-        KEYED_CHAVE_DIRETA
+        KEYED_CHAVE_DIRETA,
+        reverso
     );
 }
 
@@ -1634,7 +1676,13 @@ py_sort_by_int64_key_prototype_with_info(
 {
     PyObject *iteravel;
     PyObject *funcao_chave;
-    if (!parse_keyed_prototype_args(args, &iteravel, &funcao_chave)) {
+    int reverso = 0;
+    if (!parse_keyed_prototype_args(
+        args,
+        &iteravel,
+        &funcao_chave,
+        &reverso
+    )) {
         return NULL;
     }
     return sort_by_int64_key_prototype_impl(
@@ -1642,7 +1690,8 @@ py_sort_by_int64_key_prototype_with_info(
         funcao_chave,
         NULL,
         RETORNO_DIAGNOSTICO_ESTRUTURADO,
-        KEYED_CHAVE_DIRETA
+        KEYED_CHAVE_DIRETA,
+        reverso
     );
 }
 
@@ -1654,11 +1703,13 @@ py_try_sort_by_cached_int64_keys_prototype(
 {
     PyObject *itens;
     PyObject *chaves;
+    int reverso = 0;
     if (!PyArg_ParseTuple(
         args,
-        "OO:_try_sort_by_cached_int64_keys_prototype",
+        "OO|p:_try_sort_by_cached_int64_keys_prototype",
         &itens,
-        &chaves
+        &chaves,
+        &reverso
     )) {
         return NULL;
     }
@@ -1667,7 +1718,8 @@ py_try_sort_by_cached_int64_keys_prototype(
         NULL,
         chaves,
         RETORNO_LISTA,
-        KEYED_CACHE_COMPLETO
+        KEYED_CACHE_COMPLETO,
+        reverso
     );
 }
 
@@ -1679,11 +1731,13 @@ py_try_sort_by_cached_int64_keys_prototype_with_info(
 {
     PyObject *itens;
     PyObject *chaves;
+    int reverso = 0;
     if (!PyArg_ParseTuple(
         args,
-        "OO:_try_sort_by_cached_int64_keys_prototype_with_info",
+        "OO|p:_try_sort_by_cached_int64_keys_prototype_with_info",
         &itens,
-        &chaves
+        &chaves,
+        &reverso
     )) {
         return NULL;
     }
@@ -1692,7 +1746,8 @@ py_try_sort_by_cached_int64_keys_prototype_with_info(
         NULL,
         chaves,
         RETORNO_DIAGNOSTICO_ESTRUTURADO,
-        KEYED_CACHE_COMPLETO
+        KEYED_CACHE_COMPLETO,
+        reverso
     );
 }
 
@@ -1705,12 +1760,14 @@ py_try_sort_by_prefix_cached_int64_keys_prototype(
     PyObject *itens;
     PyObject *chaves;
     PyObject *funcao_chave;
+    int reverso = 0;
     if (!PyArg_ParseTuple(
         args,
-        "OOO:_try_sort_by_prefix_cached_int64_keys_prototype",
+        "OOO|p:_try_sort_by_prefix_cached_int64_keys_prototype",
         &itens,
         &chaves,
-        &funcao_chave
+        &funcao_chave,
+        &reverso
     )) {
         return NULL;
     }
@@ -1719,7 +1776,8 @@ py_try_sort_by_prefix_cached_int64_keys_prototype(
         funcao_chave,
         chaves,
         RETORNO_LISTA,
-        KEYED_CACHE_PREFIXO
+        KEYED_CACHE_PREFIXO,
+        reverso
     );
 }
 
@@ -1732,12 +1790,14 @@ py_try_sort_by_prefix_cached_int64_keys_prototype_with_info(
     PyObject *itens;
     PyObject *chaves;
     PyObject *funcao_chave;
+    int reverso = 0;
     if (!PyArg_ParseTuple(
         args,
-        "OOO:_try_sort_by_prefix_cached_int64_keys_prototype_with_info",
+        "OOO|p:_try_sort_by_prefix_cached_int64_keys_prototype_with_info",
         &itens,
         &chaves,
-        &funcao_chave
+        &funcao_chave,
+        &reverso
     )) {
         return NULL;
     }
@@ -1746,7 +1806,8 @@ py_try_sort_by_prefix_cached_int64_keys_prototype_with_info(
         funcao_chave,
         chaves,
         RETORNO_DIAGNOSTICO_ESTRUTURADO,
-        KEYED_CACHE_PREFIXO
+        KEYED_CACHE_PREFIXO,
+        reverso
     );
 }
 
@@ -1824,42 +1885,47 @@ PyDoc_STRVAR(
 
 PyDoc_STRVAR(
     keyed_prototype_doc,
-    "_sort_by_int64_key_prototype(iterable, key, /)\n"
+    "_sort_by_int64_key_prototype(iterable, key, reverse=False, /)\n"
     "--\n\n"
     "Protótipo interno: ordena objetos por uma chave int64 estável."
 );
 
 PyDoc_STRVAR(
     keyed_prototype_strategy_doc,
-    "_sort_by_int64_key_prototype_with_strategy(iterable, key, /)\n"
+    "_sort_by_int64_key_prototype_with_strategy(iterable, key, "
+    "reverse=False, /)\n"
     "--\n\n"
     "Protótipo interno: retorna (lista_ordenada, estratégia)."
 );
 
 PyDoc_STRVAR(
     keyed_prototype_info_doc,
-    "_sort_by_int64_key_prototype_with_info(iterable, key, /)\n"
+    "_sort_by_int64_key_prototype_with_info(iterable, key, "
+    "reverse=False, /)\n"
     "--\n\n"
     "Protótipo interno: retorna (lista_ordenada, diagnóstico estruturado)."
 );
 
 PyDoc_STRVAR(
     cached_keyed_prototype_doc,
-    "_try_sort_by_cached_int64_keys_prototype(items, cached_keys, /)\n"
+    "_try_sort_by_cached_int64_keys_prototype(items, cached_keys, "
+    "reverse=False, /)\n"
     "--\n\n"
     "Protótipo interno: consome chaves int64 ou retorna None."
 );
 
 PyDoc_STRVAR(
     cached_keyed_prototype_info_doc,
-    "_try_sort_by_cached_int64_keys_prototype_with_info(items, keys, /)\n"
+    "_try_sort_by_cached_int64_keys_prototype_with_info(items, keys, "
+    "reverse=False, /)\n"
     "--\n\n"
     "Protótipo interno cacheado com diagnóstico estruturado."
 );
 
 PyDoc_STRVAR(
     prefix_cached_keyed_prototype_doc,
-    "_try_sort_by_prefix_cached_int64_keys_prototype(items, keys, key, /)\n"
+    "_try_sort_by_prefix_cached_int64_keys_prototype(items, keys, key, "
+    "reverse=False, /)\n"
     "--\n\n"
     "Protótipo interno: completa o cache enquanto extrai int64."
 );
@@ -1867,7 +1933,7 @@ PyDoc_STRVAR(
 PyDoc_STRVAR(
     prefix_cached_keyed_prototype_info_doc,
     "_try_sort_by_prefix_cached_int64_keys_prototype_with_info(items, keys, "
-    "key, /)\n"
+    "key, reverse=False, /)\n"
     "--\n\n"
     "Protótipo prefixado com diagnóstico estruturado."
 );

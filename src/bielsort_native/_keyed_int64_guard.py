@@ -24,9 +24,17 @@ def native_worst_case_variable_auxiliary_bytes(size):
     return size * _RADIX_BYTES_PER_ITEM
 
 
-def _validate_options(key, max_native_auxiliary_bytes, on_exceeded, return_info):
+def _validate_options(
+    key,
+    reverse,
+    max_native_auxiliary_bytes,
+    on_exceeded,
+    return_info,
+):
     if not callable(key):
         raise TypeError("key must be callable")
+    if type(reverse) is not bool:
+        raise TypeError("reverse must be a bool")
     if (
         max_native_auxiliary_bytes is not None
         and type(max_native_auxiliary_bytes) is not int
@@ -65,7 +73,7 @@ def _guard_details(limit, worst_case, decision, on_exceeded):
     }
 
 
-def _timsort_info(size, worst_case, limit, on_exceeded):
+def _timsort_info(size, worst_case, limit, on_exceeded, reverse):
     return {
         "strategy": "timsort: native auxiliary limit exceeded",
         "algorithm": "timsort",
@@ -81,6 +89,7 @@ def _timsort_info(size, worst_case, limit, on_exceeded):
         "radix_passes": None,
         "normalized": False,
         "stable": True,
+        "reverse": reverse,
         "key_calls": size,
         "estimated_variable_auxiliary_bytes": None,
         "worst_case_variable_auxiliary_bytes": worst_case,
@@ -101,6 +110,7 @@ def sort_by_int64_key_guarded(
     values,
     key,
     *,
+    reverse=False,
     max_native_auxiliary_bytes=None,
     on_exceeded="timsort",
     return_info=False,
@@ -113,12 +123,16 @@ def sort_by_int64_key_guarded(
     and avoids hidden iterable-materialization allocations.  The decision is
     made before the callable ``key`` is evaluated.
 
+    ``reverse=True`` uses the same stable descending semantics as
+    ``sorted(..., reverse=True)`` on both native and Timsort paths.
+
     This is a research contract.  In particular, the ``timsort`` policy
     delegates key-domain validation to Python when the limit is exceeded,
     while the native path requires exact signed 64-bit integer keys.
     """
     _validate_options(
         key,
+        reverse,
         max_native_auxiliary_bytes,
         on_exceeded,
         return_info,
@@ -137,7 +151,7 @@ def sort_by_int64_key_guarded(
                 f"({worst_case} bytes) exceeds the configured limit "
                 f"({max_native_auxiliary_bytes} bytes)"
             )
-        result = sorted(values, key=key)
+        result = sorted(values, key=key, reverse=reverse)
         if not return_info:
             return result
         return result, _timsort_info(
@@ -145,14 +159,20 @@ def sort_by_int64_key_guarded(
             worst_case,
             max_native_auxiliary_bytes,
             on_exceeded,
+            reverse,
         )
 
     if not return_info:
-        return _bielsort._sort_by_int64_key_prototype(values, key)
+        return _bielsort._sort_by_int64_key_prototype(
+            values,
+            key,
+            reverse,
+        )
 
     result, info = _bielsort._sort_by_int64_key_prototype_with_info(
         values,
         key,
+        reverse,
     )
     info["guard"] = _guard_details(
         max_native_auxiliary_bytes,

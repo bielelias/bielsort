@@ -37,19 +37,35 @@ class Record:
 class KeyedInt64PrototypeTests(unittest.TestCase):
     """Correctness contract for the research-only keyed-int64 path."""
 
-    def sort(self, values, key=attrgetter("key")):
-        return _bielsort._sort_by_int64_key_prototype(values, key)
+    def sort(self, values, key=attrgetter("key"), reverse=False):
+        return _bielsort._sort_by_int64_key_prototype(
+            values,
+            key,
+            reverse,
+        )
 
-    def sort_with_strategy(self, values, key=attrgetter("key")):
+    def sort_with_strategy(
+        self,
+        values,
+        key=attrgetter("key"),
+        reverse=False,
+    ):
         return _bielsort._sort_by_int64_key_prototype_with_strategy(
             values,
             key,
+            reverse,
         )
 
-    def sort_with_info(self, values, key=attrgetter("key")):
+    def sort_with_info(
+        self,
+        values,
+        key=attrgetter("key"),
+        reverse=False,
+    ):
         return _bielsort._sort_by_int64_key_prototype_with_info(
             values,
             key,
+            reverse,
         )
 
     def test_orders_records_stably_without_mutating_input(self):
@@ -97,6 +113,53 @@ class KeyedInt64PrototypeTests(unittest.TestCase):
             [minimum, -1, 0, maximum],
         )
         self.assertIn("radix nativo", strategy)
+
+    def test_reverse_supports_full_int64_range_and_stable_duplicates(self):
+        minimum = -(1 << 63)
+        maximum = (1 << 63) - 1
+        keys = [minimum, maximum, 0, maximum, -1, minimum]
+        values = [
+            Record(key, position)
+            for position, key in enumerate(keys)
+        ]
+        calls = []
+
+        def key(record):
+            calls.append(record.position)
+            return record.key
+
+        result, info = self.sort_with_info(values, key, reverse=True)
+
+        self.assertEqual(
+            result,
+            sorted(values, key=attrgetter("key"), reverse=True),
+        )
+        self.assertEqual(calls, list(range(len(values))))
+        self.assertEqual(
+            [record.position for record in result if record.key == maximum],
+            [1, 3],
+        )
+        self.assertEqual(
+            [record.position for record in result if record.key == minimum],
+            [0, 5],
+        )
+        self.assertTrue(info["reverse"])
+        self.assertTrue(info["stable"])
+
+    def test_reverse_counting_path_preserves_duplicate_order(self):
+        values = [
+            Record((position * 97) % 1_001 - 500, position)
+            for position in range(8_192)
+        ]
+
+        result, info = self.sort_with_info(values, reverse=True)
+
+        self.assertEqual(
+            result,
+            sorted(values, key=attrgetter("key"), reverse=True),
+        )
+        self.assertEqual(info["algorithm"], "counting")
+        self.assertTrue(info["reverse"])
 
     def test_counting_path_is_stable_at_selection_threshold(self):
         values = [
@@ -161,6 +224,7 @@ class KeyedInt64PrototypeTests(unittest.TestCase):
                 "radix_passes",
                 "normalized",
                 "stable",
+                "reverse",
                 "key_calls",
                 "estimated_variable_auxiliary_bytes",
                 "worst_case_variable_auxiliary_bytes",
@@ -181,6 +245,7 @@ class KeyedInt64PrototypeTests(unittest.TestCase):
         self.assertEqual(info["radix_passes"], 6)
         self.assertFalse(info["normalized"])
         self.assertTrue(info["stable"])
+        self.assertFalse(info["reverse"])
         self.assertTrue(info["prototype"])
         self.assertEqual(info["key_calls"], 4)
         self.assertEqual(
@@ -278,6 +343,32 @@ class KeyedInt64PrototypeTests(unittest.TestCase):
         self.assertEqual(info["guard"]["decision"], "timsort")
         self.assertIn("excludes Timsort", info["memory_estimate_scope"])
 
+    def test_guard_reverse_matches_sorted_on_native_and_timsort_paths(self):
+        values = [
+            Record(key, position)
+            for position, key in enumerate([2, 1, 2, 3, 1])
+        ]
+        expected = sorted(values, key=attrgetter("key"), reverse=True)
+
+        native, native_info = sort_by_int64_key_guarded(
+            values,
+            attrgetter("key"),
+            reverse=True,
+            return_info=True,
+        )
+        fallback, fallback_info = sort_by_int64_key_guarded(
+            values,
+            attrgetter("key"),
+            reverse=True,
+            max_native_auxiliary_bytes=0,
+            return_info=True,
+        )
+
+        self.assertEqual(native, expected)
+        self.assertEqual(fallback, expected)
+        self.assertTrue(native_info["reverse"])
+        self.assertTrue(fallback_info["reverse"])
+
     def test_guard_raise_policy_runs_before_key(self):
         values = [Record(2, 0), Record(1, 1)]
         calls = []
@@ -316,6 +407,7 @@ class KeyedInt64PrototypeTests(unittest.TestCase):
             ({"max_native_auxiliary_bytes": -1}, ValueError),
             ({"on_exceeded": "unknown"}, ValueError),
             ({"return_info": 1}, TypeError),
+            ({"reverse": 1}, TypeError),
         ]
         for options, error in invalid_cases:
             with self.subTest(options=options):

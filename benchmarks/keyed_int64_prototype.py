@@ -93,7 +93,7 @@ def run_algorithm(algorithm, data):
     raise ValueError(f"Unknown algorithm: {algorithm}")
 
 
-def ensure_correct(result, data):
+def ensure_correct(result, data, reverse=False):
     if len(result) != len(data):
         raise AssertionError("Incorrect result length")
     if result is data:
@@ -105,7 +105,11 @@ def ensure_correct(result, data):
     result_ids = set()
     for record in result:
         if not first:
-            if record.sort_key < previous_key:
+            if (
+                record.sort_key > previous_key
+                if reverse
+                else record.sort_key < previous_key
+            ):
                 raise AssertionError("Result is not ordered")
             if (
                 record.sort_key == previous_key

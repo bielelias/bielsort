@@ -182,6 +182,10 @@ object. Reproduce its timing and isolated peak-RSS reports with:
 python -m benchmarks.keyed_adaptive_benchmark \
   --repetitions 7 \
   --output keyed-adaptive-time.json
+python -m benchmarks.keyed_adaptive_benchmark \
+  --repetitions 7 \
+  --reverse \
+  --output keyed-adaptive-reverse-time.json
 python -m benchmarks.keyed_adaptive_memory \
   --repetitions 3 \
   --output keyed-adaptive-memory.json
@@ -196,6 +200,7 @@ package's `__all__`.
 
 ## Versioned results
 
+- [Stable reverse keyed selector — 2026-08-04](results/2026-08-04-keyed-adaptive-reverse.md)
 - [Adaptive generic-key selector v2 — 2026-08-04](results/2026-08-04-keyed-adaptive-selector-v2.md)
 - [Adaptive generic-key selector — 2026-08-04](results/2026-08-04-keyed-adaptive-selector.md)
 - [Keyed-int64 native-memory guard — 2026-08-04](results/2026-08-04-keyed-int64-memory-guard.md)

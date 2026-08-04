@@ -22,9 +22,17 @@ _SMALL_INPUT_LIMIT = 2_048
 _NATIVE_EXTRACTION_BYTES_PER_ITEM = struct.calcsize("P") + 8
 
 
-def _validate_options(key, max_native_auxiliary_bytes, on_exceeded, return_info):
+def _validate_options(
+    key,
+    reverse,
+    max_native_auxiliary_bytes,
+    on_exceeded,
+    return_info,
+):
     if not callable(key):
         raise TypeError("key must be callable")
+    if type(reverse) is not bool:
+        raise TypeError("reverse must be a bool")
     if (
         max_native_auxiliary_bytes is not None
         and type(max_native_auxiliary_bytes) is not int
@@ -64,6 +72,7 @@ def _fallback_info(
     worst_case,
     limit,
     on_exceeded,
+    reverse,
     *,
     fallback_mode,
 ):
@@ -122,6 +131,7 @@ def _fallback_info(
         "radix_passes": None,
         "normalized": False,
         "stable": True,
+        "reverse": reverse,
         "key_calls": size,
         "estimated_variable_auxiliary_bytes": None,
         "worst_case_variable_auxiliary_bytes": worst_case,
@@ -178,13 +188,13 @@ def _raise_limit_error(worst_case, limit):
     )
 
 
-def _sort_with_prefix_replay(items, cached_keys, key):
+def _sort_with_prefix_replay(items, cached_keys, key, reverse):
     replay = _bielsort._make_prefix_cached_key_replay_prototype(
         items,
         cached_keys,
         key,
     )
-    items.sort(key=replay)
+    items.sort(key=replay, reverse=reverse)
     return items
 
 
@@ -192,6 +202,7 @@ def sort_by_key_adaptive(
     values,
     key,
     *,
+    reverse=False,
     max_native_auxiliary_bytes=None,
     on_exceeded="timsort",
     return_info=False,
@@ -200,10 +211,12 @@ def sort_by_key_adaptive(
 
     Without a memory limit, any iterable is accepted.  A configured native
     limit requires an exact built-in list or tuple so the selector can make a
-    trustworthy decision before evaluating ``key``.
+    trustworthy decision before evaluating ``key``.  ``reverse=True`` keeps
+    the original encounter order of records whose keys compare equal.
     """
     _validate_options(
         key,
+        reverse,
         max_native_auxiliary_bytes,
         on_exceeded,
         return_info,
@@ -222,7 +235,7 @@ def sort_by_key_adaptive(
                     worst_case,
                     max_native_auxiliary_bytes,
                 )
-            result = sorted(values, key=key)
+            result = sorted(values, key=key, reverse=reverse)
             if not return_info:
                 return result
             return result, _fallback_info(
@@ -230,6 +243,7 @@ def sort_by_key_adaptive(
                 worst_case,
                 max_native_auxiliary_bytes,
                 on_exceeded,
+                reverse,
                 fallback_mode="pre-key-limit",
             )
 
@@ -237,7 +251,7 @@ def sort_by_key_adaptive(
     size = len(items)
     worst_case = native_worst_case_variable_auxiliary_bytes(size)
     if size < _SMALL_INPUT_LIMIT:
-        items.sort(key=key)
+        items.sort(key=key, reverse=reverse)
         if not return_info:
             return items
         return items, _fallback_info(
@@ -245,6 +259,7 @@ def sort_by_key_adaptive(
             worst_case,
             max_native_auxiliary_bytes,
             on_exceeded,
+            reverse,
             fallback_mode="pre-key-small",
         )
 
@@ -256,6 +271,7 @@ def sort_by_key_adaptive(
                 items,
                 cached_keys,
                 key,
+                reverse,
             )
         )
     else:
@@ -264,11 +280,17 @@ def sort_by_key_adaptive(
                 items,
                 cached_keys,
                 key,
+                reverse,
             )
         )
 
     if native_attempt is False:
-        result = _sort_with_prefix_replay(items, cached_keys, key)
+        result = _sort_with_prefix_replay(
+            items,
+            cached_keys,
+            key,
+            reverse,
+        )
         if not return_info:
             return result
         return result, _fallback_info(
@@ -276,6 +298,7 @@ def sort_by_key_adaptive(
             worst_case,
             max_native_auxiliary_bytes,
             on_exceeded,
+            reverse,
             fallback_mode="adaptive-sparse",
         )
 
@@ -295,7 +318,12 @@ def sort_by_key_adaptive(
     # value; the incompatible object itself is retained.  Timsort replays that
     # evaluated prefix and calls the user key exactly once for every remaining
     # item.
-    result = _sort_with_prefix_replay(items, cached_keys, key)
+    result = _sort_with_prefix_replay(
+        items,
+        cached_keys,
+        key,
+        reverse,
+    )
     if not return_info:
         return result
     return result, _fallback_info(
@@ -303,5 +331,6 @@ def sort_by_key_adaptive(
         worst_case,
         max_native_auxiliary_bytes,
         on_exceeded,
+        reverse,
         fallback_mode="progressive-generic",
     )

@@ -86,15 +86,15 @@ def create_data(size, case, seed):
     return [Record(key, position) for position, key in enumerate(keys)]
 
 
-def run_algorithm(algorithm, data):
+def run_algorithm(algorithm, data, reverse):
     if algorithm == "sorted-key":
-        return sorted(data, key=KEY)
+        return sorted(data, key=KEY, reverse=reverse)
     if algorithm == "adaptive-key":
-        return sort_by_key_adaptive(data, KEY)
+        return sort_by_key_adaptive(data, KEY, reverse=reverse)
     raise ValueError(f"unknown algorithm: {algorithm}")
 
 
-def measure(data, repetitions):
+def measure(data, repetitions, reverse):
     samples = {algorithm: [] for algorithm in ALGORITHMS}
     for repetition in range(repetitions):
         order = ALGORITHMS if repetition % 2 == 0 else ALGORITHMS[::-1]
@@ -103,20 +103,24 @@ def measure(data, repetitions):
             gc.disable()
             try:
                 started = time.perf_counter()
-                result = run_algorithm(algorithm, data)
+                result = run_algorithm(algorithm, data, reverse)
                 elapsed = time.perf_counter() - started
             finally:
                 gc.enable()
-            ensure_correct(result, data)
+            ensure_correct(result, data, reverse=reverse)
             samples[algorithm].append(elapsed)
             del result
     gc.collect()
     return samples
 
 
-def execute(sizes, cases, repetitions):
+def execute(sizes, cases, repetitions, reverse=False):
     rows = []
-    print("Adaptive generic-key prototype (above 1.00x favors BielSort)")
+    direction = "descending" if reverse else "ascending"
+    print(
+        "Adaptive generic-key prototype "
+        f"({direction}; above 1.00x favors BielSort)"
+    )
     print(
         f"{'n':>10}  {'case':<22}  {'sorted(key=)':>13}  "
         f"{'adaptive':>13}  {'speedup':>9}"
@@ -125,16 +129,22 @@ def execute(sizes, cases, repetitions):
     for size in sizes:
         for case in cases:
             data = create_data(size, case, 9600 + size)
-            samples = measure(data, repetitions)
+            samples = measure(data, repetitions, reverse)
             sorted_median = statistics.median(samples["sorted-key"])
             adaptive_median = statistics.median(samples["adaptive-key"])
             speedup = sorted_median / adaptive_median
-            result, info = sort_by_key_adaptive(data, KEY, return_info=True)
-            ensure_correct(result, data)
+            result, info = sort_by_key_adaptive(
+                data,
+                KEY,
+                reverse=reverse,
+                return_info=True,
+            )
+            ensure_correct(result, data, reverse=reverse)
             row = {
                 "size": size,
                 "case": case,
                 "algorithm": info["algorithm"],
+                "reverse": reverse,
                 "sorted_median_seconds": sorted_median,
                 "adaptive_median_seconds": adaptive_median,
                 "speedup": speedup,
@@ -161,6 +171,7 @@ def main():
     parser.add_argument("--sizes", default="10000,100000,1000000")
     parser.add_argument("--cases", default=",".join(CASES))
     parser.add_argument("--repetitions", type=int, default=7)
+    parser.add_argument("--reverse", action="store_true")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
 
@@ -173,13 +184,14 @@ def main():
     if args.repetitions < 3:
         parser.error("repetitions must be at least 3")
 
-    rows = execute(sizes, cases, args.repetitions)
+    rows = execute(sizes, cases, args.repetitions, reverse=args.reverse)
     report = {
         "schema": "bielsort-keyed-adaptive-benchmark-v1",
         "date": date.today().isoformat(),
         "python": sys.version,
         "platform": platform.platform(),
         "repetitions": args.repetitions,
+        "reverse": args.reverse,
         "rows": rows,
     }
     if args.output is not None:

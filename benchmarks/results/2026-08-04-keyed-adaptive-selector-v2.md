@@ -135,8 +135,9 @@ Raw samples are in
 2. Improve or deliberately delegate the one-million spaced-int64 case, which
    measured 0.85x locally.
 3. Resolve the reconstructed-int key-identity edge case.
-4. Implement stable `reverse=True`; the accepted selector now lives in the
-   private installed module `bielsort_native._keyed_adaptive`.
+4. The selector now lives in the private installed module
+   `bielsort_native._keyed_adaptive`, and stable `reverse=True` is validated.
+   Define the eventual public signature and typing before exposing it.
 5. Repeat the supported-platform matrix after each semantic or native change,
    especially around vectorcall replay and exception paths.
 6. Finalize public diagnostics, types, changelog, and docs before any
