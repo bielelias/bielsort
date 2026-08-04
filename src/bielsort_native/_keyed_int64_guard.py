@@ -11,17 +11,42 @@ from . import _bielsort
 
 
 _POINTER_BYTES = struct.calcsize("P")
+_SSIZE_BYTES = struct.calcsize("n")
 _RADIX_BYTES_PER_ITEM = 2 * _POINTER_BYTES + 2 * 8
+_COUNTING_CONVERSION_BYTES_PER_ITEM = _POINTER_BYTES + 8 + 4
+_COUNTING_SORT_BYTES_PER_ITEM = 2 * _POINTER_BYTES + 4
+_COUNTING_MINIMUM_ITEMS = 8_192
+_COUNTING_RANGE_ENTRIES_LIMIT = 4_000_000
+_COUNTING_RANGE_FACTOR = 4
 _EXCEEDED_POLICIES = ("timsort", "raise")
 
 
 def native_worst_case_variable_auxiliary_bytes(size):
-    """Return the compact-Radix planning estimate for ``size`` records."""
+    """Return a conservative native planning bound for ``size`` records."""
     if type(size) is not int:
         raise TypeError("size must be an exact integer")
     if size < 0:
         raise ValueError("size must be non-negative")
-    return size * _RADIX_BYTES_PER_ITEM
+    radix_bytes = size * _RADIX_BYTES_PER_ITEM
+    if size < _COUNTING_MINIMUM_ITEMS:
+        return radix_bytes
+
+    counting_entries = min(
+        _COUNTING_RANGE_ENTRIES_LIMIT,
+        _COUNTING_RANGE_FACTOR * size + 1,
+    )
+    counting_conversion_bytes = (
+        size * _COUNTING_CONVERSION_BYTES_PER_ITEM
+    )
+    counting_sort_bytes = (
+        size * _COUNTING_SORT_BYTES_PER_ITEM
+        + counting_entries * _SSIZE_BYTES
+    )
+    return max(
+        radix_bytes,
+        counting_conversion_bytes,
+        counting_sort_bytes,
+    )
 
 
 def _validate_options(

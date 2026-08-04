@@ -220,8 +220,14 @@ Pass `--reverse` for the descending matrix. The benchmark imports the
 canonical `bielsort` package, so it measures the public wrapper rather than
 calling the private selector directly.
 
+The follow-up nearly ordered release gate deliberately retains negative
+results. It compares the 2,048-key adaptive policy against random-tail controls
+at 10,000 and 100,000 records, and explains why another narrow threshold was
+rejected instead of tuned to one machine.
+
 ## Versioned results
 
+- [Keyed nearly ordered release gate — 2026-08-04](results/2026-08-04-keyed-nearly-ordered-release-gate.md)
 - [Candidate public `sort(key=...)` API — 2026-08-04](results/2026-08-04-keyed-public-api-candidate.md)
 - [Adaptive generic-key selector v3 — 2026-08-04](results/2026-08-04-keyed-adaptive-selector-v3.md)
 - [Exact key-identity replay — 2026-08-04](results/2026-08-04-key-identity-replay.md)

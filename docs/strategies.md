@@ -153,3 +153,21 @@ print(strategy)
 
 Diagnostic wording can change as the pre-1.0 heuristics evolve. Application
 correctness should never depend on the exact string.
+
+The unreleased 0.2 candidate also supports structured inspection for an
+explicit key:
+
+```python
+ordered, info = bielsort.sort_with_info(
+    records,
+    key=lambda record: record["score"],
+)
+
+print(info.algorithm)
+print(info.reason)
+print(info.used_native)
+```
+
+Code may inspect normalized fields such as `algorithm` and `used_native`.
+Human-readable `reason` text remains explanatory rather than a stable
+control-flow value.

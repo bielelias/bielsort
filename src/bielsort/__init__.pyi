@@ -1,6 +1,8 @@
 from bielsort_native import (
+    SortInfo as SortInfo,
     sort as sort,
     sort_with_strategy as sort_with_strategy,
+    sort_with_info as sort_with_info,
     sort_in_place as sort_in_place,
     sort_in_place_with_strategy as sort_in_place_with_strategy,
     biel_sort as biel_sort,

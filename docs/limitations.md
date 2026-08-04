@@ -68,6 +68,13 @@ Measured favorable workloads used more peak memory than `sorted()` and
 If memory is more constrained than latency, benchmark peak RSS as well as
 execution time before adopting BielSort.
 
+The unreleased `sort_with_info()` candidate can apply a conservative limit to
+BielSort's variable native auxiliary buffers before calling the user key. This
+is not a total-process limit: it excludes input and key objects, allocator
+overhead, fixed stack storage, and any memory later used by a Timsort fallback.
+Supplying a limit requires an exact `list` or `tuple` so the preflight size is
+known without hidden iterable materialization.
+
 ## CPython-specific implementation
 
 The native extension uses the CPython C API and manipulates CPython list and
@@ -82,9 +89,11 @@ caller. BielSort does not promise parallel sorting of one list.
 
 ## Pre-1.0 stability
 
-The four canonical function names are stable for the 0.1 series. Performance
-heuristics and diagnostic wording may evolve before 1.0. Keep correctness
-independent of the exact string returned by a diagnostic API.
+The four canonical 0.1 function names are stable for that series. The
+`sort_with_info()` and `SortInfo` additions exist only in the unreleased 0.2
+candidate. Performance heuristics and human-readable diagnostic wording may
+evolve before 1.0. Keep correctness independent of the exact reason or
+strategy text.
 
 ## Decision guide
 

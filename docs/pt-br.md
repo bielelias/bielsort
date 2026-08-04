@@ -71,7 +71,7 @@ bielsort.sort(numeros)          # cria uma lista usando o BielSort
 bielsort.sort_in_place(numeros) # modifica a lista usando o BielSort
 ```
 
-## As quatro funções principais
+## Funções principais
 
 | Função | Modifica a entrada? | Retorno |
 |---|---:|---|
@@ -79,6 +79,10 @@ bielsort.sort_in_place(numeros) # modifica a lista usando o BielSort
 | `bielsort.sort_in_place()` | sim | `None` |
 | `bielsort.sort_with_strategy()` | não | lista e estratégia |
 | `bielsort.sort_in_place_with_strategy()` | sim | estratégia |
+| `bielsort.sort_with_info()` | não | lista e diagnóstico estruturado |
+
+`sort_with_info()` é uma candidata ainda não publicada para a versão 0.2. As
+outras quatro funções formam a API estável da série 0.1.
 
 ### Ordenação in-place
 
@@ -108,6 +112,41 @@ print(estrategia)
 O texto da estratégia serve para diagnóstico e benchmarks. Não use uma frase
 exata como condição necessária para a lógica do seu programa, pois essa frase
 pode evoluir antes da versão 1.0.
+
+### Explicação estruturada e limite de memória — candidata 0.2
+
+```python
+import bielsort
+
+registros = [
+    {"nome": "Ana", "pontos": 30},
+    {"nome": "Bia", "pontos": 10},
+    {"nome": "Caio", "pontos": 20},
+]
+
+ordenados, info = bielsort.sort_with_info(
+    registros,
+    key=lambda registro: registro["pontos"],
+    max_native_auxiliary_bytes=32 * 1024 * 1024,
+)
+
+print(info.algorithm)
+print(info.reason)
+print(info.used_native)
+print(info.estimated_variable_auxiliary_bytes)
+```
+
+O limite considera os buffers nativos variáveis do BielSort, não toda a
+memória do processo. Ao informar um limite, a entrada precisa ser uma `list`
+ou `tuple` exata para que a decisão aconteça antes da primeira execução de
+`key`. O padrão é usar Timsort se o limite for excedido. Para recusar a
+operação, use `on_memory_limit="raise"` e capture `MemoryError`.
+
+`SortInfo` é imutável e informa o algoritmo normalizado, o motivo da escolha,
+o domínio e intervalo das chaves, quantidade de chamadas de `key`, passagens
+do Radix e os limites/estimativas de memória aplicáveis. Consulte a
+[referência da API](api.md#sort_with_info-unreleased-candidate) para todos os
+campos e exclusões.
 
 ## Como o algoritmo é escolhido
 

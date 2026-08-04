@@ -169,6 +169,7 @@ def _decorate_native_info(info, limit, worst_case, on_exceeded):
             selected_estimate,
             extraction_estimate,
         )
+    info["worst_case_variable_auxiliary_bytes"] = worst_case
     info["memory_estimate_scope"] = (
         "result-list items and native variable buffers; excludes key-object "
         "payloads, allocator overhead, and fixed stack"

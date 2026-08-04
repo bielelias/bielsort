@@ -1,8 +1,11 @@
 import random
+import struct
 import unittest
+from dataclasses import FrozenInstanceError
 from importlib.metadata import version
 
 from bielsort import (
+    SortInfo,
     __version__,
     biel_sort,
     biel_sort_diagnostico,
@@ -11,6 +14,7 @@ from bielsort import (
     sort,
     sort_in_place,
     sort_in_place_with_strategy,
+    sort_with_info,
     sort_with_strategy,
 )
 import bielsort_native
@@ -28,6 +32,8 @@ class BielSortTests(unittest.TestCase):
 
     def test_legacy_import_remains_compatible(self):
         self.assertIs(bielsort_native.biel_sort, biel_sort)
+        self.assertIs(bielsort_native.SortInfo, SortInfo)
+        self.assertIs(bielsort_native.sort_with_info, sort_with_info)
 
     def test_canonical_api_and_compatibility_aliases(self):
         self.assertIs(sort, biel_sort)
@@ -244,6 +250,222 @@ class BielSortTests(unittest.TestCase):
                     for registro in valores
                     if registro["key"] == chave
                 ],
+            )
+
+    def test_sort_with_info_publico_descreve_counting_e_memoria(self):
+        rng = random.Random(2032)
+        valores = [
+            {"key": indice % 128, "position": indice}
+            for indice in range(10_000)
+        ]
+        rng.shuffle(valores)
+        original = valores.copy()
+
+        resultado, info = sort_with_info(
+            valores,
+            key=lambda registro: registro["key"],
+        )
+
+        self.assertEqual(
+            resultado,
+            sorted(valores, key=lambda registro: registro["key"]),
+        )
+        self.assertEqual(valores, original)
+        self.assertIsInstance(info, SortInfo)
+        self.assertEqual(info.algorithm, "counting")
+        self.assertEqual(info.key_domain, "signed-int64")
+        self.assertEqual(info.size, len(valores))
+        self.assertEqual(info.key_calls, len(valores))
+        self.assertEqual((info.key_min, info.key_max), (0, 127))
+        self.assertEqual(info.key_span, 127)
+        self.assertIsNone(info.radix_passes)
+        self.assertTrue(info.stable)
+        self.assertFalse(info.reverse)
+        self.assertTrue(info.used_native)
+        self.assertGreater(info.estimated_variable_auxiliary_bytes, 0)
+        self.assertGreater(info.worst_case_native_auxiliary_bytes, 0)
+        self.assertGreaterEqual(
+            info.worst_case_native_auxiliary_bytes,
+            info.estimated_variable_auxiliary_bytes,
+        )
+        self.assertIsNone(info.native_memory_limit)
+        self.assertFalse(info.native_memory_limit_exceeded)
+        with self.assertRaises(FrozenInstanceError):
+            info.size = 0
+
+    def test_sort_with_info_limite_cobre_pior_counting_e_radix(self):
+        rng = random.Random(2034)
+        valores = [
+            {"key": indice * 4, "position": indice}
+            for indice in range(8_192)
+        ]
+        rng.shuffle(valores)
+
+        resultado, info = sort_with_info(
+            valores,
+            key=lambda registro: registro["key"],
+        )
+
+        self.assertEqual(
+            resultado,
+            sorted(valores, key=lambda registro: registro["key"]),
+        )
+        self.assertEqual(info.algorithm, "counting")
+        radix_bound = len(valores) * (2 * struct.calcsize("P") + 2 * 8)
+        self.assertGreater(
+            info.worst_case_native_auxiliary_bytes,
+            radix_bound,
+        )
+        self.assertGreaterEqual(
+            info.worst_case_native_auxiliary_bytes,
+            info.estimated_variable_auxiliary_bytes,
+        )
+
+        chamadas = []
+
+        def key(registro):
+            chamadas.append(registro["position"])
+            return registro["key"]
+
+        resultado_limitado, info_limitado = sort_with_info(
+            valores,
+            key=key,
+            max_native_auxiliary_bytes=radix_bound,
+        )
+
+        self.assertEqual(resultado_limitado, resultado)
+        self.assertEqual(
+            chamadas,
+            [registro["position"] for registro in valores],
+        )
+        self.assertEqual(info_limitado.algorithm, "timsort")
+        self.assertTrue(info_limitado.native_memory_limit_exceeded)
+
+    def test_sort_with_info_limite_de_memoria_decide_antes_da_key(self):
+        valores = [
+            {"key": indice % 128, "position": indice}
+            for indice in range(10_000)
+        ]
+        chamadas = []
+
+        def key(registro):
+            chamadas.append(registro["position"])
+            return registro["key"]
+
+        resultado, info = sort_with_info(
+            valores,
+            key=key,
+            reverse=1,
+            max_native_auxiliary_bytes=0,
+        )
+
+        self.assertEqual(
+            resultado,
+            sorted(
+                valores,
+                key=lambda registro: registro["key"],
+                reverse=True,
+            ),
+        )
+        self.assertEqual(chamadas, list(range(len(valores))))
+        self.assertEqual(info.algorithm, "timsort")
+        self.assertEqual(info.key_domain, "python")
+        self.assertFalse(info.used_native)
+        self.assertTrue(info.reverse)
+        self.assertEqual(info.native_memory_limit, 0)
+        self.assertTrue(info.native_memory_limit_exceeded)
+        self.assertIsNone(info.estimated_variable_auxiliary_bytes)
+        self.assertIn("memory limit exceeded", info.reason)
+
+    def test_sort_with_info_normaliza_radix_publico(self):
+        rng = random.Random(2033)
+        valores = [
+            {
+                "key": rng.randint(-(1 << 63), (1 << 63) - 1),
+                "position": indice,
+            }
+            for indice in range(10_000)
+        ]
+
+        resultado, info = sort_with_info(
+            valores,
+            key=lambda registro: registro["key"],
+            reverse=True,
+        )
+
+        self.assertEqual(
+            resultado,
+            sorted(
+                valores,
+                key=lambda registro: registro["key"],
+                reverse=True,
+            ),
+        )
+        self.assertEqual(info.algorithm, "radix")
+        self.assertEqual(info.key_domain, "signed-int64")
+        self.assertTrue(info.used_native)
+        self.assertTrue(info.reverse)
+        self.assertGreaterEqual(info.radix_passes, 1)
+        self.assertLessEqual(info.radix_passes, 6)
+
+    def test_sort_with_info_normaliza_fallback_generico(self):
+        valores = ["bbb", "a", "cc", "dddd"] * 1_000
+        chamadas = []
+
+        def key(valor):
+            chamadas.append(valor)
+            return f"{len(valor):02d}:{valor}"
+
+        resultado, info = sort_with_info(valores, key=key)
+
+        self.assertEqual(
+            resultado,
+            sorted(
+                valores,
+                key=lambda valor: f"{len(valor):02d}:{valor}",
+            ),
+        )
+        self.assertEqual(chamadas, valores)
+        self.assertEqual(info.algorithm, "timsort")
+        self.assertEqual(info.key_domain, "python")
+        self.assertFalse(info.used_native)
+        self.assertIsNone(info.key_min)
+        self.assertIsNone(info.radix_passes)
+        self.assertFalse(info.native_memory_limit_exceeded)
+
+    def test_sort_with_info_limite_raise_nao_executa_key(self):
+        valores = [{"key": 2}, {"key": 1}]
+        chamadas = []
+
+        def key(registro):
+            chamadas.append(registro)
+            return registro["key"]
+
+        with self.assertRaises(MemoryError):
+            sort_with_info(
+                valores,
+                key=key,
+                max_native_auxiliary_bytes=0,
+                on_memory_limit="raise",
+            )
+
+        self.assertEqual(chamadas, [])
+        self.assertEqual(valores, [{"key": 2}, {"key": 1}])
+
+    def test_sort_with_info_valida_contrato_publico(self):
+        with self.assertRaisesRegex(TypeError, "key must be callable"):
+            sort_with_info([3, 1, 2], key=None)
+        with self.assertRaisesRegex(ValueError, "on_memory_limit"):
+            sort_with_info(
+                [3, 1, 2],
+                key=lambda valor: valor,
+                on_memory_limit="ignorar",
+            )
+        with self.assertRaisesRegex(TypeError, "exact list or tuple"):
+            sort_with_info(
+                (valor for valor in [3, 1, 2]),
+                key=lambda valor: valor,
+                max_native_auxiliary_bytes=1_000,
             )
 
     def test_key_int64_in_place_preserva_timsort_e_contrato(self):

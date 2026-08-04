@@ -94,6 +94,7 @@ python -m pip install bielsort
 | Mutate an existing list | `values.sort()` | `bielsort.sort_in_place(values)` |
 | See the selected strategy | — | `bielsort.sort_with_strategy(values)` |
 | Mutate and see the strategy | — | `bielsort.sort_in_place_with_strategy(values)` |
+| Inspect keyed algorithm and native memory | — | `bielsort.sort_with_info(values, key=...)` *(0.2 candidate)* |
 
 !!! note "A specialized tool, not a universal replacement"
 

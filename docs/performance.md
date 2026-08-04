@@ -66,6 +66,28 @@ operation. See the
 [candidate report](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-08-04-keyed-public-api-candidate.md)
 for the contract, method, raw data, and release gates.
 
+### Nearly ordered keyed recheck
+
+A focused 11-sample recheck retained the negative cases rather than tuning a
+new selector threshold:
+
+| Direction / workload | 10,000 | 100,000 |
+|---|---:|---:|
+| ascending nearly sorted dense | 0.86× | 1.05× |
+| ascending nearly sorted wide | 0.81× | 0.97× |
+| ascending nearly sorted spaced | 0.85× | 0.93× |
+| reverse nearly sorted dense | 0.95× | 1.34× |
+| reverse nearly sorted wide | 0.79× | 1.03× |
+| reverse nearly sorted spaced | 0.79× | 0.86× |
+| ascending ordered prefix + random tail | 2.29× | 2.66× |
+| reverse ordered prefix + random tail | 2.35× | 2.64× |
+
+Before evaluating an arbitrary key, BielSort cannot know which distribution it
+will produce. Sending every 10,000-record keyed input to Timsort would remove
+the losses but also discard the random-tail gains. See the
+[release-gate report](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-08-04-keyed-nearly-ordered-release-gate.md)
+for raw samples, noisy-prefix controls, and the decision not to overfit.
+
 ## Reading the result honestly
 
 <div class="biel-grid" markdown>
@@ -88,7 +110,8 @@ operation rather than faster.
 ### Built-in advantage
 
 Small and nearly sorted inputs already match Timsort's strengths. The selector
-falls back because native buffers would not be worthwhile.
+may fall back, but an automatic keyed decision can still choose a native path
+and lose on these distributions. Measure them explicitly.
 </div>
 
 </div>

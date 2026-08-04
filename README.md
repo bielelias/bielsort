@@ -114,13 +114,33 @@ ordered, strategy = bielsort.sort_with_strategy([3, 1, 2] * 10_000)
 print(strategy)
 ```
 
+The unreleased 0.2 candidate also provides structured keyed diagnostics and an
+optional native-memory guard:
+
+```python
+ordered, info = bielsort.sort_with_info(
+    records,
+    key=lambda item: item["score"],
+    max_native_auxiliary_bytes=64 * 1024 * 1024,
+)
+
+print(info.algorithm)  # counting, radix, timsort, ...
+print(info.reason)
+print(info.estimated_variable_auxiliary_bytes)
+```
+
+The limit covers BielSort's variable native buffers, not total process memory.
+When a limit is set, the input must be an exact `list` or `tuple` so the guard
+can decide before calling `key`. Use `on_memory_limit="raise"` to reject the
+operation instead of falling back to Timsort.
+
 The unreleased public-key candidate measured `2.37x–5.13x` over
 `sorted(key=...)` for the sampled integer-key workloads, while its string-key
 fallback stayed between `0.98x` and `1.04x`. See the
 [candidate report](benchmarks/results/2026-08-04-keyed-public-api-candidate.md).
 
 The earlier `biel_sort*` names remain compatibility aliases for the 0.1
-series. New code should use the four `sort*` names shown above.
+series. New code should use the canonical `sort*` names shown above.
 
 ## Complexity
 
