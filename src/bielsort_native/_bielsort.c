@@ -1043,7 +1043,7 @@ sort_by_int64_key_prototype_impl(
                 PyErr_Clear();
                 PyErr_Format(
                     PyExc_OverflowError,
-                    "key do item %zd está fora do intervalo int64",
+                    "key result for item %zd is outside the signed int64 range",
                     i
                 );
             }
