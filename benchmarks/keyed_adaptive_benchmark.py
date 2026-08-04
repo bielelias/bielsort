@@ -11,7 +11,7 @@ import time
 from datetime import date
 from pathlib import Path
 
-from benchmarks.keyed_adaptive_prototype import sort_by_key_adaptive
+from bielsort_native._keyed_adaptive import sort_by_key_adaptive
 from benchmarks.keyed_int64_prototype import KEY, Record, ensure_correct
 
 

@@ -119,6 +119,8 @@ Raw samples are in
 
 - 74 tests passed in the normal optimized build.
 - The same 74 tests passed under ASan and UBSan.
+- The Draft PR matrix passed on CPython 3.9-3.14 for Linux and on CPython
+  3.11/3.14 for Windows and macOS.
 - The C extension compiled with `-Wall -Wextra -Werror` without warnings.
 - Differential tests cover native sizes, stable duplicates, int64 extremes,
   strings, huge integers, generators, late generic keys, key exceptions, the
@@ -133,14 +135,14 @@ Raw samples are in
 2. Improve or deliberately delegate the one-million spaced-int64 case, which
    measured 0.85x locally.
 3. Resolve the reconstructed-int key-identity edge case.
-4. Move the accepted selector from `benchmarks/` into a private installed
-   module and implement stable `reverse=True`.
-5. Validate CPython 3.9-3.14 wheels on Linux, Windows, and macOS, especially
-   vectorcall replay and exception paths.
+4. Implement stable `reverse=True`; the accepted selector now lives in the
+   private installed module `bielsort_native._keyed_adaptive`.
+5. Repeat the supported-platform matrix after each semantic or native change,
+   especially around vectorcall replay and exception paths.
 6. Finalize public diagnostics, types, changelog, and docs before any
    `0.2.0rc1` TestPyPI candidate.
 
-Nothing in this experiment was merged into `main`, pushed, or published.
+Nothing in this experiment was merged into `main` or published.
 
 ## Reproduction
 

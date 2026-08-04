@@ -1,17 +1,20 @@
-"""Research-only adaptive generic-key sorting prototype.
+"""Private adaptive generic-key selector for BielSort research.
 
-User keys are evaluated exactly once.  The private native path progressively
-extracts exact signed-int64 values for Counting/Radix sorting.  On the first
-generic key, the extracted integer values become a replay prefix and CPython
-Timsort evaluates only the remaining keys.
+User keys are evaluated exactly once.  The native path progressively extracts
+exact signed-int64 values for Counting/Radix sorting.  On the first generic
+key, the extracted integer values become a replay prefix and CPython Timsort
+evaluates only the remaining keys.
+
+The module is installed for wheel-level validation but remains private.  It is
+not imported by either public package and carries no compatibility commitment.
 """
 
 import struct
 
-from benchmarks.keyed_int64_guard import (
+from . import _bielsort
+from ._keyed_int64_guard import (
     native_worst_case_variable_auxiliary_bytes,
 )
-from bielsort_native import _bielsort
 
 
 _EXCEEDED_POLICIES = ("timsort", "raise")

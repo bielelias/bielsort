@@ -15,7 +15,7 @@ except ImportError as error:  # pragma: no cover - unavailable on Windows
     raise SystemExit("This peak-RSS benchmark requires Linux or macOS.") from error
 
 from benchmarks.keyed_adaptive_benchmark import CASES, KEY, create_data
-from benchmarks.keyed_adaptive_prototype import sort_by_key_adaptive
+from bielsort_native._keyed_adaptive import sort_by_key_adaptive
 from benchmarks.keyed_int64_prototype import ensure_correct
 
 

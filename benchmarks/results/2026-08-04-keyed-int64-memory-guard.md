@@ -12,12 +12,13 @@ The published 0.1 API and version remain unchanged.
 
 ## Prototype contract
 
-The research helper lives in `benchmarks/keyed_int64_guard.py`, outside the
-installed packages. It accepts exact built-in `list` and `tuple` inputs only:
+The research helper now lives in the installed private module
+`bielsort_native._keyed_int64_guard`. It accepts exact built-in `list` and
+`tuple` inputs only and remains outside the public API:
 
 ```python
 from operator import attrgetter
-from benchmarks.keyed_int64_guard import sort_by_int64_key_guarded
+from bielsort_native._keyed_int64_guard import sort_by_int64_key_guarded
 
 ordered, info = sort_by_int64_key_guarded(
     records,

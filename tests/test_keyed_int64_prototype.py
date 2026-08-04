@@ -4,7 +4,7 @@ import unittest
 from operator import attrgetter
 
 import bielsort
-from benchmarks.keyed_int64_guard import (
+from bielsort_native._keyed_int64_guard import (
     native_worst_case_variable_auxiliary_bytes,
     sort_by_int64_key_guarded,
 )

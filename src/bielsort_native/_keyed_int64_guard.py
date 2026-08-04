@@ -1,12 +1,13 @@
-"""Research-only memory guard for the private keyed-int64 prototype.
+"""Private memory guard for the experimental keyed-int64 implementation.
 
-This module is intentionally outside the installed ``bielsort`` packages.  It
-lets maintainers evaluate API semantics before any public 0.2 commitment.
+This module is installed so internal selectors and wheel-level tests do not
+depend on the repository-only ``benchmarks`` package.  Its leading underscore
+is intentional: no compatibility commitment is made before BielSort 0.2.
 """
 
 import struct
 
-from bielsort_native import _bielsort
+from . import _bielsort
 
 
 _POINTER_BYTES = struct.calcsize("P")

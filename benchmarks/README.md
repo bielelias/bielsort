@@ -189,7 +189,10 @@ python -m benchmarks.keyed_adaptive_memory \
 
 This remains a private prototype. Its key replay deliberately targets CPython
 and must pass the supported-version wheel matrix before it can back the public
-`sort(key=...)` implementation.
+`sort(key=...)` implementation. The selector is shipped only as the private
+internal module `bielsort_native._keyed_adaptive`, so wheel-level tests can
+exercise the real packaging boundary without adding it to either public
+package's `__all__`.
 
 ## Versioned results
 

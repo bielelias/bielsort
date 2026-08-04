@@ -4,8 +4,9 @@ import unittest
 from operator import attrgetter
 
 import bielsort
-from benchmarks.keyed_adaptive_prototype import sort_by_key_adaptive
-from benchmarks.keyed_int64_guard import (
+import bielsort_native
+from bielsort_native._keyed_adaptive import sort_by_key_adaptive
+from bielsort_native._keyed_int64_guard import (
     native_worst_case_variable_auxiliary_bytes,
 )
 from bielsort_native import _bielsort
@@ -537,6 +538,9 @@ class KeyedAdaptivePrototypeTests(unittest.TestCase):
 
     def test_prototype_is_not_public(self):
         self.assertFalse(hasattr(bielsort, "sort_by_key_adaptive"))
+        self.assertFalse(hasattr(bielsort_native, "sort_by_key_adaptive"))
+        self.assertNotIn("sort_by_key_adaptive", bielsort.__all__)
+        self.assertNotIn("sort_by_key_adaptive", bielsort_native.__all__)
 
 
 if __name__ == "__main__":

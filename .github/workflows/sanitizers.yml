@@ -48,10 +48,6 @@ jobs:
         env:
           ASAN_OPTIONS: "detect_leaks=0:abort_on_error=1"
           UBSAN_OPTIONS: "halt_on_error=1:print_stacktrace=1"
-          # Research-only tests import selectors kept outside the wheel in
-          # benchmarks/. The installed bielsort package still comes from the
-          # sanitized wheel because this path does not expose src/.
-          PYTHONPATH: "${{ github.workspace }}"
         run: |
           export LD_PRELOAD="$(gcc -print-file-name=libasan.so)"
           cd "${RUNNER_TEMP}"
