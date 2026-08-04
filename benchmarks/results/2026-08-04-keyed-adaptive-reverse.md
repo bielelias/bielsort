@@ -22,9 +22,9 @@ would also reverse each equal-key group. The key transformation leaves equal
 keys equal, so their original encounter order is preserved naturally.
 
 Generic and sparse-run fallbacks pass `reverse=True` to CPython Timsort through
-the existing one-shot cached-key replay object. If progressive extraction
-encounters a non-int64 key, complemented native prefix values are converted
-back to their original Python integer values before replay.
+the existing one-shot cached-key replay object. Progressive extraction now
+retains the exact key objects until it commits to a native path, so fallback
+replay is also compatible with identity-aware cross-type comparators.
 
 ## Median time
 
@@ -79,6 +79,6 @@ python -m benchmarks.keyed_adaptive_benchmark \
   --output benchmarks/results/2026-08-04-keyed-adaptive-reverse.json
 ```
 
-The next gates remain the known nearly-sorted/spaced selector losses, the
-exotic reconstructed-key identity decision, and public API/type/documentation
-design. This work was not merged into `main` or published.
+The next gates remain the known nearly-sorted/spaced selector losses and public
+API/type/documentation design. The earlier reconstructed-key identity issue is
+resolved. This work was not merged into `main` or published.

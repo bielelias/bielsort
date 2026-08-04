@@ -782,40 +782,33 @@ typedef enum {
 static int
 preservar_cache_prefixado(
     PyObject *destino,
-    const uint64_t *chaves_normalizadas,
+    PyObject *const *chaves_python,
     Py_ssize_t inicio,
-    Py_ssize_t fim,
-    int reverso
+    Py_ssize_t fim
 )
 {
     for (Py_ssize_t i = inicio; i < fim; i++) {
-        uint64_t bits = chaves_normalizadas[i];
-        if (reverso) {
-            bits = ~bits;
-        }
-        bits ^= UINT64_C(1) << 63;
-        PyObject *chave;
-        if ((bits & (UINT64_C(1) << 63)) == 0) {
-            chave = PyLong_FromUnsignedLongLong(bits);
-        } else {
-            const uint64_t magnitude = (~bits) + 1;
-            PyObject *positivo = PyLong_FromUnsignedLongLong(magnitude);
-            if (positivo == NULL) {
-                return -1;
-            }
-            chave = PyNumber_Negative(positivo);
-            Py_DECREF(positivo);
-        }
-        if (chave == NULL) {
-            return -1;
-        }
-        const int resultado = PyList_Append(destino, chave);
-        Py_DECREF(chave);
-        if (resultado < 0) {
+        if (PyList_Append(destino, chaves_python[i]) < 0) {
             return -1;
         }
     }
     return 0;
+}
+
+static void
+liberar_cache_chaves_python(
+    PyObject **chaves_python,
+    Py_ssize_t inicio,
+    Py_ssize_t fim
+)
+{
+    if (chaves_python == NULL) {
+        return;
+    }
+    for (Py_ssize_t i = inicio; i < fim; i++) {
+        Py_DECREF(chaves_python[i]);
+    }
+    PyMem_Free(chaves_python);
 }
 
 static PyObject *
@@ -924,6 +917,19 @@ sort_by_int64_key_prototype_impl(
         return PyErr_NoMemory();
     }
 
+    PyObject **chaves_python_origem = NULL;
+    Py_ssize_t quantidade_chaves_python = tamanho_cache_inicial;
+    if (modo_chave == KEYED_CACHE_PREFIXO) {
+        chaves_python_origem = PyMem_Malloc(
+            (size_t)n * sizeof(*chaves_python_origem)
+        );
+        if (chaves_python_origem == NULL) {
+            PyMem_Free(chaves_origem);
+            Py_DECREF(lista);
+            return PyErr_NoMemory();
+        }
+    }
+
     uint64_t primeira_chave = 0;
     uint64_t menor_chave = UINT64_MAX;
     uint64_t maior_chave = 0;
@@ -949,11 +955,21 @@ sort_by_int64_key_prototype_impl(
             PyObject *objeto = PyList_GET_ITEM(lista, i);
             resultado_chave = PyObject_CallOneArg(funcao_chave, objeto);
             if (resultado_chave == NULL) {
+                liberar_cache_chaves_python(
+                    chaves_python_origem,
+                    tamanho_cache_inicial,
+                    quantidade_chaves_python
+                );
                 PyMem_Free(chaves_origem);
                 Py_DECREF(lista);
                 return NULL;
             }
             resultado_novo = 1;
+            if (modo_chave == KEYED_CACHE_PREFIXO) {
+                chaves_python_origem[i] = resultado_chave;
+                quantidade_chaves_python = i + 1;
+                resultado_novo = 0;
+            }
         }
 
         if (!PyLong_CheckExact(resultado_chave)) {
@@ -962,28 +978,19 @@ sort_by_int64_key_prototype_impl(
                     modo_chave == KEYED_CACHE_PREFIXO
                     && preservar_cache_prefixado(
                         chaves_cacheadas,
-                        chaves_origem,
+                        chaves_python_origem,
                         tamanho_cache_inicial,
-                        i,
-                        reverso
+                        quantidade_chaves_python
                     ) < 0
                 ) {
                     if (resultado_novo) {
                         Py_DECREF(resultado_chave);
                     }
-                    PyMem_Free(chaves_origem);
-                    Py_DECREF(lista);
-                    return NULL;
-                }
-                if (
-                    modo_chave == KEYED_CACHE_PREFIXO
-                    && resultado_novo
-                    && PyList_Append(
-                        chaves_cacheadas,
-                        resultado_chave
-                    ) < 0
-                ) {
-                    Py_DECREF(resultado_chave);
+                    liberar_cache_chaves_python(
+                        chaves_python_origem,
+                        tamanho_cache_inicial,
+                        quantidade_chaves_python
+                    );
                     PyMem_Free(chaves_origem);
                     Py_DECREF(lista);
                     return NULL;
@@ -991,6 +998,11 @@ sort_by_int64_key_prototype_impl(
                 if (resultado_novo) {
                     Py_DECREF(resultado_chave);
                 }
+                liberar_cache_chaves_python(
+                    chaves_python_origem,
+                    tamanho_cache_inicial,
+                    quantidade_chaves_python
+                );
                 PyMem_Free(chaves_origem);
                 Py_DECREF(lista);
                 Py_RETURN_NONE;
@@ -1004,6 +1016,11 @@ sort_by_int64_key_prototype_impl(
             if (resultado_novo) {
                 Py_DECREF(resultado_chave);
             }
+            liberar_cache_chaves_python(
+                chaves_python_origem,
+                tamanho_cache_inicial,
+                quantidade_chaves_python
+            );
             PyMem_Free(chaves_origem);
             Py_DECREF(lista);
             return NULL;
@@ -1020,28 +1037,19 @@ sort_by_int64_key_prototype_impl(
                     modo_chave == KEYED_CACHE_PREFIXO
                     && preservar_cache_prefixado(
                         chaves_cacheadas,
-                        chaves_origem,
+                        chaves_python_origem,
                         tamanho_cache_inicial,
-                        i,
-                        reverso
+                        quantidade_chaves_python
                     ) < 0
                 ) {
                     if (resultado_novo) {
                         Py_DECREF(resultado_chave);
                     }
-                    PyMem_Free(chaves_origem);
-                    Py_DECREF(lista);
-                    return NULL;
-                }
-                if (
-                    modo_chave == KEYED_CACHE_PREFIXO
-                    && resultado_novo
-                    && PyList_Append(
-                        chaves_cacheadas,
-                        resultado_chave
-                    ) < 0
-                ) {
-                    Py_DECREF(resultado_chave);
+                    liberar_cache_chaves_python(
+                        chaves_python_origem,
+                        tamanho_cache_inicial,
+                        quantidade_chaves_python
+                    );
                     PyMem_Free(chaves_origem);
                     Py_DECREF(lista);
                     return NULL;
@@ -1049,6 +1057,11 @@ sort_by_int64_key_prototype_impl(
                 if (resultado_novo) {
                     Py_DECREF(resultado_chave);
                 }
+                liberar_cache_chaves_python(
+                    chaves_python_origem,
+                    tamanho_cache_inicial,
+                    quantidade_chaves_python
+                );
                 PyMem_Free(chaves_origem);
                 Py_DECREF(lista);
                 Py_RETURN_NONE;
@@ -1064,6 +1077,11 @@ sort_by_int64_key_prototype_impl(
             if (resultado_novo) {
                 Py_DECREF(resultado_chave);
             }
+            liberar_cache_chaves_python(
+                chaves_python_origem,
+                tamanho_cache_inicial,
+                quantidade_chaves_python
+            );
             PyMem_Free(chaves_origem);
             Py_DECREF(lista);
             return NULL;
@@ -1129,20 +1147,36 @@ sort_by_int64_key_prototype_impl(
         ) {
             if (preservar_cache_prefixado(
                 chaves_cacheadas,
-                chaves_origem,
+                chaves_python_origem,
                 0,
-                quantidade_amostrada,
-                reverso
+                quantidade_amostrada
             ) < 0) {
+                liberar_cache_chaves_python(
+                    chaves_python_origem,
+                    0,
+                    quantidade_chaves_python
+                );
                 PyMem_Free(chaves_origem);
                 Py_DECREF(lista);
                 return NULL;
             }
+            liberar_cache_chaves_python(
+                chaves_python_origem,
+                0,
+                quantidade_chaves_python
+            );
             PyMem_Free(chaves_origem);
             Py_DECREF(lista);
             Py_RETURN_FALSE;
         }
     }
+
+    liberar_cache_chaves_python(
+        chaves_python_origem,
+        tamanho_cache_inicial,
+        quantidade_chaves_python
+    );
+    chaves_python_origem = NULL;
 
     if (
         modo_chave != KEYED_CHAVE_DIRETA

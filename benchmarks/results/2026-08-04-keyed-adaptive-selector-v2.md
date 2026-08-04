@@ -44,13 +44,11 @@ The selector preserves:
 - normal Timsort comparison behavior for generic key domains;
 - exceptions from user keys without mutating the input.
 
-When progressive extraction later encounters a generic key, preceding exact
-int64 keys are reconstructed as equal Python integer values for replay. The
-generic key object that caused the fallback is retained. Normal integer
-ordering is unchanged, but an exotic cross-type comparator that inspects the
-identity of another key object could observe a difference from `sorted()`.
-That edge case must be resolved or explicitly excluded before this becomes a
-public implementation.
+When progressive extraction later encounters a generic key, the replay now
+retains the exact key objects returned by the user callable. A temporary native
+pointer cache is released before Counting or Radix begins when the complete key
+domain is eligible. This resolves the earlier cross-type key-identity edge case
+without increasing the compact-Radix worst-case variable-buffer estimate.
 
 The replay path remains CPython-specific and relies on listsort requesting
 keys in input order. It must be validated on every supported CPython version.
@@ -134,7 +132,8 @@ Raw samples are in
    or requires another conservative selector improvement.
 2. Improve or deliberately delegate the one-million spaced-int64 case, which
    measured 0.85x locally.
-3. Resolve the reconstructed-int key-identity edge case.
+3. The exact key-identity edge case is resolved; retain its differential and
+   reference-lifetime tests as permanent compatibility coverage.
 4. The selector now lives in the private installed module
    `bielsort_native._keyed_adaptive`, and stable `reverse=True` is validated.
    Define the eventual public signature and typing before exposing it.

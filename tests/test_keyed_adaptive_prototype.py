@@ -1,5 +1,7 @@
 import gc
 import random
+import struct
+import sys
 import unittest
 from operator import attrgetter
 
@@ -31,6 +33,37 @@ class LessThanOnlyKey:
 
     def __eq__(self, other):
         raise AssertionError("Timsort key ordering must not require equality")
+
+
+class IdentityAwareKey:
+    __slots__ = ("value", "accepted_int_ids", "comparisons")
+
+    def __init__(self, value, accepted_int_ids):
+        self.value = value
+        self.accepted_int_ids = accepted_int_ids
+        self.comparisons = 0
+
+    def _coerce(self, other):
+        if type(other) is int:
+            if id(other) not in self.accepted_int_ids:
+                raise AssertionError("Timsort received a reconstructed int key")
+            self.comparisons += 1
+            return other
+        if type(other) is IdentityAwareKey:
+            return other.value
+        return NotImplemented
+
+    def __lt__(self, other):
+        value = self._coerce(other)
+        if value is NotImplemented:
+            return NotImplemented
+        return self.value < value
+
+    def __gt__(self, other):
+        value = self._coerce(other)
+        if value is NotImplemented:
+            return NotImplemented
+        return self.value > value
 
 
 class KeyedAdaptivePrototypeTests(unittest.TestCase):
@@ -351,6 +384,71 @@ class KeyedAdaptivePrototypeTests(unittest.TestCase):
         )
         self.assertTrue(info["reverse"])
 
+    def test_progressive_replay_preserves_exact_key_object_identity(self):
+        for reverse in (False, True):
+            with self.subTest(reverse=reverse):
+                rng = random.Random(2026080405)
+                integer_keys = [
+                    int(str(rng.randrange(1 << 40, 1 << 50)))
+                    for _ in range(4_095)
+                ]
+                boundary = IdentityAwareKey(
+                    sorted(integer_keys)[len(integer_keys) // 2],
+                    {id(key) for key in integer_keys},
+                )
+                values = [
+                    Record(key, position)
+                    for position, key in enumerate(integer_keys)
+                ]
+                values.append(Record(boundary, len(values)))
+
+                expected = sorted(
+                    values,
+                    key=attrgetter("key"),
+                    reverse=reverse,
+                )
+                self.assertGreater(boundary.comparisons, 0)
+                boundary.comparisons = 0
+                calls = []
+
+                def key(record):
+                    calls.append(record.position)
+                    return record.key
+
+                result, info = sort_by_key_adaptive(
+                    values,
+                    key,
+                    reverse=reverse,
+                    return_info=True,
+                )
+
+                self.assertEqual(result, expected)
+                self.assertEqual(calls, list(range(len(values))))
+                self.assertGreater(boundary.comparisons, 0)
+                self.assertEqual(
+                    info["algorithm"],
+                    "timsort-progressive-key-replay",
+                )
+
+    def test_native_commit_releases_temporary_key_references(self):
+        shared_key = int("1099511627899")
+        values = [Record(shared_key, position) for position in range(4_096)]
+        reference_count = sys.getrefcount(shared_key)
+
+        result, info = sort_by_key_adaptive(
+            values,
+            attrgetter("key"),
+            return_info=True,
+        )
+
+        self.assertEqual(result, values)
+        self.assertEqual(sys.getrefcount(shared_key), reference_count)
+        self.assertEqual(info["algorithm"], "already-sorted")
+        self.assertEqual(
+            info["estimated_variable_auxiliary_bytes"],
+            len(values) * (2 * struct.calcsize("P") + 8),
+        )
+
     def test_fused_prefix_entry_consumes_cache_and_calls_remaining_once(self):
         values = [
             Record(key, position)
@@ -417,8 +515,13 @@ class KeyedAdaptivePrototypeTests(unittest.TestCase):
         )
 
     def test_fused_int64_extraction_propagates_key_exception_once(self):
-        values = [Record(position, position) for position in range(4_096)]
+        values = [
+            Record((1 << 40) + position, position)
+            for position in range(4_096)
+        ]
         calls = []
+        tracked_key = values[0].key
+        reference_count = sys.getrefcount(tracked_key)
 
         def key(record):
             calls.append(record.position)
@@ -432,6 +535,7 @@ class KeyedAdaptivePrototypeTests(unittest.TestCase):
         ):
             sort_by_key_adaptive(values, key)
         self.assertEqual(calls, list(range(101)))
+        self.assertEqual(sys.getrefcount(tracked_key), reference_count)
         self.assertEqual(
             [item.position for item in values],
             list(range(len(values))),

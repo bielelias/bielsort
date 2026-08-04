@@ -200,6 +200,7 @@ package's `__all__`.
 
 ## Versioned results
 
+- [Exact key-identity replay — 2026-08-04](results/2026-08-04-key-identity-replay.md)
 - [Stable reverse keyed selector — 2026-08-04](results/2026-08-04-keyed-adaptive-reverse.md)
 - [Adaptive generic-key selector v2 — 2026-08-04](results/2026-08-04-keyed-adaptive-selector-v2.md)
 - [Adaptive generic-key selector — 2026-08-04](results/2026-08-04-keyed-adaptive-selector.md)

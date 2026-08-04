@@ -19,7 +19,7 @@ from ._keyed_int64_guard import (
 
 _EXCEEDED_POLICIES = ("timsort", "raise")
 _SMALL_INPUT_LIMIT = 2_048
-_NATIVE_EXTRACTION_BYTES_PER_ITEM = struct.calcsize("P") + 8
+_NATIVE_EXTRACTION_BYTES_PER_ITEM = 2 * struct.calcsize("P") + 8
 
 
 def _validate_options(
@@ -168,8 +168,8 @@ def _decorate_native_info(info, limit, worst_case, on_exceeded):
             extraction_estimate,
         )
     info["memory_estimate_scope"] = (
-        "result-list items and native variable buffers; excludes allocator "
-        "overhead and fixed stack"
+        "result-list items and native variable buffers; excludes key-object "
+        "payloads, allocator overhead, and fixed stack"
     )
     info["guard"] = _guard_details(
         limit,
@@ -313,11 +313,9 @@ def sort_by_key_adaptive(
             on_exceeded,
         )
 
-    # The fused native extraction materializes ``cached_keys`` only through
-    # the first incompatible result.  Exact int64 values are reconstructed by
-    # value; the incompatible object itself is retained.  Timsort replays that
-    # evaluated prefix and calls the user key exactly once for every remaining
-    # item.
+    # The fused native extraction retains the exact key objects only until it
+    # commits to the native path. On fallback, Timsort replays that evaluated
+    # prefix and calls the user key exactly once for every remaining item.
     result = _sort_with_prefix_replay(
         items,
         cached_keys,
