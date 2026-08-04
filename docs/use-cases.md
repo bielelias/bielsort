@@ -1,10 +1,10 @@
 # Use cases and adoption
 
 BielSort has a deliberately narrow promise: make some large `list[int]` and,
-in the unreleased 0.2 candidate, new-list signed-int64 `key=` workloads faster
-without requiring callers to migrate their data to a different container. The
-only reliable way to decide whether it helps is to measure the complete
-operation in the application that owns the data.
+in the `0.2.0rc1` TestPyPI candidate, new-list signed-int64 `key=` workloads
+faster without requiring callers to migrate their data to a different
+container. The only reliable way to decide whether it helps is to measure the
+complete operation in the application that owns the data.
 
 !!! success "A promising fit"
 

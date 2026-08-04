@@ -43,6 +43,15 @@ Para instalar exatamente a versão estável atual:
 python -m pip install bielsort==0.1.0
 ```
 
+Para testar a candidata `0.2.0rc1` publicada separadamente no TestPyPI:
+
+```bash
+python -m pip install \
+  --index-url https://test.pypi.org/simple/ \
+  --no-deps \
+  bielsort==0.2.0rc1
+```
+
 Verifique a instalação:
 
 ```bash
@@ -81,8 +90,8 @@ bielsort.sort_in_place(numeros) # modifica a lista usando o BielSort
 | `bielsort.sort_in_place_with_strategy()` | sim | estratégia |
 | `bielsort.sort_with_info()` | não | lista e diagnóstico estruturado |
 
-`sort_with_info()` é uma candidata ainda não publicada para a versão 0.2. As
-outras quatro funções formam a API estável da série 0.1.
+`sort_with_info()` está disponível na candidata `0.2.0rc1` do TestPyPI. As
+outras quatro funções também formam a API estável da série 0.1.
 
 ### Ordenação in-place
 
@@ -147,7 +156,7 @@ o domínio e intervalo das chaves, passagens do Radix e os limites/estimativas
 de memória aplicáveis. Toda operação concluída é estável e chama `key`
 exatamente uma vez por registro; essas garantias são documentadas em vez de
 duplicadas no objeto. Consulte a
-[referência da API](api.md#sort_with_info-unreleased-candidate) para todos os
+[referência da API](api.md#sort_with_info-testpypi-candidate) para todos os
 campos e exclusões.
 
 ## Como o algoritmo é escolhido

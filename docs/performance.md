@@ -44,9 +44,9 @@ Splitting the operations matters: `sorted()` and `bielsort.sort()` allocate a
 new list, while `list.sort()` and `bielsort.sort_in_place()` mutate an existing
 list. Input copies for in-place benchmarks are created before timing.
 
-## Unreleased `sort(key=...)` candidate
+## TestPyPI `sort(key=...)` candidate
 
-The 0.2 research branch connects the existing new-list `key` parameter to the
+The `0.2.0rc1` candidate connects the existing new-list `key` parameter to the
 adaptive signed-int64 selector. Eleven rotated samples pinned to one CPU
 measured these speedups over `sorted(key=...)`:
 

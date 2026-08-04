@@ -8,18 +8,20 @@ release.
 
 ## [Unreleased]
 
-Current release-candidate metadata: `0.2.0rc1`. This candidate has not been
-published to TestPyPI or PyPI yet.
+## [0.2.0rc1] - 2026-08-04
+
+Published to TestPyPI for installation testing. The production PyPI release
+remains `0.1.0`.
 
 ### Added
 
-- Added an unreleased candidate that connects the existing new-list
+- Connected the existing new-list
   `sort(key=...)` API to stable native Counting and Radix paths for exact
   signed-int64 key results, including `reverse=True`, with no new public name
   or parameter.
 - Added public keyed-API benchmarks, exact key-call and stability tests, and
   user-facing diagnostics for native and fallback strategies.
-- Added an unreleased `sort_with_info(..., key=...)` candidate with immutable
+- Added a `sort_with_info(..., key=...)` release candidate with immutable
   `SortInfo` diagnostics and a pre-key native auxiliary-memory guard.
 - Added a searchable documentation website with a visual landing page,
   installation guide, API reference, strategy explanation, performance and
@@ -47,7 +49,7 @@ published to TestPyPI or PyPI yet.
 - Made the keyed native-memory preflight conservative across both compact
   Radix and the largest eligible Counting table instead of using only the
   Radix planning bound.
-- Reduced the unreleased `SortInfo` contract to operation-specific fields,
+- Reduced the candidate `SortInfo` contract to operation-specific fields,
   derived `used_native` from the normalized algorithm, and aligned public
   memory field names with `max_native_auxiliary_bytes`.
 - Kept `sort_in_place(key=...)` on direct Timsort after an adaptive experiment
