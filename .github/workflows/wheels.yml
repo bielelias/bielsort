@@ -41,6 +41,10 @@ jobs:
         with:
           persist-credentials: false
 
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+
       - name: Build and test wheels
         uses: pypa/cibuildwheel@v4.1.1
 

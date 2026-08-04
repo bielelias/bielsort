@@ -61,6 +61,9 @@ published to TestPyPI or PyPI yet.
 
 ### Fixed
 
+- Provisioned an explicit host Python for cross-platform wheel-content
+  validation, including GitHub's macOS runners where `python` is not available
+  by default.
 - Isolated benchmark result destruction from the following timed operation,
   removing order-dependent cross-sample contamination and publishing a
   corrected hosted comparison.
