@@ -44,6 +44,9 @@ release.
 - Made the keyed native-memory preflight conservative across both compact
   Radix and the largest eligible Counting table instead of using only the
   Radix planning bound.
+- Reduced the unreleased `SortInfo` contract to operation-specific fields,
+  derived `used_native` from the normalized algorithm, and aligned public
+  memory field names with `max_native_auxiliary_bytes`.
 - Kept `sort_in_place(key=...)` on direct Timsort after an adaptive experiment
   accelerated integer keys but introduced an unacceptable generic-key
   regression.

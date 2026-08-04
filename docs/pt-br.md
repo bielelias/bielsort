@@ -133,7 +133,7 @@ ordenados, info = bielsort.sort_with_info(
 print(info.algorithm)
 print(info.reason)
 print(info.used_native)
-print(info.estimated_variable_auxiliary_bytes)
+print(info.estimated_native_auxiliary_bytes)
 ```
 
 O limite considera os buffers nativos variáveis do BielSort, não toda a
@@ -143,8 +143,10 @@ ou `tuple` exata para que a decisão aconteça antes da primeira execução de
 operação, use `on_memory_limit="raise"` e capture `MemoryError`.
 
 `SortInfo` é imutável e informa o algoritmo normalizado, o motivo da escolha,
-o domínio e intervalo das chaves, quantidade de chamadas de `key`, passagens
-do Radix e os limites/estimativas de memória aplicáveis. Consulte a
+o domínio e intervalo das chaves, passagens do Radix e os limites/estimativas
+de memória aplicáveis. Toda operação concluída é estável e chama `key`
+exatamente uma vez por registro; essas garantias são documentadas em vez de
+duplicadas no objeto. Consulte a
 [referência da API](api.md#sort_with_info-unreleased-candidate) para todos os
 campos e exclusões.
 

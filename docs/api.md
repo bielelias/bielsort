@@ -185,7 +185,7 @@ ordered, info = bielsort.sort_with_info(
 print(info.algorithm)
 print(info.reason)
 print(info.used_native)
-print(info.estimated_variable_auxiliary_bytes)
+print(info.estimated_native_auxiliary_bytes)
 ```
 
 `on_memory_limit="timsort"` is the default: when the conservative native
@@ -207,20 +207,20 @@ maximum of the possible Radix buffers and eligible Counting table.
 | `algorithm` | normalized `counting`, `radix`, `timsort`, `already-sorted`, or `trivial` |
 | `reason` | human-readable selection explanation; wording may evolve |
 | `size` | number of records |
-| `stable`, `reverse` | ordering properties used by the operation |
-| `key_calls` | number of completed calls to the explicit key |
+| `reverse` | whether descending stable ordering was requested |
 | `key_domain` | `signed-int64` for a committed native path, otherwise `python` |
 | `key_min`, `key_max`, `key_span` | observed native-key range when available |
 | `radix_passes` | selected Radix pass count, otherwise `None` |
-| `used_native` | whether the final path was native |
-| `estimated_variable_auxiliary_bytes` | selected native variable-memory estimate, when applicable |
+| `used_native` | derived property indicating whether the final path was native |
+| `estimated_native_auxiliary_bytes` | selected native variable-memory estimate, when applicable |
 | `worst_case_native_auxiliary_bytes` | conservative native planning bound for the input size |
-| `native_memory_limit` | requested limit or `None` |
+| `max_native_auxiliary_bytes` | requested limit or `None` |
 | `native_memory_limit_exceeded` | whether that limit forced Timsort |
-| `memory_estimate_scope` | explicit exclusions and scope of the estimate |
 
-`SortInfo` is frozen, so callers cannot accidentally change a recorded
-decision.
+Successful keyed operations are always stable and call the explicit key once
+per record, so those invariants are documented rather than duplicated as
+fields. `SortInfo` is frozen, preventing callers from accidentally changing a
+recorded decision.
 
 ## `__version__`
 

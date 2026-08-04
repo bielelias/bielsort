@@ -23,20 +23,18 @@ class SortInfo:
     ]
     reason: str
     size: int
-    stable: bool
     reverse: bool
-    key_calls: int
     key_domain: Literal["signed-int64", "python"]
     key_min: Optional[int]
     key_max: Optional[int]
     key_span: Optional[int]
     radix_passes: Optional[int]
-    used_native: bool
-    estimated_variable_auxiliary_bytes: Optional[int]
+    estimated_native_auxiliary_bytes: Optional[int]
     worst_case_native_auxiliary_bytes: int
-    native_memory_limit: Optional[int]
+    max_native_auxiliary_bytes: Optional[int]
     native_memory_limit_exceeded: bool
-    memory_estimate_scope: str
+    @property
+    def used_native(self) -> bool: ...
 
 def sort(
     iterable: Iterable[T],

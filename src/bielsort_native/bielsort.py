@@ -36,20 +36,21 @@ class SortInfo:
     algorithm: str
     reason: str
     size: int
-    stable: bool
     reverse: bool
-    key_calls: int
     key_domain: str
     key_min: Optional[int]
     key_max: Optional[int]
     key_span: Optional[int]
     radix_passes: Optional[int]
-    used_native: bool
-    estimated_variable_auxiliary_bytes: Optional[int]
+    estimated_native_auxiliary_bytes: Optional[int]
     worst_case_native_auxiliary_bytes: int
-    native_memory_limit: Optional[int]
+    max_native_auxiliary_bytes: Optional[int]
     native_memory_limit_exceeded: bool
-    memory_estimate_scope: str
+
+    @property
+    def used_native(self) -> bool:
+        """Whether the operation committed to a native BielSort path."""
+        return self.algorithm != "timsort"
 
 
 def _keyed_strategy(info):
@@ -107,29 +108,26 @@ def _public_sort_info(info):
         memory_limit is not None
         and guard["decision"] == "timsort"
     )
-    used_native = algorithm != "timsort"
     return SortInfo(
         algorithm=algorithm,
         reason=_public_keyed_reason(info),
         size=info["n"],
-        stable=info["stable"],
         reverse=info["reverse"],
-        key_calls=info["key_calls"],
-        key_domain="signed-int64" if used_native else "python",
+        key_domain=(
+            "signed-int64" if algorithm != "timsort" else "python"
+        ),
         key_min=info["key_min"],
         key_max=info["key_max"],
         key_span=info["key_span"],
         radix_passes=info["radix_passes"],
-        used_native=used_native,
-        estimated_variable_auxiliary_bytes=(
+        estimated_native_auxiliary_bytes=(
             info["estimated_variable_auxiliary_bytes"]
         ),
         worst_case_native_auxiliary_bytes=(
             info["worst_case_variable_auxiliary_bytes"]
         ),
-        native_memory_limit=memory_limit,
+        max_native_auxiliary_bytes=memory_limit,
         native_memory_limit_exceeded=memory_limit_exceeded,
-        memory_estimate_scope=info["memory_estimate_scope"],
     )
 
 

@@ -126,7 +126,7 @@ ordered, info = bielsort.sort_with_info(
 
 print(info.algorithm)  # counting, radix, timsort, ...
 print(info.reason)
-print(info.estimated_variable_auxiliary_bytes)
+print(info.estimated_native_auxiliary_bytes)
 ```
 
 The limit covers BielSort's variable native buffers, not total process memory.

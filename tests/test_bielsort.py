@@ -275,23 +275,41 @@ class BielSortTests(unittest.TestCase):
         self.assertEqual(info.algorithm, "counting")
         self.assertEqual(info.key_domain, "signed-int64")
         self.assertEqual(info.size, len(valores))
-        self.assertEqual(info.key_calls, len(valores))
         self.assertEqual((info.key_min, info.key_max), (0, 127))
         self.assertEqual(info.key_span, 127)
         self.assertIsNone(info.radix_passes)
-        self.assertTrue(info.stable)
         self.assertFalse(info.reverse)
         self.assertTrue(info.used_native)
-        self.assertGreater(info.estimated_variable_auxiliary_bytes, 0)
+        self.assertGreater(info.estimated_native_auxiliary_bytes, 0)
         self.assertGreater(info.worst_case_native_auxiliary_bytes, 0)
         self.assertGreaterEqual(
             info.worst_case_native_auxiliary_bytes,
-            info.estimated_variable_auxiliary_bytes,
+            info.estimated_native_auxiliary_bytes,
         )
-        self.assertIsNone(info.native_memory_limit)
+        self.assertIsNone(info.max_native_auxiliary_bytes)
         self.assertFalse(info.native_memory_limit_exceeded)
         with self.assertRaises(FrozenInstanceError):
             info.size = 0
+
+    def test_sort_info_publico_tem_superficie_compacta(self):
+        self.assertEqual(
+            tuple(SortInfo.__dataclass_fields__),
+            (
+                "algorithm",
+                "reason",
+                "size",
+                "reverse",
+                "key_domain",
+                "key_min",
+                "key_max",
+                "key_span",
+                "radix_passes",
+                "estimated_native_auxiliary_bytes",
+                "worst_case_native_auxiliary_bytes",
+                "max_native_auxiliary_bytes",
+                "native_memory_limit_exceeded",
+            ),
+        )
 
     def test_sort_with_info_limite_cobre_pior_counting_e_radix(self):
         rng = random.Random(2034)
@@ -318,7 +336,7 @@ class BielSortTests(unittest.TestCase):
         )
         self.assertGreaterEqual(
             info.worst_case_native_auxiliary_bytes,
-            info.estimated_variable_auxiliary_bytes,
+            info.estimated_native_auxiliary_bytes,
         )
 
         chamadas = []
@@ -372,9 +390,9 @@ class BielSortTests(unittest.TestCase):
         self.assertEqual(info.key_domain, "python")
         self.assertFalse(info.used_native)
         self.assertTrue(info.reverse)
-        self.assertEqual(info.native_memory_limit, 0)
+        self.assertEqual(info.max_native_auxiliary_bytes, 0)
         self.assertTrue(info.native_memory_limit_exceeded)
-        self.assertIsNone(info.estimated_variable_auxiliary_bytes)
+        self.assertIsNone(info.estimated_native_auxiliary_bytes)
         self.assertIn("memory limit exceeded", info.reason)
 
     def test_sort_with_info_normaliza_radix_publico(self):
