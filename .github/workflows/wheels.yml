@@ -44,6 +44,31 @@ jobs:
       - name: Build and test wheels
         uses: pypa/cibuildwheel@v4.1.1
 
+      - name: Validate wheel contents
+        shell: python
+        run: |
+          import pathlib
+          import zipfile
+
+          wheels = sorted(pathlib.Path("wheelhouse").glob("*.whl"))
+          if not wheels:
+              raise SystemExit("cibuildwheel produced no wheel")
+
+          for wheel in wheels:
+              with zipfile.ZipFile(wheel) as archive:
+                  legacy = [
+                      name
+                      for name in archive.namelist()
+                      if "/" not in name and name.startswith("_bielsort")
+                  ]
+              if legacy:
+                  raise SystemExit(
+                      f"{wheel.name} contains legacy top-level files: "
+                      f"{legacy}"
+                  )
+
+          print(f"Validated {len(wheels)} wheel(s)")
+
       - name: Upload wheel artifacts
         uses: actions/upload-artifact@v7
         with:
@@ -76,6 +101,68 @@ jobs:
           path: dist/*.tar.gz
           if-no-files-found: error
 
+  validate-testpypi-candidate:
+    name: Validate TestPyPI candidate
+    if: >-
+      github.event_name == 'workflow_dispatch'
+      && inputs.publish_target == 'testpypi'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+
+      - name: Validate candidate version and branch
+        env:
+          RELEASE_REF: ${{ github.ref }}
+        run: |
+          python - <<'PY'
+          import os
+          import pathlib
+          import re
+          import tomllib
+
+          raw_version = tomllib.loads(
+              pathlib.Path("pyproject.toml").read_text(encoding="utf-8")
+          )["project"]["version"]
+
+          if re.fullmatch(
+              r"(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)rc[1-9]\d*",
+              raw_version,
+          ) is None:
+              raise SystemExit(
+                  "TestPyPI publication requires an exact X.Y.ZrcN version; "
+                  f"received {raw_version}"
+              )
+
+          source = pathlib.Path("src/bielsort_native/bielsort.py").read_text(
+              encoding="utf-8"
+          )
+          match = re.search(
+              r'^__version__\s*=\s*"([^"]+)"',
+              source,
+              flags=re.MULTILINE,
+          )
+          if match is None or match.group(1) != raw_version:
+              raise SystemExit(
+                  "pyproject.toml and bielsort.__version__ do not match"
+              )
+
+          actual_ref = os.environ["RELEASE_REF"]
+          if actual_ref != "refs/heads/main":
+              raise SystemExit(
+                  "TestPyPI publication must be dispatched from main; "
+                  f"received {actual_ref}"
+              )
+
+          print(f"Validated TestPyPI candidate {raw_version}")
+          PY
+
   publish-testpypi:
     name: Publish to TestPyPI
     if: >-
@@ -85,6 +172,7 @@ jobs:
     needs:
       - wheels
       - source-distribution
+      - validate-testpypi-candidate
     runs-on: ubuntu-latest
     environment:
       name: testpypi

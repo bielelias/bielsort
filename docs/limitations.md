@@ -10,9 +10,9 @@ platforms, not about producing a different sorted order.
 |---|---|
 | Python implementation | CPython only |
 | Python versions | 3.9–3.14 |
-| Fast-path values | exact `int` in signed 64-bit range |
+| Fast-path values or key results | exact `int` in signed 64-bit range |
 | Stable sorting | yes, every path |
-| `key=` and `reverse=` | yes, through Timsort |
+| `key=` and `reverse=` | yes; unreleased new-list int64-key candidate |
 | New-list API | any compatible iterable |
 | In-place API | exact `list` |
 | Runtime dependencies | none |
@@ -36,7 +36,8 @@ headers.
 
 The accelerated Counting and Radix paths require all of the following:
 
-- natural ascending order (`key=None`, `reverse=False`);
+- natural ascending exact integers, or an explicit new-list `key` returning
+  exact signed-int64 integers in the unreleased candidate;
 - exact Python `int` objects, not subclasses;
 - every value fitting between `-(2**63)` and `2**63 - 1`;
 - enough elements and a distribution that makes native work worthwhile.
@@ -50,7 +51,9 @@ ordered, or nearly monotonic.
 - mixed or general Python objects;
 - integer subclasses;
 - arbitrary-size Python integers outside signed 64-bit range;
-- calls using `key=` or `reverse=`;
+- generic, overflow, or unsuitable ordered-run key results;
+- `reverse=True` without a key;
+- every in-place call using `key=` or `reverse=True`;
 - small, ordered, and nearly ordered inputs.
 
 Fallback is part of BielSort's design. It preserves Python behavior in cases
@@ -64,6 +67,13 @@ Measured favorable workloads used more peak memory than `sorted()` and
 
 If memory is more constrained than latency, benchmark peak RSS as well as
 execution time before adopting BielSort.
+
+The unreleased `sort_with_info()` candidate can apply a conservative limit to
+BielSort's variable native auxiliary buffers before calling the user key. This
+is not a total-process limit: it excludes input and key objects, allocator
+overhead, fixed stack storage, and any memory later used by a Timsort fallback.
+Supplying a limit requires an exact `list` or `tuple` so the preflight size is
+known without hidden iterable materialization.
 
 ## CPython-specific implementation
 
@@ -79,9 +89,12 @@ caller. BielSort does not promise parallel sorting of one list.
 
 ## Pre-1.0 stability
 
-The four canonical function names are stable for the 0.1 series. Performance
-heuristics and diagnostic wording may evolve before 1.0. Keep correctness
-independent of the exact string returned by a diagnostic API.
+The four canonical 0.1 function names are stable for that series. The
+`sort_with_info()` and `SortInfo` additions exist only in the unreleased 0.2
+candidate, currently identified in the repository as unpublished
+`0.2.0rc1`. Performance heuristics and human-readable diagnostic wording may
+evolve before 1.0. Keep correctness independent of the exact reason or
+strategy text.
 
 ## Decision guide
 
@@ -98,7 +111,8 @@ independent of the exact string returned by a diagnostic API.
 
     - inputs are small or nearly ordered;
     - values are general Python objects;
-    - code depends heavily on `key=` or `reverse=`;
+    - key results are not exact signed-int64 integers;
+    - code needs accelerated in-place `key=` or keyless `reverse=`;
     - portability beyond CPython is required;
     - minimizing auxiliary memory is more important;
     - there is no measured bottleneck to solve.

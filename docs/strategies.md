@@ -12,7 +12,8 @@ correct result.
 <div class="biel-flow-step" data-step="Step 1" markdown>
 ### Preserve Python semantics
 
-`key=` or `reverse=` immediately uses Timsort.
+In-place `key=` and keyless `reverse=` use Timsort. An explicit key on the
+new-list API enters the unreleased adaptive keyed selector.
 </div>
 
 <div class="biel-flow-step" data-step="Step 2" markdown>
@@ -61,11 +62,29 @@ CPython's built-in Timsort is selected for:
 - floats, strings, mixed values, and general Python objects;
 - integer subclasses;
 - integers outside the signed 64-bit range;
-- any call using `key=` or `reverse=`.
+- generic or out-of-int64 key results;
+- keyed ordered-run cases where Radix is not expected to pay off;
+- keyless `reverse=True` calls;
+- in-place calls using `key=` or `reverse=True`.
 
 This is not an error or a degraded correctness mode. Timsort is often the best
 algorithm for these inputs, especially when it can exploit existing ordered
 runs.
+
+## Adaptive signed-int64 keys
+
+<span class="biel-pill">Unreleased 0.2 candidate</span>
+
+For `sort(records, key=callable)`, the C extractor evaluates each key exactly
+once in encounter order and retains the exact Python key object until the
+strategy is committed. Eligible dense ranges use stable keyed Counting;
+eligible wide ranges use stable keyed Radix in either direction.
+
+If a generic or oversized key is encountered, a private vectorcall object
+replays the exact evaluated prefix and lets Timsort evaluate only the remaining
+records. A conservative 2,048-key run detector can also delegate wide, nearly
+monotonic inputs. The selector is internal and does not add another public
+function.
 
 ## Native Counting Sort
 
@@ -117,7 +136,7 @@ values retain their relative object-identity order.
 ## GIL policy
 
 - `sort()` owns a private, unpublished list copy and can release the GIL during
-  native Counting/Radix data movement;
+  native Counting/Radix data movement, including eligible keyed paths;
 - `sort_in_place()` keeps the GIL because the list belongs to the caller and
   must not be exposed in a partially permuted state.
 
@@ -134,3 +153,21 @@ print(strategy)
 
 Diagnostic wording can change as the pre-1.0 heuristics evolve. Application
 correctness should never depend on the exact string.
+
+The unreleased 0.2 candidate also supports structured inspection for an
+explicit key:
+
+```python
+ordered, info = bielsort.sort_with_info(
+    records,
+    key=lambda record: record["score"],
+)
+
+print(info.algorithm)
+print(info.reason)
+print(info.used_native)
+```
+
+Code may inspect normalized fields such as `algorithm` and `used_native`.
+Human-readable `reason` text remains explanatory rather than a stable
+control-flow value.

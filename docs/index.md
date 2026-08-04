@@ -43,8 +43,9 @@ Timsort instead of forcing one algorithm onto every input.
 <div class="biel-card" markdown>
 ### Python-compatible
 
-Sorting remains stable. `key=`, `reverse=`, non-integers, huge integers, and
-small or nearly ordered inputs deliberately use Python's mature Timsort.
+Sorting remains stable. The unreleased candidate can accelerate signed-int64
+results from new-list `key=` calls; generic keys, in-place keys, non-integers,
+huge integers, and unsuitable ordered inputs retain Python's mature Timsort.
 </div>
 
 <div class="biel-card" markdown>
@@ -93,12 +94,13 @@ python -m pip install bielsort
 | Mutate an existing list | `values.sort()` | `bielsort.sort_in_place(values)` |
 | See the selected strategy | — | `bielsort.sort_with_strategy(values)` |
 | Mutate and see the strategy | — | `bielsort.sort_in_place_with_strategy(values)` |
+| Inspect keyed algorithm and native memory | — | `bielsort.sort_with_info(values, key=...)` *(0.2 candidate)* |
 
 !!! note "A specialized tool, not a universal replacement"
 
     BielSort is most interesting for large `list[int]` workloads. Python's
     built-in sorting remains an excellent default for general objects, small
-    inputs, nearly ordered data, `key=`, and `reverse=`. See
+    inputs, nearly ordered data, in-place keys, and keyless reverse calls. See
     [limits and compatibility](limitations.md) before choosing it for a
     production workload.
 

@@ -1,21 +1,23 @@
 # Casos de uso e adoção
 
 A promessa do BielSort é propositalmente específica: acelerar algumas
-ordenações de grandes `list[int]` sem obrigar a aplicação a migrar os dados
-para outro contêiner. A única forma confiável de saber se ele ajuda é medir a
-operação completa dentro da aplicação que possui os dados.
+ordenações de grandes `list[int]` e, na candidata 0.2 ainda não publicada,
+listas novas de objetos com `key` signed-int64, sem obrigar a aplicação a
+migrar os dados para outro contêiner. A única forma confiável de saber se ele
+ajuda é medir a operação completa dentro da aplicação que possui os dados.
 
 !!! success "Um candidato promissor"
 
     Os dados já estão em uma lista Python grande, contêm inteiros exatos no
     intervalo signed 64-bit, precisam de ordem crescente natural e não chegam
-    quase ordenados. A ordenação também representa uma parte relevante do
-    tempo total do pipeline.
+    quase ordenados. Na API candidata, registros com chave signed-int64 exata
+    também são elegíveis para a operação new-list. A ordenação representa uma
+    parte relevante do tempo total do pipeline.
 
 !!! warning "Geralmente não é um bom candidato"
 
     Prefira a ordenação do Python para entradas pequenas ou quase ordenadas,
-    objetos mistos, inteiros arbitrariamente grandes, `key=` ou `reverse=`. Se
+    objetos mistos, chaves genéricas, `key=` in-place ou `reverse=` sem chave. Se
     o pipeline já utiliza NumPy, Polars, Pandas ou um banco de dados, normalmente
     é melhor manter os dados nesse sistema.
 
@@ -42,7 +44,8 @@ valores.
 
 <div class="biel-card" markdown>
 ### Ordem crescente natural?
-`key=` e `reverse=` usam o fallback compatível.
+Inteiros naturais são o alvo original. A candidata também aceita uma `key`
+new-list que retorne inteiros signed 64-bit exatos.
 </div>
 
 <div class="biel-card" markdown>

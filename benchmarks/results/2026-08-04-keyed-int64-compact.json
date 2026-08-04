@@ -1,0 +1,631 @@
+{
+  "benchmark": "keyed-int64-prototype",
+  "implementation": "compact-keyed-int64-radix",
+  "memory": [
+    {
+      "biel_peak_bytes": 23822336,
+      "biel_to_sorted_ratio": 0.9136035186930569,
+      "case": "dense",
+      "raw": {
+        "biel-keyed-prototype": {
+          "median_incremental_peak_bytes": 23822336,
+          "samples": [
+            {
+              "algorithm": "biel-keyed-prototype",
+              "case": "dense",
+              "elapsed_s": 0.05198515899974154,
+              "incremental_peak_bytes": 23748608,
+              "size": 1000000
+            },
+            {
+              "algorithm": "biel-keyed-prototype",
+              "case": "dense",
+              "elapsed_s": 0.04917918299906887,
+              "incremental_peak_bytes": 23994368,
+              "size": 1000000
+            },
+            {
+              "algorithm": "biel-keyed-prototype",
+              "case": "dense",
+              "elapsed_s": 0.05283319500449579,
+              "incremental_peak_bytes": 23822336,
+              "size": 1000000
+            }
+          ]
+        },
+        "sorted-key": {
+          "median_incremental_peak_bytes": 26075136,
+          "samples": [
+            {
+              "algorithm": "sorted-key",
+              "case": "dense",
+              "elapsed_s": 0.29519782100396696,
+              "incremental_peak_bytes": 25985024,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "dense",
+              "elapsed_s": 0.28947274399979506,
+              "incremental_peak_bytes": 26075136,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "dense",
+              "elapsed_s": 0.29020186999696307,
+              "incremental_peak_bytes": 26132480,
+              "size": 1000000
+            }
+          ]
+        }
+      },
+      "size": 1000000,
+      "sorted_peak_bytes": 26075136
+    },
+    {
+      "biel_peak_bytes": 32116736,
+      "biel_to_sorted_ratio": 1.2375315656565657,
+      "case": "timestamp",
+      "raw": {
+        "biel-keyed-prototype": {
+          "median_incremental_peak_bytes": 32116736,
+          "samples": [
+            {
+              "algorithm": "biel-keyed-prototype",
+              "case": "timestamp",
+              "elapsed_s": 0.052261650998843834,
+              "incremental_peak_bytes": 32116736,
+              "size": 1000000
+            },
+            {
+              "algorithm": "biel-keyed-prototype",
+              "case": "timestamp",
+              "elapsed_s": 0.05255526700057089,
+              "incremental_peak_bytes": 32051200,
+              "size": 1000000
+            },
+            {
+              "algorithm": "biel-keyed-prototype",
+              "case": "timestamp",
+              "elapsed_s": 0.07168184199690586,
+              "incremental_peak_bytes": 32124928,
+              "size": 1000000
+            }
+          ]
+        },
+        "sorted-key": {
+          "median_incremental_peak_bytes": 25952256,
+          "samples": [
+            {
+              "algorithm": "sorted-key",
+              "case": "timestamp",
+              "elapsed_s": 0.34626107000076445,
+              "incremental_peak_bytes": 27947008,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "timestamp",
+              "elapsed_s": 0.3145841419973294,
+              "incremental_peak_bytes": 25952256,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "timestamp",
+              "elapsed_s": 0.3126695960017969,
+              "incremental_peak_bytes": 25112576,
+              "size": 1000000
+            }
+          ]
+        }
+      },
+      "size": 1000000,
+      "sorted_peak_bytes": 25952256
+    },
+    {
+      "biel_peak_bytes": 32083968,
+      "biel_to_sorted_ratio": 1.1443389335281227,
+      "case": "int32",
+      "raw": {
+        "biel-keyed-prototype": {
+          "median_incremental_peak_bytes": 32083968,
+          "samples": [
+            {
+              "algorithm": "biel-keyed-prototype",
+              "case": "int32",
+              "elapsed_s": 0.07253097099601291,
+              "incremental_peak_bytes": 32083968,
+              "size": 1000000
+            },
+            {
+              "algorithm": "biel-keyed-prototype",
+              "case": "int32",
+              "elapsed_s": 0.06601508500170894,
+              "incremental_peak_bytes": 32092160,
+              "size": 1000000
+            },
+            {
+              "algorithm": "biel-keyed-prototype",
+              "case": "int32",
+              "elapsed_s": 0.07505047199811088,
+              "incremental_peak_bytes": 32026624,
+              "size": 1000000
+            }
+          ]
+        },
+        "sorted-key": {
+          "median_incremental_peak_bytes": 28037120,
+          "samples": [
+            {
+              "algorithm": "sorted-key",
+              "case": "int32",
+              "elapsed_s": 0.3883918330029701,
+              "incremental_peak_bytes": 28037120,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "int32",
+              "elapsed_s": 0.37723271200229647,
+              "incremental_peak_bytes": 28016640,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "int32",
+              "elapsed_s": 0.3839067700027954,
+              "incremental_peak_bytes": 28049408,
+              "size": 1000000
+            }
+          ]
+        }
+      },
+      "size": 1000000,
+      "sorted_peak_bytes": 28037120
+    },
+    {
+      "biel_peak_bytes": 32055296,
+      "biel_to_sorted_ratio": 1.1401515151515151,
+      "case": "int64",
+      "raw": {
+        "biel-keyed-prototype": {
+          "median_incremental_peak_bytes": 32055296,
+          "samples": [
+            {
+              "algorithm": "biel-keyed-prototype",
+              "case": "int64",
+              "elapsed_s": 0.09407410200219601,
+              "incremental_peak_bytes": 32043008,
+              "size": 1000000
+            },
+            {
+              "algorithm": "biel-keyed-prototype",
+              "case": "int64",
+              "elapsed_s": 0.08916165700065903,
+              "incremental_peak_bytes": 32071680,
+              "size": 1000000
+            },
+            {
+              "algorithm": "biel-keyed-prototype",
+              "case": "int64",
+              "elapsed_s": 0.09583553000265965,
+              "incremental_peak_bytes": 32055296,
+              "size": 1000000
+            }
+          ]
+        },
+        "sorted-key": {
+          "median_incremental_peak_bytes": 28114944,
+          "samples": [
+            {
+              "algorithm": "sorted-key",
+              "case": "int64",
+              "elapsed_s": 0.3646563389993389,
+              "incremental_peak_bytes": 28114944,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "int64",
+              "elapsed_s": 0.36008468300133245,
+              "incremental_peak_bytes": 28082176,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "int64",
+              "elapsed_s": 0.36209380400396185,
+              "incremental_peak_bytes": 28114944,
+              "size": 1000000
+            }
+          ]
+        }
+      },
+      "size": 1000000,
+      "sorted_peak_bytes": 28114944
+    },
+    {
+      "biel_peak_bytes": 27983872,
+      "biel_to_sorted_ratio": 1.1575737038292104,
+      "case": "nearly-sorted",
+      "raw": {
+        "biel-keyed-prototype": {
+          "median_incremental_peak_bytes": 27983872,
+          "samples": [
+            {
+              "algorithm": "biel-keyed-prototype",
+              "case": "nearly-sorted",
+              "elapsed_s": 0.0372941189998528,
+              "incremental_peak_bytes": 28020736,
+              "size": 1000000
+            },
+            {
+              "algorithm": "biel-keyed-prototype",
+              "case": "nearly-sorted",
+              "elapsed_s": 0.034151774998463225,
+              "incremental_peak_bytes": 27983872,
+              "size": 1000000
+            },
+            {
+              "algorithm": "biel-keyed-prototype",
+              "case": "nearly-sorted",
+              "elapsed_s": 0.03853307999816025,
+              "incremental_peak_bytes": 27865088,
+              "size": 1000000
+            }
+          ]
+        },
+        "sorted-key": {
+          "median_incremental_peak_bytes": 24174592,
+          "samples": [
+            {
+              "algorithm": "sorted-key",
+              "case": "nearly-sorted",
+              "elapsed_s": 0.05542871199577348,
+              "incremental_peak_bytes": 24133632,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "nearly-sorted",
+              "elapsed_s": 0.0607616790002794,
+              "incremental_peak_bytes": 24260608,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "nearly-sorted",
+              "elapsed_s": 0.05789514200296253,
+              "incremental_peak_bytes": 24174592,
+              "size": 1000000
+            }
+          ]
+        }
+      },
+      "size": 1000000,
+      "sorted_peak_bytes": 24174592
+    }
+  ],
+  "platform": "linux",
+  "python": "3.11.2 (main, Apr  8 2026, 01:58:00) [GCC 12.2.0]",
+  "schema_version": 1,
+  "time": [
+    {
+      "biel_median_s": 0.00031518500327365473,
+      "biel_samples_s": [
+        0.00032022699451772496,
+        0.0003102049959124997,
+        0.00031518500327365473,
+        0.0003131569974357262,
+        0.00038656200194964185
+      ],
+      "case": "dense",
+      "size": 10000,
+      "sorted_median_s": 0.001371268997900188,
+      "sorted_samples_s": [
+        0.0014682330001960509,
+        0.001371268997900188,
+        0.0013252689968794584,
+        0.0014493720009340905,
+        0.0013138059948687442
+      ],
+      "speedup": 4.350679707656027
+    },
+    {
+      "biel_median_s": 0.00041366300138179213,
+      "biel_samples_s": [
+        0.0004197649977868423,
+        0.0004112839960725978,
+        0.0004142539983149618,
+        0.00040981400525197387,
+        0.00041366300138179213
+      ],
+      "case": "timestamp",
+      "size": 10000,
+      "sorted_median_s": 0.0014933629936422221,
+      "sorted_samples_s": [
+        0.0014933629936422221,
+        0.0015088840009411797,
+        0.0014499919998343103,
+        0.0015030299982754514,
+        0.0014515360016957857
+      ],
+      "speedup": 3.6100956301477782
+    },
+    {
+      "biel_median_s": 0.00046565999946324155,
+      "biel_samples_s": [
+        0.00046565999946324155,
+        0.0004853350037592463,
+        0.00043872099922737107,
+        0.0004550890007521957,
+        0.00047819199971854687
+      ],
+      "case": "int32",
+      "size": 10000,
+      "sorted_median_s": 0.0015696670016041026,
+      "sorted_samples_s": [
+        0.0015564400018774904,
+        0.0015816270024515688,
+        0.0015800830005900934,
+        0.001568231004057452,
+        0.0015696670016041026
+      ],
+      "speedup": 3.370843541239169
+    },
+    {
+      "biel_median_s": 0.0006252220046008006,
+      "biel_samples_s": [
+        0.0006256549968384206,
+        0.0006162239951663651,
+        0.0006252220046008006,
+        0.0006010419965605251,
+        0.0006713130060234107
+      ],
+      "case": "int64",
+      "size": 10000,
+      "sorted_median_s": 0.001576324000780005,
+      "sorted_samples_s": [
+        0.0015696439950261265,
+        0.001576324000780005,
+        0.001594663001014851,
+        0.0015414589943247847,
+        0.0015904460015008226
+      ],
+      "speedup": 2.521222844334271
+    },
+    {
+      "biel_median_s": 0.00023306899674935266,
+      "biel_samples_s": [
+        0.00021972799731884152,
+        0.00023306899674935266,
+        0.0002417840005364269,
+        0.0002157420021831058,
+        0.00024031400243984535
+      ],
+      "case": "nearly-sorted",
+      "size": 10000,
+      "sorted_median_s": 0.00019463700300548226,
+      "sorted_samples_s": [
+        0.00018355600332142785,
+        0.00019463700300548226,
+        0.0001789559973985888,
+        0.00020971000049030408,
+        0.00019960100325988606
+      ],
+      "speedup": 0.8351046502113665
+    },
+    {
+      "biel_median_s": 0.004121321995626204,
+      "biel_samples_s": [
+        0.0035211889990023337,
+        0.0046057200015638955,
+        0.004371438997623045,
+        0.004121321995626204,
+        0.003941691997169983
+      ],
+      "case": "dense",
+      "size": 100000,
+      "sorted_median_s": 0.021062198997242376,
+      "sorted_samples_s": [
+        0.021062198997242376,
+        0.02058334399771411,
+        0.020821316000365186,
+        0.022177942002599593,
+        0.021862020999833476
+      ],
+      "speedup": 5.110544388328516
+    },
+    {
+      "biel_median_s": 0.00513281200255733,
+      "biel_samples_s": [
+        0.005027421000704635,
+        0.00559963100386085,
+        0.004758635004691314,
+        0.00513281200255733,
+        0.005284646998916287
+      ],
+      "case": "timestamp",
+      "size": 100000,
+      "sorted_median_s": 0.022068518999731168,
+      "sorted_samples_s": [
+        0.022068518999731168,
+        0.020861381002760027,
+        0.02245093999954406,
+        0.022832891998405103,
+        0.021372113995312247
+      ],
+      "speedup": 4.299498791059547
+    },
+    {
+      "biel_median_s": 0.005627511003694963,
+      "biel_samples_s": [
+        0.005202651002036873,
+        0.005607126993709244,
+        0.0059732090012403205,
+        0.0062031280031078495,
+        0.005627511003694963
+      ],
+      "case": "int32",
+      "size": 100000,
+      "sorted_median_s": 0.024068456004897598,
+      "sorted_samples_s": [
+        0.02191683999990346,
+        0.02443652699730592,
+        0.022779674000048544,
+        0.024068456004897598,
+        0.025173118003294803
+      ],
+      "speedup": 4.276927399892156
+    },
+    {
+      "biel_median_s": 0.008041629997023847,
+      "biel_samples_s": [
+        0.008041629997023847,
+        0.007549628993729129,
+        0.007648517996130977,
+        0.008315313993080053,
+        0.008043472000281326
+      ],
+      "case": "int64",
+      "size": 100000,
+      "sorted_median_s": 0.023758463001286145,
+      "sorted_samples_s": [
+        0.023472446999221575,
+        0.023758463001286145,
+        0.027529776001756545,
+        0.020824598002946004,
+        0.024162446999980602
+      ],
+      "speedup": 2.9544337416766244
+    },
+    {
+      "biel_median_s": 0.004410872999869753,
+      "biel_samples_s": [
+        0.004410872999869753,
+        0.004455905997019727,
+        0.00349922899476951,
+        0.004929055001412053,
+        0.003644638003606815
+      ],
+      "case": "nearly-sorted",
+      "size": 100000,
+      "sorted_median_s": 0.0038366110020433553,
+      "sorted_samples_s": [
+        0.004210179999063257,
+        0.0034132520013372414,
+        0.0036700939963338897,
+        0.0038366110020433553,
+        0.004333955999754835
+      ],
+      "speedup": 0.8698076326742225
+    },
+    {
+      "biel_median_s": 0.052663291004137136,
+      "biel_samples_s": [
+        0.04578765999758616,
+        0.06126247900101589,
+        0.06799559499631869,
+        0.052663291004137136,
+        0.05028719599795295
+      ],
+      "case": "dense",
+      "size": 1000000,
+      "sorted_median_s": 0.3075249590037856,
+      "sorted_samples_s": [
+        0.3075249590037856,
+        0.30646554599661613,
+        0.302197596996848,
+        0.3222194039990427,
+        0.33632279800076503
+      ],
+      "speedup": 5.83945577916175
+    },
+    {
+      "biel_median_s": 0.06026550300157396,
+      "biel_samples_s": [
+        0.05784365499857813,
+        0.05871936600306071,
+        0.06398205599543871,
+        0.06026550300157396,
+        0.06076027599920053
+      ],
+      "case": "timestamp",
+      "size": 1000000,
+      "sorted_median_s": 0.3386446129952674,
+      "sorted_samples_s": [
+        0.3477961780008627,
+        0.33024289100285387,
+        0.33324664200335974,
+        0.3386446129952674,
+        0.3461124160021427
+      ],
+      "speedup": 5.619211590856928
+    },
+    {
+      "biel_median_s": 0.0609815339994384,
+      "biel_samples_s": [
+        0.06083274700358743,
+        0.0609815339994384,
+        0.06492829400667688,
+        0.06051458900037687,
+        0.06307432399626123
+      ],
+      "case": "int32",
+      "size": 1000000,
+      "sorted_median_s": 0.37560753199795727,
+      "sorted_samples_s": [
+        0.37560753199795727,
+        0.3646812309962115,
+        0.41958397399866953,
+        0.37626314999943133,
+        0.35746704100165516
+      ],
+      "speedup": 6.1593650956930075
+    },
+    {
+      "biel_median_s": 0.0900383110056282,
+      "biel_samples_s": [
+        0.0900383110056282,
+        0.08886255400284426,
+        0.09284720499999821,
+        0.08769631999894045,
+        0.09114587999647483
+      ],
+      "case": "int64",
+      "size": 1000000,
+      "sorted_median_s": 0.3534985880032764,
+      "sorted_samples_s": [
+        0.35839030100032687,
+        0.34701451099681435,
+        0.35506627599534113,
+        0.35239108800305985,
+        0.3534985880032764
+      ],
+      "speedup": 3.92609083905605
+    },
+    {
+      "biel_median_s": 0.03332967000460485,
+      "biel_samples_s": [
+        0.03363251699920511,
+        0.032707372003642377,
+        0.03353860000061104,
+        0.03332967000460485,
+        0.03282879399921512
+      ],
+      "case": "nearly-sorted",
+      "size": 1000000,
+      "sorted_median_s": 0.05429411600198364,
+      "sorted_samples_s": [
+        0.05429411600198364,
+        0.060000454999681097,
+        0.0531090119984583,
+        0.053302863001590595,
+        0.05728019500384107
+      ],
+      "speedup": 1.6290025072100123
+    }
+  ]
+}

@@ -16,8 +16,8 @@ execução.
 <div class="biel-card" markdown>
 ### Compatível com Python
 
-Mantém ordenação estável e aceita `key=` e `reverse=` por meio do fallback para
-Timsort.
+Mantém ordenação estável. A candidata 0.2 pode acelerar `sort(key=...)` quando
+a chave retorna `int64` exato; outros casos continuam no Timsort.
 </div>
 
 <div class="biel-card" markdown>
@@ -71,7 +71,7 @@ bielsort.sort(numeros)          # cria uma lista usando o BielSort
 bielsort.sort_in_place(numeros) # modifica a lista usando o BielSort
 ```
 
-## As quatro funções principais
+## Funções principais
 
 | Função | Modifica a entrada? | Retorno |
 |---|---:|---|
@@ -79,6 +79,10 @@ bielsort.sort_in_place(numeros) # modifica a lista usando o BielSort
 | `bielsort.sort_in_place()` | sim | `None` |
 | `bielsort.sort_with_strategy()` | não | lista e estratégia |
 | `bielsort.sort_in_place_with_strategy()` | sim | estratégia |
+| `bielsort.sort_with_info()` | não | lista e diagnóstico estruturado |
+
+`sort_with_info()` é uma candidata ainda não publicada para a versão 0.2. As
+outras quatro funções formam a API estável da série 0.1.
 
 ### Ordenação in-place
 
@@ -109,6 +113,43 @@ O texto da estratégia serve para diagnóstico e benchmarks. Não use uma frase
 exata como condição necessária para a lógica do seu programa, pois essa frase
 pode evoluir antes da versão 1.0.
 
+### Explicação estruturada e limite de memória — candidata 0.2
+
+```python
+import bielsort
+
+registros = [
+    {"nome": "Ana", "pontos": 30},
+    {"nome": "Bia", "pontos": 10},
+    {"nome": "Caio", "pontos": 20},
+]
+
+ordenados, info = bielsort.sort_with_info(
+    registros,
+    key=lambda registro: registro["pontos"],
+    max_native_auxiliary_bytes=32 * 1024 * 1024,
+)
+
+print(info.algorithm)
+print(info.reason)
+print(info.used_native)
+print(info.estimated_native_auxiliary_bytes)
+```
+
+O limite considera os buffers nativos variáveis do BielSort, não toda a
+memória do processo. Ao informar um limite, a entrada precisa ser uma `list`
+ou `tuple` exata para que a decisão aconteça antes da primeira execução de
+`key`. O padrão é usar Timsort se o limite for excedido. Para recusar a
+operação, use `on_memory_limit="raise"` e capture `MemoryError`.
+
+`SortInfo` é imutável e informa o algoritmo normalizado, o motivo da escolha,
+o domínio e intervalo das chaves, passagens do Radix e os limites/estimativas
+de memória aplicáveis. Toda operação concluída é estável e chama `key`
+exatamente uma vez por registro; essas garantias são documentadas em vez de
+duplicadas no objeto. Consulte a
+[referência da API](api.md#sort_with_info-unreleased-candidate) para todos os
+campos e exclusões.
+
 ## Como o algoritmo é escolhido
 
 <div class="biel-flow" markdown>
@@ -131,7 +172,8 @@ sinal.
 ### Compatibilidade
 
 É usado para entradas pequenas, quase ordenadas, objetos gerais, inteiros
-gigantes, `key=` e `reverse=`.
+gigantes, chaves genéricas, `reverse=True` sem chave e chamadas in-place com
+`key=`.
 </div>
 
 </div>
@@ -145,6 +187,8 @@ especialização nativa não compensa.
 === "Bom candidato"
 
     - listas grandes de inteiros;
+    - ou listas de objetos com chave inteira signed 64-bit usando a candidata
+      new-list `sort(key=...)`;
     - valores entre `-(2**63)` e `2**63 - 1`;
     - dados que normalmente não chegam quase ordenados;
     - velocidade importante e memória auxiliar aceitável;
@@ -154,7 +198,8 @@ especialização nativa não compensa.
 
     - listas pequenas ou quase ordenadas;
     - strings, floats ou objetos gerais;
-    - uso constante de `key=` ou `reverse=`;
+    - chaves que não retornam inteiros signed 64-bit exatos;
+    - necessidade de acelerar `key=` in-place ou `reverse=` sem chave;
     - necessidade de funcionar em implementações diferentes do CPython;
     - economia de memória acima de velocidade.
 

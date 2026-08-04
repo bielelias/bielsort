@@ -134,8 +134,110 @@ wheel on matching Ubuntu runners with CPython 3.11 and 3.14. This research
 exists to characterize [issue 18](https://github.com/bielelias/bielsort/issues/18),
 not to justify tuning a heuristic to one synthetic distribution.
 
+## Research: Python objects with signed-int64 keys
+
+The keyed-int64 prototype is intentionally private to the native extension. It
+does not change the supported `bielsort` API or the published 0.1 behavior.
+It asks whether BielSort should accelerate stable sorting of arbitrary Python
+objects whose `key` callable returns an exact signed-64-bit integer:
+
+```bash
+python benchmarks/keyed_int64_prototype.py \
+  -n 10000 100000 1000000 \
+  -r 5 \
+  --memory-repetitions 3 \
+  --json-output keyed-int64-prototype.json
+```
+
+Both candidates receive the same live list of objects, call the same key
+callable, preserve the input, and return a new list. Results are checked for
+ordering, stability, identity preservation, and length. Peak RSS uses an
+isolated process per sample.
+
+The decision gates were fixed before collecting full-size results:
+
+1. Correctness, stability, exact identity preservation, and one key call per
+   object are mandatory.
+2. Continue product research if at least two large disordered cases reach a
+   median speedup of `1.50x` or better while incremental peak RSS remains below
+   `2.00x` the `sorted(key=...)` baseline.
+3. Alternatively, continue if one credible large case reduces incremental peak
+   RSS by at least 30% without slowing down by more than 10%.
+4. Small and nearly sorted losses are allowed in this forced-native prototype,
+   but a public API would need a conservative pre-key-extraction selector that
+   sends those cases directly to Timsort.
+
+Passing these gates is evidence for continued engineering, not evidence of
+market demand. Failing them means the API direction should be discarded or
+redesigned before publication.
+
+## Research: adaptive generic keys
+
+The follow-up selector keeps `key` generic, calls user code exactly once, and
+uses progressive native int64 extraction only when eligible. Sparse ordered
+runs can return conservatively to Timsort through a private vectorcall replay
+object. Reproduce its timing and isolated peak-RSS reports with:
+
+```bash
+python -m benchmarks.keyed_adaptive_benchmark \
+  --repetitions 7 \
+  --output keyed-adaptive-time.json
+python -m benchmarks.keyed_adaptive_benchmark \
+  --repetitions 7 \
+  --reverse \
+  --output keyed-adaptive-reverse-time.json
+python -m benchmarks.keyed_adaptive_memory \
+  --repetitions 3 \
+  --output keyed-adaptive-memory.json
+```
+
+This remains a private prototype. Its key replay deliberately targets CPython
+and must pass the supported-version wheel matrix before it can back the public
+`sort(key=...)` implementation. The selector is shipped only as the private
+internal module `bielsort_native._keyed_adaptive`, so wheel-level tests can
+exercise the real packaging boundary without adding it to either public
+package's `__all__`.
+
+Selector v3 adds `noisy-ordered-prefix-random-int64` to the timing matrix. It
+prevents a short nearly ordered prefix from hiding a disordered tail and
+records whether the conservative 2,048-key policy preserves the native Radix
+path.
+
+## Research: candidate public keyed API
+
+The accepted candidate wires the private selector into the existing new-list
+API without adding names or parameters. It deliberately leaves the in-place
+key path on `list.sort()`:
+
+```bash
+python -m benchmarks.keyed_public_api_benchmark \
+  --repetitions 11 \
+  --cases dense-int64,int64,string \
+  --output keyed-public-api.json
+```
+
+Pass `--reverse` for the descending matrix. The benchmark imports the
+canonical `bielsort` package, so it measures the public wrapper rather than
+calling the private selector directly.
+
+The follow-up nearly ordered release gate deliberately retains negative
+results. It compares the 2,048-key adaptive policy against random-tail controls
+at 10,000 and 100,000 records, and explains why another narrow threshold was
+rejected instead of tuned to one machine.
+
 ## Versioned results
 
+- [Keyed nearly ordered release gate — 2026-08-04](results/2026-08-04-keyed-nearly-ordered-release-gate.md)
+- [Candidate public `sort(key=...)` API — 2026-08-04](results/2026-08-04-keyed-public-api-candidate.md)
+- [Adaptive generic-key selector v3 — 2026-08-04](results/2026-08-04-keyed-adaptive-selector-v3.md)
+- [Exact key-identity replay — 2026-08-04](results/2026-08-04-key-identity-replay.md)
+- [Stable reverse keyed selector — 2026-08-04](results/2026-08-04-keyed-adaptive-reverse.md)
+- [Adaptive generic-key selector v2 — 2026-08-04](results/2026-08-04-keyed-adaptive-selector-v2.md)
+- [Adaptive generic-key selector — 2026-08-04](results/2026-08-04-keyed-adaptive-selector.md)
+- [Keyed-int64 native-memory guard — 2026-08-04](results/2026-08-04-keyed-int64-memory-guard.md)
+- [Structured keyed-int64 diagnostics — 2026-08-04](results/2026-08-04-keyed-int64-diagnostics.md)
+- [Compact keyed-int64 Radix buffers — 2026-08-04](results/2026-08-04-keyed-int64-compact.md)
+- [Signed-int64 keyed-object prototype — 2026-08-04](results/2026-08-04-keyed-int64-prototype.md)
 - [Corrected hosted validation and fallback investigation — 2026-07-31](results/2026-07-31-fallback-investigation.md)
 - [Superseded GitHub-hosted snapshot — 2026-07-31](results/2026-07-31-github-hosted.md)
 - [Linux x86-64 — 2026-07-30](results/2026-07-30-linux-x86_64.md)

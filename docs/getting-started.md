@@ -97,8 +97,11 @@ assert numbers == [8, -4, 10, 3, -4]
 
 ## `key=` and `reverse=`
 
-Both options are supported. BielSort delegates these operations to Python's
-Timsort so their behavior matches `sorted()` and `list.sort()`.
+Both options are supported. In the unreleased 0.2 candidate, new-list
+`sort(key=...)` may use stable native Counting or Radix when the key returns
+exact signed-int64 integers. Other new-list keys and every in-place key call
+retain Timsort behavior. The published 0.1.0 wheel still uses Timsort for all
+key calls.
 
 ```python
 import bielsort
