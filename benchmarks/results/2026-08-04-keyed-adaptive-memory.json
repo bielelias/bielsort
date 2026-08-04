@@ -1,0 +1,252 @@
+{
+  "platform": "linux",
+  "python": "3.11.2 (main, Apr  8 2026, 01:58:00) [GCC 12.2.0]",
+  "repetitions": 3,
+  "rows": [
+    {
+      "adaptive_peak_bytes": 32129024,
+      "adaptive_to_sorted_ratio": 1.2352755905511812,
+      "case": "int64",
+      "samples": {
+        "adaptive-key": {
+          "median_incremental_peak_bytes": 32129024,
+          "samples": [
+            {
+              "algorithm": "adaptive-key",
+              "case": "int64",
+              "elapsed_seconds": 0.1112285970011726,
+              "incremental_peak_bytes": 32178176,
+              "size": 1000000
+            },
+            {
+              "algorithm": "adaptive-key",
+              "case": "int64",
+              "elapsed_seconds": 0.11108068600151455,
+              "incremental_peak_bytes": 31764480,
+              "size": 1000000
+            },
+            {
+              "algorithm": "adaptive-key",
+              "case": "int64",
+              "elapsed_seconds": 0.12565737700060708,
+              "incremental_peak_bytes": 32129024,
+              "size": 1000000
+            }
+          ]
+        },
+        "sorted-key": {
+          "median_incremental_peak_bytes": 26009600,
+          "samples": [
+            {
+              "algorithm": "sorted-key",
+              "case": "int64",
+              "elapsed_seconds": 0.3783322949966532,
+              "incremental_peak_bytes": 24956928,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "int64",
+              "elapsed_seconds": 0.3754135130002396,
+              "incremental_peak_bytes": 28102656,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "int64",
+              "elapsed_seconds": 0.3735138160045608,
+              "incremental_peak_bytes": 26009600,
+              "size": 1000000
+            }
+          ]
+        }
+      },
+      "size": 1000000,
+      "sorted_peak_bytes": 26009600
+    },
+    {
+      "adaptive_peak_bytes": 28033024,
+      "adaptive_to_sorted_ratio": 1.1594104692529223,
+      "case": "nearly-sorted-int64",
+      "samples": {
+        "adaptive-key": {
+          "median_incremental_peak_bytes": 28033024,
+          "samples": [
+            {
+              "algorithm": "adaptive-key",
+              "case": "nearly-sorted-int64",
+              "elapsed_seconds": 0.05279003699979512,
+              "incremental_peak_bytes": 28016640,
+              "size": 1000000
+            },
+            {
+              "algorithm": "adaptive-key",
+              "case": "nearly-sorted-int64",
+              "elapsed_seconds": 0.06300385700160405,
+              "incremental_peak_bytes": 28094464,
+              "size": 1000000
+            },
+            {
+              "algorithm": "adaptive-key",
+              "case": "nearly-sorted-int64",
+              "elapsed_seconds": 0.06106806500611128,
+              "incremental_peak_bytes": 28033024,
+              "size": 1000000
+            }
+          ]
+        },
+        "sorted-key": {
+          "median_incremental_peak_bytes": 24178688,
+          "samples": [
+            {
+              "algorithm": "sorted-key",
+              "case": "nearly-sorted-int64",
+              "elapsed_seconds": 0.07333334400027525,
+              "incremental_peak_bytes": 24178688,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "nearly-sorted-int64",
+              "elapsed_seconds": 0.059669344998837914,
+              "incremental_peak_bytes": 24088576,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "nearly-sorted-int64",
+              "elapsed_seconds": 0.06613918299990473,
+              "incremental_peak_bytes": 24211456,
+              "size": 1000000
+            }
+          ]
+        }
+      },
+      "size": 1000000,
+      "sorted_peak_bytes": 24178688
+    },
+    {
+      "adaptive_peak_bytes": 24559616,
+      "adaptive_to_sorted_ratio": 0.9988339163751457,
+      "case": "string",
+      "samples": {
+        "adaptive-key": {
+          "median_incremental_peak_bytes": 24559616,
+          "samples": [
+            {
+              "algorithm": "adaptive-key",
+              "case": "string",
+              "elapsed_seconds": 0.39651772000070196,
+              "incremental_peak_bytes": 24252416,
+              "size": 1000000
+            },
+            {
+              "algorithm": "adaptive-key",
+              "case": "string",
+              "elapsed_seconds": 0.38443076799740084,
+              "incremental_peak_bytes": 25088000,
+              "size": 1000000
+            },
+            {
+              "algorithm": "adaptive-key",
+              "case": "string",
+              "elapsed_seconds": 0.4057669120011269,
+              "incremental_peak_bytes": 24559616,
+              "size": 1000000
+            }
+          ]
+        },
+        "sorted-key": {
+          "median_incremental_peak_bytes": 24588288,
+          "samples": [
+            {
+              "algorithm": "sorted-key",
+              "case": "string",
+              "elapsed_seconds": 0.39992804099892965,
+              "incremental_peak_bytes": 24227840,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "string",
+              "elapsed_seconds": 0.3814355579961557,
+              "incremental_peak_bytes": 25096192,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "string",
+              "elapsed_seconds": 0.3870994309982052,
+              "incremental_peak_bytes": 24588288,
+              "size": 1000000
+            }
+          ]
+        }
+      },
+      "size": 1000000,
+      "sorted_peak_bytes": 24588288
+    },
+    {
+      "adaptive_peak_bytes": 26128384,
+      "adaptive_to_sorted_ratio": 1.0025145371680024,
+      "case": "huge-int",
+      "samples": {
+        "adaptive-key": {
+          "median_incremental_peak_bytes": 26128384,
+          "samples": [
+            {
+              "algorithm": "adaptive-key",
+              "case": "huge-int",
+              "elapsed_seconds": 0.35975200300163124,
+              "incremental_peak_bytes": 25079808,
+              "size": 1000000
+            },
+            {
+              "algorithm": "adaptive-key",
+              "case": "huge-int",
+              "elapsed_seconds": 0.3557609900017269,
+              "incremental_peak_bytes": 28069888,
+              "size": 1000000
+            },
+            {
+              "algorithm": "adaptive-key",
+              "case": "huge-int",
+              "elapsed_seconds": 0.35867144700023346,
+              "incremental_peak_bytes": 26128384,
+              "size": 1000000
+            }
+          ]
+        },
+        "sorted-key": {
+          "median_incremental_peak_bytes": 26062848,
+          "samples": [
+            {
+              "algorithm": "sorted-key",
+              "case": "huge-int",
+              "elapsed_seconds": 0.3614383870008169,
+              "incremental_peak_bytes": 25034752,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "huge-int",
+              "elapsed_seconds": 0.341187573998468,
+              "incremental_peak_bytes": 28069888,
+              "size": 1000000
+            },
+            {
+              "algorithm": "sorted-key",
+              "case": "huge-int",
+              "elapsed_seconds": 0.34712388700427255,
+              "incremental_peak_bytes": 26062848,
+              "size": 1000000
+            }
+          ]
+        }
+      },
+      "size": 1000000,
+      "sorted_peak_bytes": 26062848
+    }
+  ],
+  "schema": "bielsort-keyed-adaptive-memory-v1"
+}

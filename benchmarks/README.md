@@ -134,8 +134,69 @@ wheel on matching Ubuntu runners with CPython 3.11 and 3.14. This research
 exists to characterize [issue 18](https://github.com/bielelias/bielsort/issues/18),
 not to justify tuning a heuristic to one synthetic distribution.
 
+## Research: Python objects with signed-int64 keys
+
+The keyed-int64 prototype is intentionally private to the native extension. It
+does not change the supported `bielsort` API or the published 0.1 behavior.
+It asks whether BielSort should accelerate stable sorting of arbitrary Python
+objects whose `key` callable returns an exact signed-64-bit integer:
+
+```bash
+python benchmarks/keyed_int64_prototype.py \
+  -n 10000 100000 1000000 \
+  -r 5 \
+  --memory-repetitions 3 \
+  --json-output keyed-int64-prototype.json
+```
+
+Both candidates receive the same live list of objects, call the same key
+callable, preserve the input, and return a new list. Results are checked for
+ordering, stability, identity preservation, and length. Peak RSS uses an
+isolated process per sample.
+
+The decision gates were fixed before collecting full-size results:
+
+1. Correctness, stability, exact identity preservation, and one key call per
+   object are mandatory.
+2. Continue product research if at least two large disordered cases reach a
+   median speedup of `1.50x` or better while incremental peak RSS remains below
+   `2.00x` the `sorted(key=...)` baseline.
+3. Alternatively, continue if one credible large case reduces incremental peak
+   RSS by at least 30% without slowing down by more than 10%.
+4. Small and nearly sorted losses are allowed in this forced-native prototype,
+   but a public API would need a conservative pre-key-extraction selector that
+   sends those cases directly to Timsort.
+
+Passing these gates is evidence for continued engineering, not evidence of
+market demand. Failing them means the API direction should be discarded or
+redesigned before publication.
+
+## Research: adaptive generic keys
+
+The follow-up selector keeps `key` generic, caches user results exactly once,
+and uses the native int64 path only when eligible. Reproduce its timing and
+isolated peak-RSS reports with:
+
+```bash
+python -m benchmarks.keyed_adaptive_benchmark \
+  --repetitions 7 \
+  --output keyed-adaptive-time.json
+python -m benchmarks.keyed_adaptive_memory \
+  --repetitions 3 \
+  --output keyed-adaptive-memory.json
+```
+
+This remains a private prototype. Its prefix-key replay deliberately targets
+CPython and must pass the supported-version wheel matrix before it can back the
+public `sort(key=...)` implementation.
+
 ## Versioned results
 
+- [Adaptive generic-key selector — 2026-08-04](results/2026-08-04-keyed-adaptive-selector.md)
+- [Keyed-int64 native-memory guard — 2026-08-04](results/2026-08-04-keyed-int64-memory-guard.md)
+- [Structured keyed-int64 diagnostics — 2026-08-04](results/2026-08-04-keyed-int64-diagnostics.md)
+- [Compact keyed-int64 Radix buffers — 2026-08-04](results/2026-08-04-keyed-int64-compact.md)
+- [Signed-int64 keyed-object prototype — 2026-08-04](results/2026-08-04-keyed-int64-prototype.md)
 - [Corrected hosted validation and fallback investigation — 2026-07-31](results/2026-07-31-fallback-investigation.md)
 - [Superseded GitHub-hosted snapshot — 2026-07-31](results/2026-07-31-github-hosted.md)
 - [Linux x86-64 — 2026-07-30](results/2026-07-30-linux-x86_64.md)

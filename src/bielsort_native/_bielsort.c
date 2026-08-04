@@ -1,7 +1,9 @@
 #define PY_SSIZE_T_CLEAN
 /* Native core for the bielsort_native CPython package. */
 #include <Python.h>
+#include <limits.h>
 #include <stdint.h>
+#include <string.h>
 
 #define RADIX_BITS 11
 #define RADIX_BASE (1U << RADIX_BITS)
@@ -19,7 +21,8 @@ typedef enum {
     RETORNO_LISTA,
     RETORNO_DIAGNOSTICO,
     RETORNO_NONE,
-    RETORNO_ESTRATEGIA
+    RETORNO_ESTRATEGIA,
+    RETORNO_DIAGNOSTICO_ESTRUTURADO
 } TipoRetorno;
 
 static PyObject *
@@ -32,6 +35,15 @@ finalizar_resultado(PyObject *lista, const char *estrategia, TipoRetorno tipo)
     if (tipo == RETORNO_NONE) {
         Py_DECREF(lista);
         Py_RETURN_NONE;
+    }
+
+    if (tipo == RETORNO_DIAGNOSTICO_ESTRUTURADO) {
+        Py_DECREF(lista);
+        PyErr_SetString(
+            PyExc_SystemError,
+            "diagnóstico estruturado requer o finalizador keyed-int64"
+        );
+        return NULL;
     }
 
     PyObject *nome = PyUnicode_FromString(estrategia);
@@ -65,6 +77,264 @@ usar_timsort(PyObject *lista, const char *motivo, TipoRetorno tipo)
         return NULL;
     }
     return finalizar_resultado(lista, motivo, tipo);
+}
+
+typedef enum {
+    KEYED_TRIVIAL,
+    KEYED_JA_ORDENADO,
+    KEYED_COUNTING,
+    KEYED_RADIX
+} AlgoritmoKeyed;
+
+static int
+multiplicar_tamanho(size_t a, size_t b, size_t *resultado)
+{
+    if (a != 0 && b > SIZE_MAX / a) {
+        return 0;
+    }
+    *resultado = a * b;
+    return 1;
+}
+
+static int
+somar_tamanho(size_t a, size_t b, size_t *resultado)
+{
+    if (b > SIZE_MAX - a) {
+        return 0;
+    }
+    *resultado = a + b;
+    return 1;
+}
+
+static int
+estimar_memoria_keyed(
+    Py_ssize_t n,
+    AlgoritmoKeyed algoritmo,
+    uint64_t amplitude,
+    size_t *estimativa,
+    size_t *pior_caso
+)
+{
+    const size_t quantidade = (size_t)n;
+    const size_t bytes_por_radix =
+        2 * sizeof(PyObject *) + 2 * sizeof(uint64_t);
+    if (!multiplicar_tamanho(quantidade, bytes_por_radix, pior_caso)) {
+        return 0;
+    }
+
+    if (algoritmo == KEYED_RADIX) {
+        *estimativa = *pior_caso;
+        return 1;
+    }
+
+    if (algoritmo == KEYED_COUNTING) {
+        size_t fase_conversao;
+        size_t fase_ordenacao;
+        size_t tabela;
+        if (
+            !multiplicar_tamanho(
+                quantidade,
+                sizeof(PyObject *) + sizeof(uint64_t) + sizeof(uint32_t),
+                &fase_conversao
+            )
+            || !multiplicar_tamanho(
+                quantidade,
+                2 * sizeof(PyObject *) + sizeof(uint32_t),
+                &fase_ordenacao
+            )
+            || amplitude == UINT64_MAX
+            || !multiplicar_tamanho(
+                (size_t)(amplitude + 1),
+                sizeof(Py_ssize_t),
+                &tabela
+            )
+            || !somar_tamanho(fase_ordenacao, tabela, &fase_ordenacao)
+        ) {
+            return 0;
+        }
+        *estimativa = fase_conversao > fase_ordenacao
+            ? fase_conversao
+            : fase_ordenacao;
+        return 1;
+    }
+
+    return multiplicar_tamanho(
+        quantidade,
+        sizeof(PyObject *) + sizeof(uint64_t),
+        estimativa
+    );
+}
+
+static int
+adicionar_item_diagnostico(
+    PyObject *diagnostico,
+    const char *nome,
+    PyObject *valor
+)
+{
+    if (valor == NULL) {
+        return -1;
+    }
+    const int resultado = PyDict_SetItemString(diagnostico, nome, valor);
+    Py_DECREF(valor);
+    return resultado;
+}
+
+static PyObject *
+novo_none(void)
+{
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+finalizar_resultado_keyed(
+    PyObject *lista,
+    const char *estrategia,
+    const char *algoritmo,
+    const char *motivo,
+    TipoRetorno tipo,
+    Py_ssize_t n,
+    int possui_dominio,
+    long long menor_valor,
+    long long maior_valor,
+    uint64_t amplitude,
+    int passagens,
+    int normalizado,
+    AlgoritmoKeyed codigo_algoritmo
+)
+{
+    if (tipo != RETORNO_DIAGNOSTICO_ESTRUTURADO) {
+        return finalizar_resultado(lista, estrategia, tipo);
+    }
+
+    size_t estimativa = 0;
+    size_t pior_caso = 0;
+    const int estimativa_valida = estimar_memoria_keyed(
+        n,
+        codigo_algoritmo,
+        amplitude,
+        &estimativa,
+        &pior_caso
+    );
+
+    PyObject *diagnostico = PyDict_New();
+    if (diagnostico == NULL) {
+        Py_DECREF(lista);
+        return NULL;
+    }
+
+    if (
+        adicionar_item_diagnostico(
+            diagnostico,
+            "strategy",
+            PyUnicode_FromString(estrategia)
+        ) < 0
+        || adicionar_item_diagnostico(
+            diagnostico,
+            "algorithm",
+            PyUnicode_FromString(algoritmo)
+        ) < 0
+        || adicionar_item_diagnostico(
+            diagnostico,
+            "reason",
+            PyUnicode_FromString(motivo)
+        ) < 0
+        || adicionar_item_diagnostico(
+            diagnostico,
+            "n",
+            PyLong_FromSsize_t(n)
+        ) < 0
+        || adicionar_item_diagnostico(
+            diagnostico,
+            "key_domain",
+            PyUnicode_FromString("signed-int64")
+        ) < 0
+        || adicionar_item_diagnostico(
+            diagnostico,
+            "key_min",
+            possui_dominio
+                ? PyLong_FromLongLong(menor_valor)
+                : novo_none()
+        ) < 0
+        || adicionar_item_diagnostico(
+            diagnostico,
+            "key_max",
+            possui_dominio
+                ? PyLong_FromLongLong(maior_valor)
+                : novo_none()
+        ) < 0
+        || adicionar_item_diagnostico(
+            diagnostico,
+            "key_span",
+            possui_dominio
+                ? PyLong_FromUnsignedLongLong(amplitude)
+                : novo_none()
+        ) < 0
+        || adicionar_item_diagnostico(
+            diagnostico,
+            "radix_passes",
+            codigo_algoritmo == KEYED_RADIX
+                ? PyLong_FromLong(passagens)
+                : novo_none()
+        ) < 0
+        || adicionar_item_diagnostico(
+            diagnostico,
+            "normalized",
+            PyBool_FromLong(normalizado)
+        ) < 0
+        || adicionar_item_diagnostico(
+            diagnostico,
+            "stable",
+            PyBool_FromLong(1)
+        ) < 0
+        || adicionar_item_diagnostico(
+            diagnostico,
+            "key_calls",
+            PyLong_FromSsize_t(n)
+        ) < 0
+        || adicionar_item_diagnostico(
+            diagnostico,
+            "estimated_variable_auxiliary_bytes",
+            estimativa_valida
+                ? PyLong_FromSize_t(estimativa)
+                : novo_none()
+        ) < 0
+        || adicionar_item_diagnostico(
+            diagnostico,
+            "worst_case_variable_auxiliary_bytes",
+            estimativa_valida
+                ? PyLong_FromSize_t(pior_caso)
+                : novo_none()
+        ) < 0
+        || adicionar_item_diagnostico(
+            diagnostico,
+            "memory_estimate_scope",
+            PyUnicode_FromString(
+                "result-list items and native variable buffers; "
+                "excludes input objects, allocator overhead, and fixed stack"
+            )
+        ) < 0
+        || adicionar_item_diagnostico(
+            diagnostico,
+            "prototype",
+            PyBool_FromLong(1)
+        ) < 0
+    ) {
+        Py_DECREF(diagnostico);
+        Py_DECREF(lista);
+        return NULL;
+    }
+
+    PyObject *resultado = PyTuple_New(2);
+    if (resultado == NULL) {
+        Py_DECREF(diagnostico);
+        Py_DECREF(lista);
+        return NULL;
+    }
+    PyTuple_SET_ITEM(resultado, 0, lista);
+    PyTuple_SET_ITEM(resultado, 1, diagnostico);
+    return resultado;
 }
 
 static int
@@ -477,6 +747,619 @@ biel_sort_impl(PyObject *iteravel, TipoRetorno tipo, int copiar)
     return finalizar_resultado(lista, estrategia, tipo);
 }
 
+/*
+ * Research-only path for evaluating the next BielSort direction.  It sorts
+ * arbitrary Python objects by an exact signed-64-bit integer key while
+ * preserving object identity and the encounter order of equal keys.
+ *
+ * The strict entry point deliberately has no Timsort fallback: calling the
+ * user's key function again would violate the one-call-per-object contract.
+ * A second private entry point accepts an owned cache list.  It returns None
+ * without mutating either list when a key is not exact int64, allowing the
+ * Python research selector to reuse the cache in a generic Timsort fallback.
+ */
+static PyObject *
+sort_by_int64_key_prototype_impl(
+    PyObject *iteravel,
+    PyObject *funcao_ou_chaves,
+    TipoRetorno tipo,
+    int usar_chaves_cacheadas
+)
+{
+    if (
+        !usar_chaves_cacheadas
+        && !PyCallable_Check(funcao_ou_chaves)
+    ) {
+        PyErr_SetString(PyExc_TypeError, "key deve ser chamável");
+        return NULL;
+    }
+
+    PyObject *lista;
+    if (usar_chaves_cacheadas) {
+        if (
+            !PyList_CheckExact(iteravel)
+            || !PyList_CheckExact(funcao_ou_chaves)
+            || iteravel == funcao_ou_chaves
+        ) {
+            PyErr_SetString(
+                PyExc_TypeError,
+                "o caminho cacheado requer duas lists exatas e distintas"
+            );
+            return NULL;
+        }
+        lista = iteravel;
+        Py_INCREF(lista);
+    } else if (PyList_CheckExact(iteravel)) {
+        lista = PyList_GetSlice(iteravel, 0, PyList_GET_SIZE(iteravel));
+    } else {
+        lista = PySequence_List(iteravel);
+    }
+    if (lista == NULL) {
+        return NULL;
+    }
+
+    const Py_ssize_t n = PyList_GET_SIZE(lista);
+    if (
+        usar_chaves_cacheadas
+        && PyList_GET_SIZE(funcao_ou_chaves) != n
+    ) {
+        Py_DECREF(lista);
+        PyErr_SetString(
+            PyExc_ValueError,
+            "items e cached_keys devem ter o mesmo tamanho"
+        );
+        return NULL;
+    }
+
+    if (n == 0) {
+        return finalizar_resultado_keyed(
+            lista,
+            "protótipo keyed-int64: trivial",
+            "trivial",
+            "entrada vazia",
+            tipo,
+            n,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            KEYED_TRIVIAL
+        );
+    }
+
+    if (
+        (size_t)n > SIZE_MAX / sizeof(uint64_t)
+        || (size_t)n > SIZE_MAX / sizeof(PyObject *)
+    ) {
+        Py_DECREF(lista);
+        return PyErr_NoMemory();
+    }
+
+    uint64_t *chaves_origem = PyMem_Malloc(
+        (size_t)n * sizeof(*chaves_origem)
+    );
+    if (chaves_origem == NULL) {
+        Py_DECREF(lista);
+        return PyErr_NoMemory();
+    }
+
+    uint64_t primeira_chave = 0;
+    uint64_t menor_chave = UINT64_MAX;
+    uint64_t maior_chave = 0;
+    uint64_t variacao = 0;
+    uint64_t chave_anterior = 0;
+    long long menor_valor = LLONG_MAX;
+    long long maior_valor = LLONG_MIN;
+    Py_ssize_t descidas = 0;
+
+    for (Py_ssize_t i = 0; i < n; i++) {
+        PyObject *resultado_chave;
+        if (usar_chaves_cacheadas) {
+            resultado_chave = PyList_GET_ITEM(funcao_ou_chaves, i);
+        } else {
+            PyObject *objeto = PyList_GET_ITEM(lista, i);
+            resultado_chave = PyObject_CallOneArg(funcao_ou_chaves, objeto);
+            if (resultado_chave == NULL) {
+                PyMem_Free(chaves_origem);
+                Py_DECREF(lista);
+                return NULL;
+            }
+        }
+
+        if (!PyLong_CheckExact(resultado_chave)) {
+            if (usar_chaves_cacheadas) {
+                PyMem_Free(chaves_origem);
+                Py_DECREF(lista);
+                Py_RETURN_NONE;
+            }
+            PyErr_Format(
+                PyExc_TypeError,
+                "key deve retornar int exato em int64; item %zd retornou %.200s",
+                i,
+                Py_TYPE(resultado_chave)->tp_name
+            );
+            Py_DECREF(resultado_chave);
+            PyMem_Free(chaves_origem);
+            Py_DECREF(lista);
+            return NULL;
+        }
+
+        long long valor = PyLong_AsLongLong(resultado_chave);
+        if (!usar_chaves_cacheadas) {
+            Py_DECREF(resultado_chave);
+        }
+        if (valor == -1 && PyErr_Occurred()) {
+            if (
+                usar_chaves_cacheadas
+                && PyErr_ExceptionMatches(PyExc_OverflowError)
+            ) {
+                PyErr_Clear();
+                PyMem_Free(chaves_origem);
+                Py_DECREF(lista);
+                Py_RETURN_NONE;
+            }
+            if (PyErr_ExceptionMatches(PyExc_OverflowError)) {
+                PyErr_Clear();
+                PyErr_Format(
+                    PyExc_OverflowError,
+                    "key do item %zd está fora do intervalo int64",
+                    i
+                );
+            }
+            PyMem_Free(chaves_origem);
+            Py_DECREF(lista);
+            return NULL;
+        }
+
+        const uint64_t chave =
+            ((uint64_t)(int64_t)valor) ^ (UINT64_C(1) << 63);
+        chaves_origem[i] = chave;
+
+        if (valor < menor_valor) {
+            menor_valor = valor;
+        }
+        if (valor > maior_valor) {
+            maior_valor = valor;
+        }
+
+        if (chave < menor_chave) {
+            menor_chave = chave;
+        }
+        if (chave > maior_chave) {
+            maior_chave = chave;
+        }
+
+        if (i == 0) {
+            primeira_chave = chave;
+        } else {
+            variacao |= chave ^ primeira_chave;
+            if (chave < chave_anterior) {
+                descidas++;
+            }
+        }
+        chave_anterior = chave;
+    }
+
+    if (
+        usar_chaves_cacheadas
+        && PyList_SetSlice(funcao_ou_chaves, 0, n, NULL) < 0
+    ) {
+        PyMem_Free(chaves_origem);
+        Py_DECREF(lista);
+        return NULL;
+    }
+
+    if (n == 1 || descidas == 0) {
+        PyMem_Free(chaves_origem);
+        return finalizar_resultado_keyed(
+            lista,
+            n == 1
+                ? "protótipo keyed-int64: trivial"
+                : "protótipo keyed-int64: já ordenado",
+            n == 1 ? "trivial" : "already-sorted",
+            n == 1
+                ? "um único elemento"
+                : "chaves já estão em ordem não decrescente",
+            tipo,
+            n,
+            1,
+            menor_valor,
+            maior_valor,
+            maior_chave - menor_chave,
+            0,
+            0,
+            n == 1 ? KEYED_TRIVIAL : KEYED_JA_ORDENADO
+        );
+    }
+
+    int passagens = contar_digitos_variaveis(variacao);
+    if (passagens == 0) {
+        PyMem_Free(chaves_origem);
+        return finalizar_resultado_keyed(
+            lista,
+            "protótipo keyed-int64: todos iguais",
+            "already-sorted",
+            "todas as chaves são iguais",
+            tipo,
+            n,
+            1,
+            menor_valor,
+            maior_valor,
+            0,
+            0,
+            0,
+            KEYED_JA_ORDENADO
+        );
+    }
+
+    const uint64_t amplitude = maior_chave - menor_chave;
+    int digitos_amplitude = 0;
+    uint64_t restante = amplitude;
+    while (restante != 0) {
+        digitos_amplitude++;
+        restante >>= RADIX_BITS;
+    }
+
+    const int usar_contagem =
+        n >= CONTAGEM_MINIMO_ELEMENTOS
+        && amplitude < CONTAGEM_LIMITE
+        && (
+            (uint64_t)n >= CONTAGEM_LIMITE / CONTAGEM_FATOR
+            || amplitude <= CONTAGEM_FATOR * (uint64_t)n
+        );
+
+    int normalizado = 0;
+    if (digitos_amplitude < passagens || usar_contagem) {
+        normalizado = 1;
+        variacao = 0;
+        for (Py_ssize_t i = 0; i < n; i++) {
+            chaves_origem[i] -= menor_chave;
+            variacao |= chaves_origem[i];
+        }
+        passagens = contar_digitos_variaveis(variacao);
+    }
+
+    if (usar_contagem) {
+        const size_t tamanho_contagem = (size_t)amplitude + 1;
+        uint32_t *chaves = PyMem_Malloc((size_t)n * sizeof(*chaves));
+
+        if (chaves != NULL) {
+            for (Py_ssize_t i = 0; i < n; i++) {
+                chaves[i] = (uint32_t)chaves_origem[i];
+            }
+            PyMem_Free(chaves_origem);
+            chaves_origem = NULL;
+
+            PyObject **saida = PyMem_Malloc((size_t)n * sizeof(*saida));
+            Py_ssize_t *contagem = PyMem_Calloc(
+                tamanho_contagem,
+                sizeof(*contagem)
+            );
+
+            if (saida != NULL && contagem != NULL) {
+                PyObject **itens = PySequence_Fast_ITEMS(lista);
+                PyThreadState *estado_gil = PyEval_SaveThread();
+
+                for (Py_ssize_t i = 0; i < n; i++) {
+                    contagem[chaves[i]]++;
+                }
+
+                Py_ssize_t total = 0;
+                for (size_t chave = 0; chave < tamanho_contagem; chave++) {
+                    const Py_ssize_t quantidade = contagem[chave];
+                    contagem[chave] = total;
+                    total += quantidade;
+                }
+
+                for (Py_ssize_t i = 0; i < n; i++) {
+                    const uint32_t chave = chaves[i];
+                    saida[contagem[chave]++] = itens[i];
+                }
+
+                PyEval_RestoreThread(estado_gil);
+
+                for (Py_ssize_t i = 0; i < n; i++) {
+                    PyList_SET_ITEM(lista, i, saida[i]);
+                }
+
+                PyMem_Free(contagem);
+                PyMem_Free(saida);
+                PyMem_Free(chaves);
+                return finalizar_resultado_keyed(
+                    lista,
+                    "protótipo keyed-int64: counting nativo estável",
+                    "counting",
+                    "intervalo denso elegível para Counting Sort",
+                    tipo,
+                    n,
+                    1,
+                    menor_valor,
+                    maior_valor,
+                    amplitude,
+                    0,
+                    normalizado,
+                    KEYED_COUNTING
+                );
+            }
+
+            PyMem_Free(contagem);
+            PyMem_Free(saida);
+            chaves_origem = PyMem_Malloc(
+                (size_t)n * sizeof(*chaves_origem)
+            );
+            if (chaves_origem == NULL) {
+                PyMem_Free(chaves);
+                Py_DECREF(lista);
+                return PyErr_NoMemory();
+            }
+            for (Py_ssize_t i = 0; i < n; i++) {
+                chaves_origem[i] = chaves[i];
+            }
+            PyMem_Free(chaves);
+        }
+    }
+
+    uint64_t *chaves_destino = PyMem_Malloc(
+        (size_t)n * sizeof(*chaves_destino)
+    );
+    PyObject **objetos_destino = PyMem_Malloc(
+        (size_t)n * sizeof(*objetos_destino)
+    );
+    if (chaves_destino == NULL || objetos_destino == NULL) {
+        PyMem_Free(objetos_destino);
+        PyMem_Free(chaves_destino);
+        PyMem_Free(chaves_origem);
+        Py_DECREF(lista);
+        return PyErr_NoMemory();
+    }
+
+    uint64_t *buffer_chaves_a = chaves_origem;
+    uint64_t *buffer_chaves_b = chaves_destino;
+    PyObject **itens = PySequence_Fast_ITEMS(lista);
+    PyThreadState *estado_gil = PyEval_SaveThread();
+
+    for (
+        int deslocamento = 0;
+        deslocamento < 64;
+        deslocamento += RADIX_BITS
+    ) {
+        if (((variacao >> deslocamento) & RADIX_MASCARA) == 0) {
+            continue;
+        }
+
+        Py_ssize_t contagem[RADIX_BASE] = {0};
+        for (Py_ssize_t i = 0; i < n; i++) {
+            const uint16_t digito = (uint16_t)(
+                (buffer_chaves_a[i] >> deslocamento) & RADIX_MASCARA
+            );
+            contagem[digito]++;
+        }
+
+        Py_ssize_t total = 0;
+        for (unsigned int digito = 0; digito < RADIX_BASE; digito++) {
+            const Py_ssize_t quantidade = contagem[digito];
+            contagem[digito] = total;
+            total += quantidade;
+        }
+
+        for (Py_ssize_t i = 0; i < n; i++) {
+            const uint16_t digito = (uint16_t)(
+                (buffer_chaves_a[i] >> deslocamento) & RADIX_MASCARA
+            );
+            const Py_ssize_t destino = contagem[digito]++;
+            buffer_chaves_b[destino] = buffer_chaves_a[i];
+            objetos_destino[destino] = itens[i];
+        }
+
+        /*
+         * The result list is private to this call, so its item array can be
+         * reused as the object side of the next radix pass.  Pointer copies do
+         * not alter reference counts because every pass is only a permutation
+         * of the same list-owned references.
+         */
+        memcpy(
+            itens,
+            objetos_destino,
+            (size_t)n * sizeof(*itens)
+        );
+
+        uint64_t *chaves_temporarias = buffer_chaves_a;
+        buffer_chaves_a = buffer_chaves_b;
+        buffer_chaves_b = chaves_temporarias;
+    }
+
+    PyEval_RestoreThread(estado_gil);
+
+    PyMem_Free(objetos_destino);
+    PyMem_Free(chaves_destino);
+    PyMem_Free(chaves_origem);
+
+    char estrategia[80];
+    PyOS_snprintf(
+        estrategia,
+        sizeof(estrategia),
+        passagens == 1
+            ? "protótipo keyed-int64: radix nativo compacto, 1 passagem"
+            : "protótipo keyed-int64: radix nativo compacto, %d passagens",
+        passagens
+    );
+    return finalizar_resultado_keyed(
+        lista,
+        estrategia,
+        "radix",
+        "intervalo amplo ou esparso; Counting Sort inelegível",
+        tipo,
+        n,
+        1,
+        menor_valor,
+        maior_valor,
+        amplitude,
+        passagens,
+        normalizado,
+        KEYED_RADIX
+    );
+}
+
+static int
+parse_keyed_prototype_args(
+    PyObject *args,
+    PyObject **iteravel,
+    PyObject **funcao_chave
+)
+{
+    return PyArg_ParseTuple(
+        args,
+        "OO:_sort_by_int64_key_prototype",
+        iteravel,
+        funcao_chave
+    );
+}
+
+#define CACHE_REPLAY_CAPSULE "bielsort.cached-key-replay"
+
+typedef struct {
+    PyObject *chaves;
+    PyObject *funcao_chave;
+    Py_ssize_t quantidade;
+    Py_ssize_t proximo;
+} EstadoReplayChaves;
+
+static void
+destruir_replay_chaves(PyObject *capsula)
+{
+    EstadoReplayChaves *estado = PyCapsule_GetPointer(
+        capsula,
+        CACHE_REPLAY_CAPSULE
+    );
+    if (estado == NULL) {
+        PyErr_Clear();
+        return;
+    }
+    Py_XDECREF(estado->funcao_chave);
+    Py_DECREF(estado->chaves);
+    PyMem_Free(estado);
+}
+
+static PyObject *
+reproduzir_chave_cacheada(PyObject *capsula, PyObject *item)
+{
+    EstadoReplayChaves *estado = PyCapsule_GetPointer(
+        capsula,
+        CACHE_REPLAY_CAPSULE
+    );
+    if (estado == NULL) {
+        return NULL;
+    }
+
+    const Py_ssize_t indice = estado->proximo;
+    if (indice >= estado->quantidade) {
+        PyErr_SetString(
+            PyExc_RuntimeError,
+            "o replay de chaves é de uso único"
+        );
+        return NULL;
+    }
+
+    (void)item;
+    estado->proximo++;
+    if (indice < PyList_GET_SIZE(estado->chaves)) {
+        PyObject *chave = PyList_GET_ITEM(estado->chaves, indice);
+        Py_INCREF(chave);
+        return chave;
+    }
+    if (estado->funcao_chave == NULL) {
+        PyErr_SetString(
+            PyExc_RuntimeError,
+            "o replay não possui uma chave cacheada para este item"
+        );
+        return NULL;
+    }
+    return PyObject_CallOneArg(estado->funcao_chave, item);
+}
+
+static PyMethodDef metodo_replay_chaves = {
+    "_cached_key_replay",
+    reproduzir_chave_cacheada,
+    METH_O,
+    "Callable interno de uso único para reproduzir chaves cacheadas."
+};
+
+static PyObject *
+criar_replay_chaves_cacheadas(
+    PyObject *itens,
+    PyObject *chaves,
+    PyObject *funcao_chave
+)
+{
+    if (
+        !PyList_CheckExact(itens)
+        || !PyList_CheckExact(chaves)
+        || itens == chaves
+    ) {
+        PyErr_SetString(
+            PyExc_TypeError,
+            "o replay requer duas lists exatas e distintas"
+        );
+        return NULL;
+    }
+    if (
+        funcao_chave == NULL
+        && PyList_GET_SIZE(itens) != PyList_GET_SIZE(chaves)
+    ) {
+        PyErr_SetString(
+            PyExc_ValueError,
+            "items e cached_keys devem ter o mesmo tamanho"
+        );
+        return NULL;
+    }
+    if (
+        funcao_chave != NULL
+        && (
+            !PyCallable_Check(funcao_chave)
+            || PyList_GET_SIZE(chaves) > PyList_GET_SIZE(itens)
+        )
+    ) {
+        PyErr_SetString(
+            PyExc_TypeError,
+            "o replay de prefixo requer key chamável e prefixo válido"
+        );
+        return NULL;
+    }
+
+    EstadoReplayChaves *estado = PyMem_Malloc(sizeof(*estado));
+    if (estado == NULL) {
+        return PyErr_NoMemory();
+    }
+    estado->chaves = chaves;
+    estado->funcao_chave = funcao_chave;
+    estado->quantidade = PyList_GET_SIZE(itens);
+    estado->proximo = 0;
+    Py_INCREF(chaves);
+    Py_XINCREF(funcao_chave);
+
+    PyObject *capsula = PyCapsule_New(
+        estado,
+        CACHE_REPLAY_CAPSULE,
+        destruir_replay_chaves
+    );
+    if (capsula == NULL) {
+        Py_XDECREF(funcao_chave);
+        Py_DECREF(chaves);
+        PyMem_Free(estado);
+        return NULL;
+    }
+
+    PyObject *replay = PyCFunction_NewEx(
+        &metodo_replay_chaves,
+        capsula,
+        NULL
+    );
+    Py_DECREF(capsula);
+    return replay;
+}
+
 static PyObject *
 py_sort(PyObject *Py_UNUSED(modulo), PyObject *iteravel)
 {
@@ -499,6 +1382,152 @@ static PyObject *
 py_sort_in_place_with_strategy(PyObject *Py_UNUSED(modulo), PyObject *lista)
 {
     return biel_sort_impl(lista, RETORNO_ESTRATEGIA, 0);
+}
+
+static PyObject *
+py_sort_by_int64_key_prototype(PyObject *Py_UNUSED(modulo), PyObject *args)
+{
+    PyObject *iteravel;
+    PyObject *funcao_chave;
+    if (!parse_keyed_prototype_args(args, &iteravel, &funcao_chave)) {
+        return NULL;
+    }
+    return sort_by_int64_key_prototype_impl(
+        iteravel,
+        funcao_chave,
+        RETORNO_LISTA,
+        0
+    );
+}
+
+static PyObject *
+py_sort_by_int64_key_prototype_with_strategy(
+    PyObject *Py_UNUSED(modulo),
+    PyObject *args
+)
+{
+    PyObject *iteravel;
+    PyObject *funcao_chave;
+    if (!parse_keyed_prototype_args(args, &iteravel, &funcao_chave)) {
+        return NULL;
+    }
+    return sort_by_int64_key_prototype_impl(
+        iteravel,
+        funcao_chave,
+        RETORNO_DIAGNOSTICO,
+        0
+    );
+}
+
+static PyObject *
+py_sort_by_int64_key_prototype_with_info(
+    PyObject *Py_UNUSED(modulo),
+    PyObject *args
+)
+{
+    PyObject *iteravel;
+    PyObject *funcao_chave;
+    if (!parse_keyed_prototype_args(args, &iteravel, &funcao_chave)) {
+        return NULL;
+    }
+    return sort_by_int64_key_prototype_impl(
+        iteravel,
+        funcao_chave,
+        RETORNO_DIAGNOSTICO_ESTRUTURADO,
+        0
+    );
+}
+
+static PyObject *
+py_try_sort_by_cached_int64_keys_prototype(
+    PyObject *Py_UNUSED(modulo),
+    PyObject *args
+)
+{
+    PyObject *itens;
+    PyObject *chaves;
+    if (!PyArg_ParseTuple(
+        args,
+        "OO:_try_sort_by_cached_int64_keys_prototype",
+        &itens,
+        &chaves
+    )) {
+        return NULL;
+    }
+    return sort_by_int64_key_prototype_impl(
+        itens,
+        chaves,
+        RETORNO_LISTA,
+        1
+    );
+}
+
+static PyObject *
+py_try_sort_by_cached_int64_keys_prototype_with_info(
+    PyObject *Py_UNUSED(modulo),
+    PyObject *args
+)
+{
+    PyObject *itens;
+    PyObject *chaves;
+    if (!PyArg_ParseTuple(
+        args,
+        "OO:_try_sort_by_cached_int64_keys_prototype_with_info",
+        &itens,
+        &chaves
+    )) {
+        return NULL;
+    }
+    return sort_by_int64_key_prototype_impl(
+        itens,
+        chaves,
+        RETORNO_DIAGNOSTICO_ESTRUTURADO,
+        1
+    );
+}
+
+static PyObject *
+py_make_cached_key_replay_prototype(
+    PyObject *Py_UNUSED(modulo),
+    PyObject *args
+)
+{
+    PyObject *itens;
+    PyObject *chaves;
+    if (!PyArg_ParseTuple(
+        args,
+        "OO:_make_cached_key_replay_prototype",
+        &itens,
+        &chaves
+    )) {
+        return NULL;
+    }
+    return criar_replay_chaves_cacheadas(itens, chaves, NULL);
+}
+
+static PyObject *
+py_make_prefix_cached_key_replay_prototype(
+    PyObject *Py_UNUSED(modulo),
+    PyObject *args
+)
+{
+    PyObject *itens;
+    PyObject *chaves;
+    PyObject *funcao_chave;
+    if (!PyArg_ParseTuple(
+        args,
+        "OOO:_make_prefix_cached_key_replay_prototype",
+        &itens,
+        &chaves,
+        &funcao_chave
+    )) {
+        return NULL;
+    }
+    return criar_replay_chaves_cacheadas(
+        itens,
+        chaves,
+        funcao_chave
+    );
 }
 
 PyDoc_STRVAR(
@@ -529,6 +1558,55 @@ PyDoc_STRVAR(
     "Ordena no lugar e retorna o nome da estratégia utilizada."
 );
 
+PyDoc_STRVAR(
+    keyed_prototype_doc,
+    "_sort_by_int64_key_prototype(iterable, key, /)\n"
+    "--\n\n"
+    "Protótipo interno: ordena objetos por uma chave int64 estável."
+);
+
+PyDoc_STRVAR(
+    keyed_prototype_strategy_doc,
+    "_sort_by_int64_key_prototype_with_strategy(iterable, key, /)\n"
+    "--\n\n"
+    "Protótipo interno: retorna (lista_ordenada, estratégia)."
+);
+
+PyDoc_STRVAR(
+    keyed_prototype_info_doc,
+    "_sort_by_int64_key_prototype_with_info(iterable, key, /)\n"
+    "--\n\n"
+    "Protótipo interno: retorna (lista_ordenada, diagnóstico estruturado)."
+);
+
+PyDoc_STRVAR(
+    cached_keyed_prototype_doc,
+    "_try_sort_by_cached_int64_keys_prototype(items, cached_keys, /)\n"
+    "--\n\n"
+    "Protótipo interno: consome chaves int64 ou retorna None."
+);
+
+PyDoc_STRVAR(
+    cached_keyed_prototype_info_doc,
+    "_try_sort_by_cached_int64_keys_prototype_with_info(items, keys, /)\n"
+    "--\n\n"
+    "Protótipo interno cacheado com diagnóstico estruturado."
+);
+
+PyDoc_STRVAR(
+    cached_key_replay_prototype_doc,
+    "_make_cached_key_replay_prototype(items, cached_keys, /)\n"
+    "--\n\n"
+    "Protótipo interno: cria callable nativo de replay para Timsort."
+);
+
+PyDoc_STRVAR(
+    prefix_cached_key_replay_prototype_doc,
+    "_make_prefix_cached_key_replay_prototype(items, keys, key, /)\n"
+    "--\n\n"
+    "Protótipo interno: reproduz um prefixo e avalia as chaves restantes."
+);
+
 static PyMethodDef metodos[] = {
     {"sort", py_sort, METH_O, sort_doc},
     {"sort_with_strategy", py_sort_with_strategy, METH_O, strategy_doc},
@@ -539,6 +1617,48 @@ static PyMethodDef metodos[] = {
         METH_O,
         in_place_strategy_doc
     },
+    {
+        "_sort_by_int64_key_prototype",
+        py_sort_by_int64_key_prototype,
+        METH_VARARGS,
+        keyed_prototype_doc
+    },
+    {
+        "_sort_by_int64_key_prototype_with_strategy",
+        py_sort_by_int64_key_prototype_with_strategy,
+        METH_VARARGS,
+        keyed_prototype_strategy_doc
+    },
+    {
+        "_sort_by_int64_key_prototype_with_info",
+        py_sort_by_int64_key_prototype_with_info,
+        METH_VARARGS,
+        keyed_prototype_info_doc
+    },
+    {
+        "_try_sort_by_cached_int64_keys_prototype",
+        py_try_sort_by_cached_int64_keys_prototype,
+        METH_VARARGS,
+        cached_keyed_prototype_doc
+    },
+    {
+        "_try_sort_by_cached_int64_keys_prototype_with_info",
+        py_try_sort_by_cached_int64_keys_prototype_with_info,
+        METH_VARARGS,
+        cached_keyed_prototype_info_doc
+    },
+    {
+        "_make_cached_key_replay_prototype",
+        py_make_cached_key_replay_prototype,
+        METH_VARARGS,
+        cached_key_replay_prototype_doc
+    },
+    {
+        "_make_prefix_cached_key_replay_prototype",
+        py_make_prefix_cached_key_replay_prototype,
+        METH_VARARGS,
+        prefix_cached_key_replay_prototype_doc
+    },
     {NULL, NULL, 0, NULL}
 };
 
@@ -547,7 +1667,11 @@ static struct PyModuleDef modulo = {
     "_bielsort",
     "Núcleo nativo do BielSort.",
     -1,
-    metodos
+    metodos,
+    NULL,
+    NULL,
+    NULL,
+    NULL
 };
 
 PyMODINIT_FUNC
