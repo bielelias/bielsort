@@ -122,6 +122,11 @@ and cross-platform wheel evidence remain future promotion decisions.
 - A local wheel and source distribution pass `twine check`; the wheel installs
   in a clean environment outside the source tree and exercises both the
   public sort and private native application successfully.
+- The non-publishing
+  [build-only wheel run](https://github.com/bielelias/bielsort/actions/runs/31041438904)
+  passes on Linux, Windows, macOS Intel, and macOS Apple Silicon, including
+  wheel tests, content validation, artifact upload, and source-distribution
+  creation. TestPyPI and PyPI jobs were skipped by design.
 - No public export, version, tag, TestPyPI file, or PyPI file was created.
 
 ## Raw evidence and reproduction

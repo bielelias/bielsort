@@ -145,8 +145,14 @@ permutation construction alone is still slower. See the
 The local wheel and source distribution pass metadata validation, and a clean
 environment installs the wheel and exercises the native application outside
 the source tree.
-Cross-platform source and built-wheel validation for this follow-up remain
-pending. The prototype has passed its local private research gates; public API
+PR [#33](https://github.com/bielelias/bielsort/pull/33) passes source-build CI
+on Linux with CPython 3.9–3.14, Windows with CPython 3.11/3.14, and macOS with
+CPython 3.11/3.14, plus hosted sanitizers, public stubs, and strict
+documentation. Its non-publishing
+[build-only wheel run](https://github.com/bielelias/bielsort/actions/runs/31041438904)
+also passes on Linux, Windows, macOS Intel, and macOS Apple Silicon, including
+wheel tests, content validation, artifact upload, and source-distribution
+creation. The prototype has passed its private research gates; public API
 design and promotion remain separate decisions.
 
 ## Resume checklist
