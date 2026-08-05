@@ -276,7 +276,7 @@ matched stable full sorting by identity. See the
 linked raw samples.
 
 The stage-two continuation was pre-registered in the same proposal. It
-measure an adaptive `O(k)` heap over generic comparable keys, guard behavior,
+measures an adaptive `O(k)` heap over generic comparable keys, guard behavior,
 exact-int64 regression against the frozen private core, and generic fallback
 against `heapq`. Its thresholds were fixed before implementation.
 
@@ -300,6 +300,11 @@ core regression limit and one generic case exceeded the `heapq` regression
 limit. Semantic and memory gates passed. See the
 [versioned adaptive keyed top-k report](results/2026-08-05-adaptive-keyed-topk.md)
 and its linked raw samples.
+
+A separately pre-registered confirmation rechecks the four failures and two
+controls with warm-ups, three calls per block, and 15 rotated blocks. It does
+not alter the failed gate or authorize promotion; its purpose is to separate
+repeatable overhead from host timing shifts.
 
 ## Research: adaptive generic keys
 

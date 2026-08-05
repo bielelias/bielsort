@@ -221,3 +221,31 @@ The implementation remains private. See the
 [versioned failure report](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-adaptive-keyed-topk.md)
 and its linked raw samples. Any profiling or confirmation run must be
 pre-registered separately and cannot erase this result.
+
+### Pre-registered failure confirmation
+
+The first follow-up changes no selection code and rechecks only the four
+failed performance cases, plus two non-failing controls. Each case uses the
+same deterministic data shape as the canonical run, three operation calls per
+timed block, 15 rotated blocks, one untimed warm-up per algorithm, garbage
+collection outside the timed region, and per-block average durations.
+
+The exact cases compare adaptive with the frozen strict core at one million
+records:
+
+- dense, largest, `k=10`;
+- dense, smallest, `k=1,000`;
+- int32, largest, `k=100`;
+- heavy duplicates, smallest, `k=100` as a control.
+
+The generic cases compare adaptive with `heapq` at 100,000 records:
+
+- arbitrary-size integer, smallest, `k=100`;
+- string, smallest, `k=100` as a control.
+
+The confirmation is consistent with host variability only if every failed
+case reaches at least `0.87x` against its comparator and both controls remain
+at least `0.87x`. Otherwise the regression is treated as reproducible and the
+implementation must be profiled or redesigned. Passing this confirmation
+does not retroactively pass stage two; a new complete canonical protocol
+would still need separate pre-registration.

@@ -98,8 +98,10 @@ published on 2026-08-05.
 - [x] Implement and validate the private adaptive generic-key heap and
   pre-key memory guard. Semantic and memory gates passed, but the fixed
   performance gate did not; no promotion is approved.
-- [ ] Pre-register a focused profiling and confirmation experiment for the
+- [x] Pre-register a focused profiling and confirmation experiment for the
   four stage-two regression cases without replacing the failed result.
+- [ ] Run the unchanged-code confirmation and decide whether to profile the
+  implementation or design a new full canonical protocol.
 - [ ] Measure common `lambda` and `attrgetter` keys and isolated memory before
   deciding whether direct keyed top-k deserves promotion review.
 - [ ] Prototype native inverse and composition operations only after external

@@ -41,6 +41,8 @@ release.
   generic merge, and pre-key `heapq`/`raise` native-memory guard. Canonical
   stage-two semantics and memory checks passed, but the unchanged performance
   gate failed in four cases, so the candidate is not approved for promotion.
+- Pre-registered an unchanged-code, block-timed confirmation of those four
+  failures plus two controls; it cannot replace the failed canonical result.
 
 ## [0.2.0] - 2026-08-05
 
