@@ -8,10 +8,9 @@ release.
 
 ## [Unreleased]
 
-## [0.2.0] - YYYY-MM-DD
+## [0.2.0] - 2026-08-05
 
-Prepared from the cross-platform validated `0.2.0rc1` candidate. Replace the
-date placeholder only with the actual production release date.
+Prepared from the cross-platform validated `0.2.0rc1` candidate.
 
 ### Added
 
