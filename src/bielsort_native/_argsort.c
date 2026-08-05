@@ -1,6 +1,7 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "_argsort.h"
@@ -14,6 +15,7 @@ typedef struct {
     PyObject_HEAD
     void *indices;
     Py_ssize_t length;
+    Py_ssize_t source_length;
     Py_ssize_t shape;
     Py_ssize_t stride;
     int itemsize;
@@ -61,8 +63,9 @@ permutation_repr(PyObject *object)
 {
     BielSortPermutation *self = (BielSortPermutation *)object;
     return PyUnicode_FromFormat(
-        "_Permutation(length=%zd, itemsize=%d)",
+        "_Permutation(length=%zd, source_length=%zd, itemsize=%d)",
         self->length,
+        self->source_length,
         self->itemsize
     );
 }
@@ -85,30 +88,30 @@ permutation_apply(BielSortPermutation *self, PyObject *sequence)
         return NULL;
     }
     const Py_ssize_t length = PySequence_Fast_GET_SIZE(values);
-    if (length != self->length) {
+    if (length != self->source_length) {
         Py_DECREF(values);
         PyErr_Format(
             PyExc_ValueError,
-            "permutation length %zd does not match sequence length %zd",
-            self->length,
+            "permutation source length %zd does not match sequence length %zd",
+            self->source_length,
             length
         );
         return NULL;
     }
 
-    PyObject *result = PyList_New(length);
+    PyObject *result = PyList_New(self->length);
     if (result == NULL) {
         Py_DECREF(values);
         return NULL;
     }
-    for (Py_ssize_t position = 0; position < length; position++) {
+    for (Py_ssize_t position = 0; position < self->length; position++) {
         uint64_t index;
         if (self->itemsize == 4) {
             index = ((const uint32_t *)self->indices)[position];
         } else {
             index = ((const uint64_t *)self->indices)[position];
         }
-        if (index >= (uint64_t)length) {
+        if (index >= (uint64_t)self->source_length) {
             Py_DECREF(result);
             Py_DECREF(values);
             PyErr_SetString(
@@ -196,7 +199,12 @@ static PyTypeObject bielsort_permutation_type = {
 };
 
 static PyObject *
-permutation_new_owned(Py_ssize_t length, int itemsize, void *indices)
+permutation_new_owned(
+    Py_ssize_t length,
+    Py_ssize_t source_length,
+    int itemsize,
+    void *indices
+)
 {
     BielSortPermutation *result = PyObject_New(
         BielSortPermutation,
@@ -208,6 +216,7 @@ permutation_new_owned(Py_ssize_t length, int itemsize, void *indices)
     }
     result->indices = indices;
     result->length = length;
+    result->source_length = source_length;
     result->shape = length;
     result->stride = itemsize;
     result->itemsize = itemsize;
@@ -256,7 +265,7 @@ identity_permutation(Py_ssize_t length)
             indices[index] = (uint64_t)index;
         }
     }
-    return permutation_new_owned(length, itemsize, storage);
+    return permutation_new_owned(length, length, itemsize, storage);
 }
 
 static PyObject *
@@ -304,7 +313,7 @@ pack_python_indices(PyObject *indices)
             ((uint64_t *)storage)[position] = (uint64_t)index;
         }
     }
-    return permutation_new_owned(length, itemsize, storage);
+    return permutation_new_owned(length, length, itemsize, storage);
 }
 
 static PyObject *
@@ -654,6 +663,7 @@ argsort_int64_impl(PyObject *sequence, int reverse, int diagnostic)
 
     PyObject *permutation = permutation_new_owned(
         length,
+        length,
         itemsize,
         final_indices
     );
@@ -669,6 +679,295 @@ argsort_int64_impl(PyObject *sequence, int reverse, int diagnostic)
         passes == 1 ? "passagem" : "passagens"
     );
     return finalize_argsort(permutation, strategy, diagnostic);
+}
+
+typedef struct {
+    uint64_t key;
+    uint64_t index;
+} TopKEntry;
+
+static int
+topk_entry_is_better(TopKEntry left, TopKEntry right)
+{
+    return left.key < right.key
+        || (left.key == right.key && left.index < right.index);
+}
+
+static int
+topk_entry_is_worse(TopKEntry left, TopKEntry right)
+{
+    return left.key > right.key
+        || (left.key == right.key && left.index > right.index);
+}
+
+static void
+topk_sift_down(
+    TopKEntry *heap,
+    Py_ssize_t length,
+    Py_ssize_t root
+)
+{
+    while (length >= 2 && root <= (length - 2) / 2) {
+        Py_ssize_t child = root * 2 + 1;
+        if (
+            child + 1 < length
+            && topk_entry_is_worse(heap[child + 1], heap[child])
+        ) {
+            child++;
+        }
+        if (!topk_entry_is_worse(heap[child], heap[root])) {
+            return;
+        }
+        const TopKEntry swap = heap[root];
+        heap[root] = heap[child];
+        heap[child] = swap;
+        root = child;
+    }
+}
+
+static int
+topk_compare_best_first(const void *left_pointer, const void *right_pointer)
+{
+    const TopKEntry left = *(const TopKEntry *)left_pointer;
+    const TopKEntry right = *(const TopKEntry *)right_pointer;
+    if (topk_entry_is_better(left, right)) {
+        return -1;
+    }
+    if (topk_entry_is_better(right, left)) {
+        return 1;
+    }
+    return 0;
+}
+
+static PyObject *
+permutation_prefix(PyObject *object, Py_ssize_t length)
+{
+    BielSortPermutation *permutation = (BielSortPermutation *)object;
+    if (
+        Py_TYPE(object) != &bielsort_permutation_type
+        || length < 0
+        || length > permutation->length
+    ) {
+        PyErr_SetString(
+            PyExc_SystemError,
+            "invalid private permutation prefix"
+        );
+        return NULL;
+    }
+    void *storage = allocate_indices(length, permutation->itemsize);
+    if (length != 0 && storage == NULL) {
+        return NULL;
+    }
+    if (length != 0) {
+        memcpy(
+            storage,
+            permutation->indices,
+            (size_t)length * (size_t)permutation->itemsize
+        );
+    }
+    return permutation_new_owned(
+        length,
+        permutation->source_length,
+        permutation->itemsize,
+        storage
+    );
+}
+
+static PyObject *
+topk_full_argsort(
+    PyObject *sequence,
+    Py_ssize_t k,
+    int largest,
+    const char *strategy,
+    int diagnostic
+)
+{
+    PyObject *full = argsort_int64_impl(sequence, largest, 0);
+    if (full == NULL) {
+        return NULL;
+    }
+    PyObject *result = permutation_prefix(full, k);
+    Py_DECREF(full);
+    return finalize_argsort(result, strategy, diagnostic);
+}
+
+static PyObject *
+topk_int64_impl(
+    PyObject *sequence,
+    Py_ssize_t k,
+    int largest,
+    int diagnostic
+)
+{
+    if (!PySequence_Check(sequence)) {
+        PyErr_SetString(
+            PyExc_TypeError,
+            "_topk_int64_prototype requires a reusable sequence"
+        );
+        return NULL;
+    }
+    if (k < 0) {
+        PyErr_SetString(PyExc_ValueError, "k must be non-negative");
+        return NULL;
+    }
+    PyObject *values = PySequence_Fast(
+        sequence,
+        "_topk_int64_prototype requires a reusable sequence"
+    );
+    if (values == NULL) {
+        return NULL;
+    }
+    const Py_ssize_t source_length = PySequence_Fast_GET_SIZE(values);
+    if (k > source_length) {
+        k = source_length;
+    }
+    const int itemsize = permutation_itemsize(source_length);
+    if (k == 0) {
+        Py_DECREF(values);
+        PyObject *result = permutation_new_owned(
+            0,
+            source_length,
+            itemsize,
+            NULL
+        );
+        return finalize_argsort(result, "seleção vazia", diagnostic);
+    }
+    if (k > source_length / 8) {
+        Py_DECREF(values);
+        return topk_full_argsort(
+            sequence,
+            k,
+            largest,
+            "argsort completo adaptativo: k grande",
+            diagnostic
+        );
+    }
+    if ((size_t)k > SIZE_MAX / sizeof(TopKEntry)) {
+        Py_DECREF(values);
+        return PyErr_NoMemory();
+    }
+    TopKEntry *heap = PyMem_Malloc((size_t)k * sizeof(*heap));
+    if (heap == NULL) {
+        Py_DECREF(values);
+        return PyErr_NoMemory();
+    }
+
+    int exact_int64 = 1;
+    for (Py_ssize_t index = 0; index < k; index++) {
+        PyObject *value = PySequence_Fast_GET_ITEM(values, index);
+        if (!PyLong_CheckExact(value)) {
+            exact_int64 = 0;
+            break;
+        }
+        const long long signed_value = PyLong_AsLongLong(value);
+        if (signed_value == -1 && PyErr_Occurred()) {
+            if (PyErr_ExceptionMatches(PyExc_OverflowError)) {
+                PyErr_Clear();
+                exact_int64 = 0;
+                break;
+            }
+            PyMem_Free(heap);
+            Py_DECREF(values);
+            return NULL;
+        }
+        uint64_t key = (
+            (uint64_t)(int64_t)signed_value
+        ) ^ (UINT64_C(1) << 63);
+        if (largest) {
+            key = ~key;
+        }
+        heap[index].key = key;
+        heap[index].index = (uint64_t)index;
+    }
+    if (!exact_int64) {
+        PyMem_Free(heap);
+        Py_DECREF(values);
+        return topk_full_argsort(
+            sequence,
+            k,
+            largest,
+            "argsort completo: tipo ou magnitude fora de int64",
+            diagnostic
+        );
+    }
+
+    for (Py_ssize_t parent = k / 2; parent > 0; parent--) {
+        topk_sift_down(heap, k, parent - 1);
+    }
+    for (Py_ssize_t index = k; index < source_length; index++) {
+        PyObject *value = PySequence_Fast_GET_ITEM(values, index);
+        if (!PyLong_CheckExact(value)) {
+            exact_int64 = 0;
+            break;
+        }
+        const long long signed_value = PyLong_AsLongLong(value);
+        if (signed_value == -1 && PyErr_Occurred()) {
+            if (PyErr_ExceptionMatches(PyExc_OverflowError)) {
+                PyErr_Clear();
+                exact_int64 = 0;
+                break;
+            }
+            PyMem_Free(heap);
+            Py_DECREF(values);
+            return NULL;
+        }
+        uint64_t key = (
+            (uint64_t)(int64_t)signed_value
+        ) ^ (UINT64_C(1) << 63);
+        if (largest) {
+            key = ~key;
+        }
+        const TopKEntry candidate = {key, (uint64_t)index};
+        if (topk_entry_is_better(candidate, heap[0])) {
+            heap[0] = candidate;
+            topk_sift_down(heap, k, 0);
+        }
+    }
+    Py_DECREF(values);
+    if (!exact_int64) {
+        PyMem_Free(heap);
+        return topk_full_argsort(
+            sequence,
+            k,
+            largest,
+            "argsort completo: tipo ou magnitude fora de int64",
+            diagnostic
+        );
+    }
+
+    qsort(heap, (size_t)k, sizeof(*heap), topk_compare_best_first);
+    void *storage = allocate_indices(k, itemsize);
+    if (storage == NULL) {
+        PyMem_Free(heap);
+        return NULL;
+    }
+    for (Py_ssize_t position = 0; position < k; position++) {
+        if (itemsize == 4) {
+            ((uint32_t *)storage)[position] = (uint32_t)heap[position].index;
+        } else {
+            ((uint64_t *)storage)[position] = heap[position].index;
+        }
+    }
+    PyMem_Free(heap);
+
+    PyObject *result = permutation_new_owned(
+        k,
+        source_length,
+        itemsize,
+        storage
+    );
+    if (result == NULL) {
+        return NULL;
+    }
+    char strategy[96];
+    PyOS_snprintf(
+        strategy,
+        sizeof(strategy),
+        "heap nativo estável int64: k=%zd de n=%zd",
+        k,
+        source_length
+    );
+    return finalize_argsort(result, strategy, diagnostic);
 }
 
 static int
@@ -708,6 +1007,53 @@ bielsort_py_argsort_int64_prototype_with_strategy(
         return NULL;
     }
     return argsort_int64_impl(sequence, reverse, 1);
+}
+
+static int
+parse_topk_arguments(
+    PyObject *args,
+    PyObject **sequence,
+    Py_ssize_t *k,
+    int *largest
+)
+{
+    return PyArg_ParseTuple(
+        args,
+        "On|p:_topk_int64_prototype",
+        sequence,
+        k,
+        largest
+    );
+}
+
+PyObject *
+bielsort_py_topk_int64_prototype(
+    PyObject *Py_UNUSED(module),
+    PyObject *args
+)
+{
+    PyObject *sequence;
+    Py_ssize_t k;
+    int largest = 0;
+    if (!parse_topk_arguments(args, &sequence, &k, &largest)) {
+        return NULL;
+    }
+    return topk_int64_impl(sequence, k, largest, 0);
+}
+
+PyObject *
+bielsort_py_topk_int64_prototype_with_strategy(
+    PyObject *Py_UNUSED(module),
+    PyObject *args
+)
+{
+    PyObject *sequence;
+    Py_ssize_t k;
+    int largest = 0;
+    if (!parse_topk_arguments(args, &sequence, &k, &largest)) {
+        return NULL;
+    }
+    return topk_int64_impl(sequence, k, largest, 1);
 }
 
 int

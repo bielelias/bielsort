@@ -96,7 +96,9 @@ nav:
       - Validação em runners: external-validation-pt.md
   - Project:
       - Development status: development-status.md
+      - Practical innovation roadmap: innovation-roadmap.md
       - "Research: compact argsort": argsort-research.md
+      - "Research: stable compact top-k": topk-research.md
       - Release process: RELEASING.md
       - Changelog: https://github.com/bielelias/bielsort/blob/main/CHANGELOG.md
       - Roadmap: https://github.com/bielelias/bielsort/blob/main/ROADMAP.md

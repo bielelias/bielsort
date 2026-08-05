@@ -81,9 +81,19 @@ published on 2026-08-05.
   permutation creation and application costs.
 - [x] Add and validate a private native application path for reusing one
   compact permutation across parallel Python sequences.
-- Structured strategy analysis for diagnostics and evaluator reports.
-- Unsigned 64-bit fast path.
-- Safe float fast path with explicit NaN semantics.
-- Reduced-memory radix buffers.
-- Hardware-specific optimizations with portable fallbacks.
-- Optional C API for embedding and other language bindings.
+- [x] Define a practical innovation roadmap from Python, NumPy, Arrow, Polars,
+  pandas, and database selection patterns.
+- [x] Implement the first private stable compact top-k prototype.
+- [x] Validate stable compact top-k construction, three-sequence reuse, and
+  compact storage against the fixed canonical gates.
+- [ ] Prototype native `apply_many()`, inverse, and composition operations only
+  after the compact permutation contract passes promotion review.
+- [ ] Evaluate fused sorted-group boundaries and counts for telemetry/event
+  workloads.
+- [ ] Add an unsigned 64-bit fast path after a dedicated semantic and
+  performance proposal.
+- [ ] Define explicit NaN and signed-zero semantics before a float fast path.
+- [ ] Evaluate reduced-memory radix buffers.
+- [ ] Evaluate hardware-specific optimizations with portable fallbacks.
+- [ ] Consider an optional C API and other language bindings only after the
+  Python API demonstrates sustained adoption.

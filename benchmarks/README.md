@@ -202,6 +202,30 @@ It measures both application in isolation and the complete build-once,
 apply-three-lists operation. Both implementations receive reusable sequences;
 one-shot generators are outside the prototype contract.
 
+## Research: stable compact top-k
+
+The private top-k prototype compares stable reusable index selection against
+both full Python sorting and the standard library's partial `heapq` selection.
+It also measures constructing one order and applying it to three parallel
+Python sequences:
+
+```bash
+python benchmarks/topk_prototype.py \
+  -n 100000 1000000 \
+  -k 10 100 1000 \
+  -r 7 \
+  --json-output stable-topk.json
+```
+
+The eligible path targets exact signed-int64 values and small `k`, uses a
+native stable heap, and returns the existing private compact permutation.
+Algorithm order is rotated, every index/result is checked against stable full
+sorting, and all timing samples are retained. See the
+[top-k proposal](../docs/topk-research.md) for the fixed gates and limitations.
+The first canonical run passed all fixed gates; its medians, limitations, and
+raw-sample link are in the
+[versioned stable top-k report](results/2026-08-05-stable-topk.md).
+
 ## Research: adaptive generic keys
 
 The follow-up selector keeps `key` generic, calls user code exactly once, and

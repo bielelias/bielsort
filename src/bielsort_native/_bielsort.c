@@ -2134,6 +2134,20 @@ PyDoc_STRVAR(
     "Retorna a permutação compacta e a estratégia selecionada."
 );
 
+PyDoc_STRVAR(
+    topk_int64_prototype_doc,
+    "_topk_int64_prototype(sequence, k, largest=False, /)\n"
+    "--\n\n"
+    "Protótipo privado: retorna índices compactos do top-k estável."
+);
+
+PyDoc_STRVAR(
+    topk_int64_prototype_strategy_doc,
+    "_topk_int64_prototype_with_strategy(sequence, k, largest=False, /)\n"
+    "--\n\n"
+    "Retorna os índices compactos do top-k e a estratégia privada."
+);
+
 static PyMethodDef metodos[] = {
     {"sort", py_sort, METH_O, sort_doc},
     {"sort_with_strategy", py_sort_with_strategy, METH_O, strategy_doc},
@@ -2228,6 +2242,18 @@ static PyMethodDef metodos[] = {
         bielsort_py_argsort_int64_prototype_with_strategy,
         METH_VARARGS,
         argsort_int64_prototype_strategy_doc
+    },
+    {
+        "_topk_int64_prototype",
+        bielsort_py_topk_int64_prototype,
+        METH_VARARGS,
+        topk_int64_prototype_doc
+    },
+    {
+        "_topk_int64_prototype_with_strategy",
+        bielsort_py_topk_int64_prototype_with_strategy,
+        METH_VARARGS,
+        topk_int64_prototype_strategy_doc
     },
     {NULL, NULL, 0, NULL}
 };

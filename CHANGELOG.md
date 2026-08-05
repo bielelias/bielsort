@@ -20,6 +20,9 @@ release.
 - Added private native compact-permutation application research, including
   exact-object and sequence-contract tests plus versioned time and peak-memory
   evidence for reusing one order across three parallel Python lists.
+- Added an unreleased private stable compact top-k prototype and benchmark
+  contract for selecting reusable smallest/largest indices without fully
+  sorting eligible signed-int64 Python sequences.
 
 ## [0.2.0] - 2026-08-05
 

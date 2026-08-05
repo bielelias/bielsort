@@ -153,7 +153,26 @@ documentation. Its non-publishing
 also passes on Linux, Windows, macOS Intel, and macOS Apple Silicon, including
 wheel tests, content validation, artifact upload, and source-distribution
 creation. The prototype has passed its private research gates; public API
-design and promotion remain separate decisions.
+design and promotion remain separate decisions. It was squash-merged into
+`main` as
+[commit `73c0d22`](https://github.com/bielelias/bielsort/commit/73c0d22).
+
+The next private branch implements stable compact top-k selection for exact
+signed-int64 Python sequences. Its pre-registered local benchmark gate passed
+all 24 one-million-element construction cases and all 24 build-once/apply-three
+reuse cases. Construction measured `1.56x–3.36x` over equivalent `heapq`
+selection and `15.41x–36.99x` over stable full index sorting; reuse measured
+`1.55x–3.45x` over the equivalent `heapq` flow. The compact result uses four
+bytes per selected index at this input size and preserves encounter order for
+ties. See the
+[stable top-k research record](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-stable-topk.md).
+The candidate passes 130 optimized and sanitized local tests, warning-clean
+native compilation, runtime/stub comparison, strict Python 3.9 typing, and
+strict documentation. The local wheel and source distribution pass metadata
+validation, and a clean environment installs the wheel and passes all 130
+tests outside the source tree. It remains private until supported-platform
+source and wheel gates pass; public API design and promotion remain later
+decisions.
 
 ## Resume checklist
 
