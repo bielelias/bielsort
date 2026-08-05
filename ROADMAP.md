@@ -111,7 +111,7 @@ published on 2026-08-05.
   raw samples and decision without replacing the earlier failed result.
 - [x] Pre-register common `lambda`/`attrgetter` timing and isolated-memory
   gates before deciding whether direct keyed top-k deserves promotion review.
-- [ ] Implement and version the practical-callable and isolated-memory
+- [x] Implement and version the practical-callable and isolated-memory
   benchmark before its single canonical execution.
 - [ ] Run the practical-callable and isolated-memory gates and preserve all
   raw child-process and paired-block samples.
