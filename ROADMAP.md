@@ -105,8 +105,10 @@ published on 2026-08-05.
   failed gate remains recorded.
 - [x] Pre-register a complete block-timed canonical protocol before any new
   adaptive keyed top-k promotion decision.
-- [ ] Implement and version the complete block-timed benchmark before its
+- [x] Implement and version the complete block-timed benchmark before its
   single canonical execution; preserve the earlier failed gate independently.
+- [ ] Run the single complete block-timed canonical execution and record its
+  raw samples and decision without replacing the earlier failed result.
 - [ ] Measure common `lambda` and `attrgetter` keys and isolated memory before
   deciding whether direct keyed top-k deserves promotion review.
 - [ ] Prototype native inverse and composition operations only after external

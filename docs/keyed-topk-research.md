@@ -330,5 +330,6 @@ python -m benchmarks.keyed_topk_block_canonical \
   -k 10 100 1000 \
   --blocks 11 \
   --calls-per-block 3 \
+  --implementation-commit COMMIT_SHA \
   --json-output adaptive-keyed-topk-block-canonical.json
 ```
