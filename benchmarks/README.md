@@ -269,6 +269,12 @@ The record list is built outside the timed region, algorithm order rotates,
 and all raw samples and environment metadata are retained. The fixed gate is
 evaluated only when the complete one-million-record shape is present.
 
+The first canonical run passed the unchanged gate: 18 of 24 target cases
+reached `1.25x` over `heapq`, none regressed by more than 10%, and every result
+matched stable full sorting by identity. See the
+[versioned direct keyed top-k report](results/2026-08-05-keyed-topk.md) and its
+linked raw samples.
+
 ## Research: adaptive generic keys
 
 The follow-up selector keeps `key` generic, calls user code exactly once, and

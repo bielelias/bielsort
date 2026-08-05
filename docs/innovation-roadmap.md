@@ -44,6 +44,11 @@ pre-registered in the
 [direct keyed top-k research proposal](keyed-topk-research.md). Passing them
 would still not approve a public API or release.
 
+The exact-int64 stage-one core passed its fixed local gate in 18 of 24 target
+cases, with no regression beyond the allowed bound. The next gates are a
+one-call-compatible generic fallback, common callable shapes, isolated memory,
+and cross-platform validation; the symbol remains private.
+
 ## Priority 3: permutation toolkit
 
 If the compact permutation becomes public, the next direct operations should

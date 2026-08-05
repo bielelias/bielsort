@@ -109,6 +109,19 @@ python benchmarks/keyed_topk_prototype.py \
   --json-output keyed-topk.json
 ```
 
+## First canonical result
+
+The 2026-08-05 canonical run passed the unchanged stage-one gate. All 24
+one-million-record cases were stable and identity-equivalent to full sorting.
+Exactly 18 reached at least `1.25x` over `heapq`, no case regressed by more
+than 10%, and the observed range was `1.09x–1.91x`.
+
+All six cases below `1.25x` used full-range int64 keys, so magnitude-dependent
+Python integer costs remain an explicit limitation. See the
+[versioned result](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-keyed-topk.md)
+and its linked raw samples. This result approves work on fallback and API
+semantics only; the prototype remains private.
+
 ## Promotion questions after a passing core
 
 Before a public proposal, BielSort would still need to answer:

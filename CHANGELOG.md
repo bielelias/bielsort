@@ -30,6 +30,10 @@ release.
 - Pre-registered the contract and fixed benchmark gates for a private direct
   stable keyed top-k experiment over Python records. No public `top_k` symbol
   is added by the proposal.
+- Added that private exact-int64 keyed top-k core with stable direct record
+  results, one key call per record, iterable support, differential tests, and
+  versioned raw timing evidence. Its first canonical gate passed, but generic
+  fallback and public API review remain future work.
 
 ## [0.2.0] - 2026-08-05
 

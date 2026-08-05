@@ -91,8 +91,12 @@ published on 2026-08-05.
   promotion is planned from this result.
 - [x] Design and pre-register a direct stable keyed top-k experiment for
   Python records before implementing or exposing a public function.
-- [ ] Implement and validate the private exact-int64 keyed top-k core without
+- [x] Implement and validate the private exact-int64 keyed top-k core without
   adding a public symbol.
+- [ ] Design a one-call-compatible generic-key fallback and memory guard for
+  direct keyed top-k before any public API proposal.
+- [ ] Measure common `lambda` and `attrgetter` keys and isolated memory before
+  deciding whether direct keyed top-k deserves promotion review.
 - [ ] Prototype native inverse and composition operations only after external
   demand justifies expanding the private permutation toolkit.
 - [ ] Evaluate fused sorted-group boundaries and counts for telemetry/event

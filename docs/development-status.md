@@ -192,6 +192,17 @@ identity, and calls `key` once per record. Its canonical thresholds were fixed
 before implementation. No public symbol or new version is planned at this
 stage.
 
+That stage-one core is now implemented and passes all 142 local tests,
+warning-clean native compilation, runtime/stub comparison, strict Python 3.9
+typing, and strict documentation. Its unchanged canonical gate passed exactly
+18 of 24 one-million-record cases at `1.25x` or better over `heapq`; no case
+regressed by more than 10%, and the range was `1.09x–1.91x`. See the
+[direct keyed top-k research record](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-keyed-topk.md).
+The newest native commit also passes hosted ASan/UBSan and source-build CI on
+Linux with CPython 3.9–3.14, Windows with CPython 3.11/3.14, and macOS with
+CPython 3.11/3.14. A build-only wheel matrix remains required before any
+promotion decision.
+
 ## Resume checklist
 
 Start from the repository root and inspect the current evidence:
