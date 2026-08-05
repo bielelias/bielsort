@@ -27,6 +27,9 @@ release.
   correctness, cross-platform CI, and the no-regression threshold but missed
   its pre-registered complete-permutation performance gate, so it is not
   proposed for public promotion.
+- Pre-registered the contract and fixed benchmark gates for a private direct
+  stable keyed top-k experiment over Python records. No public `top_k` symbol
+  is added by the proposal.
 
 ## [0.2.0] - 2026-08-05
 

@@ -33,6 +33,17 @@ sequences:
 The private experiment and its fixed continuation gates are described in the
 [stable top-k research proposal](topk-research.md).
 
+## Priority 2: direct keyed top-k
+
+The more direct Python workflow is selecting records by an integer field
+without asking users to build and apply an index object themselves. A private
+`top_k(records, k, key=...)` experiment should evaluate stable ties, exact
+record identity, one key call per record, `O(n log k)` eligible selection, and
+a compatible fallback. Its first-stage contract and fixed gates are
+pre-registered in the
+[direct keyed top-k research proposal](keyed-topk-research.md). Passing them
+would still not approve a public API or release.
+
 ## Priority 3: permutation toolkit
 
 If the compact permutation becomes public, the next direct operations should
@@ -53,15 +64,6 @@ but missed its fixed complete-permutation performance gate. It remains a
 private ergonomics experiment, not a promoted performance feature. `inverse()`
 and `compose()` are deferred until users demonstrate a need for reusable
 parallel-list permutations.
-
-## Priority 2: direct keyed top-k
-
-The more direct Python workflow is selecting records by an integer field
-without asking users to build and apply an index object themselves. A private
-`top_k(records, k, key=...)` experiment should evaluate stable ties, exact
-record identity, one key call per record, `O(n log k)` eligible selection, and
-a compatible fallback. API design and fixed gates must be committed before
-canonical measurements; passing them would still not approve a release.
 
 ## Priority 4: sorted groups and rank boundaries
 

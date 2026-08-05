@@ -89,8 +89,10 @@ published on 2026-08-05.
 - [x] Validate private fused `apply_many()` against repeated native
   application. The fixed performance gate did not pass, so no public
   promotion is planned from this result.
-- [ ] Design and pre-register a direct stable keyed top-k experiment for
+- [x] Design and pre-register a direct stable keyed top-k experiment for
   Python records before implementing or exposing a public function.
+- [ ] Implement and validate the private exact-int64 keyed top-k core without
+  adding a public symbol.
 - [ ] Prototype native inverse and composition operations only after external
   demand justifies expanding the private permutation toolkit.
 - [ ] Evaluate fused sorted-group boundaries and counts for telemetry/event

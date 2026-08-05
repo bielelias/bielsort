@@ -185,6 +185,13 @@ wheel tests, content validation, artifact upload, and source-distribution
 creation. The candidate remains private; public API design, promotion review,
 and any release remain later decisions.
 
+The next milestone is now pre-registered in the
+[direct keyed top-k proposal](keyed-topk-research.md): a private exact-int64
+core that returns selected records directly, preserves stable ties and object
+identity, and calls `key` once per record. Its canonical thresholds were fixed
+before implementation. No public symbol or new version is planned at this
+stage.
+
 ## Resume checklist
 
 Start from the repository root and inspect the current evidence:

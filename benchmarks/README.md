@@ -247,6 +247,17 @@ reached the required `1.10x`. The method remains private. See the
 [versioned fused-application report](results/2026-08-05-permutation-apply-many.md)
 and its linked raw samples.
 
+## Research: direct stable keyed top-k
+
+The next experiment will compare a private direct record-returning path with
+`heapq.nsmallest()`/`nlargest()` and stable full sorting. Its exact-int64
+scope, key-call semantics, canonical 24 cases, and unchanged continuation
+gates are fixed before implementation in the
+[direct keyed top-k proposal](../docs/keyed-topk-research.md).
+
+No canonical benchmark command exists yet. Adding one before implementing the
+native prototype is the next engineering milestone.
+
 ## Research: adaptive generic keys
 
 The follow-up selector keeps `key` generic, calls user code exactly once, and

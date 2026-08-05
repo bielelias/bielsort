@@ -172,4 +172,5 @@ The experiment must preserve exact record identity and stable ties, call
 `key` exactly once per encountered record, leave the input unchanged, and
 return a fully sorted result. It will remain private until its semantics,
 compatible fallback, memory guard, and pre-registered performance gates are
-reviewed independently.
+reviewed independently. The contract and unchanged gates are fixed in the
+[direct keyed top-k proposal](keyed-topk-research.md).
