@@ -1,7 +1,8 @@
 # Roadmap
 
 Current stable release: [`0.2.0` on PyPI](https://pypi.org/project/bielsort/0.2.0/)
-and [`v0.2.0` on GitHub](https://github.com/bielelias/bielsort/releases/tag/v0.2.0).
+and [`v0.2.0` on GitHub](https://github.com/bielelias/bielsort/releases/tag/v0.2.0),
+published on 2026-08-05.
 
 ## Foundation completed for 0.1.0
 
@@ -64,7 +65,7 @@ and [`v0.2.0` on GitHub](https://github.com/bielelias/bielsort/releases/tag/v0.2
   matrix.
 - [x] Complete a final API/type-hint review for stable `0.2.0`.
 - [x] Prepare stable metadata and changelog without publishing.
-- [ ] Publish `0.2.0` only after explicit owner approval.
+- [x] Publish and clean-install `0.2.0` after explicit owner approval.
 
 ## Future research
 
