@@ -203,11 +203,14 @@ Linux with CPython 3.9–3.14, Windows with CPython 3.11/3.14, and macOS with
 CPython 3.11/3.14. A build-only wheel matrix remains required before any
 promotion decision.
 
-The next private stage is specified but not yet implemented: an adaptive
-`O(k)` keyed heap that can switch to Python comparisons without repeating key
-calls, plus a conservative pre-key native-memory guard. Exact-int64 regression
-and four generic domains have fixed continuation gates in the
-[direct keyed top-k proposal](keyed-topk-research.md).
+The next private stage is implemented locally: an adaptive `O(k)` keyed heap
+that can switch to Python comparisons without repeating key calls, plus a
+conservative pre-key native-memory guard. All 154 local tests, warning-clean
+native compilation, runtime/stub comparison, strict Python 3.9 typing, and
+strict documentation pass. Exact-int64 regression and four generic domains
+have fixed continuation gates in the
+[direct keyed top-k proposal](keyed-topk-research.md); their canonical run and
+hosted cross-platform validation remain pending.
 
 ## Resume checklist
 

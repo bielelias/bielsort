@@ -37,6 +37,9 @@ release.
 - Pre-registered the semantic, memory, exact-int64 regression, and generic-key
   gates for a private adaptive top-k continuation. No public API is added by
   this stage-two design.
+- Implemented the private adaptive `O(k)` keyed heap, exception-aware stable
+  generic merge, and pre-key `heapq`/`raise` native-memory guard. Canonical
+  stage-two performance evidence remains pending.
 
 ## [0.2.0] - 2026-08-05
 

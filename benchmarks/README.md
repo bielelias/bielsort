@@ -281,6 +281,21 @@ exact-int64 regression against the frozen private core, and generic fallback
 against `heapq`. Its thresholds are fixed before implementation; no canonical
 stage-two result exists yet.
 
+The implemented benchmark command is:
+
+```bash
+python benchmarks/keyed_topk_fallback.py \
+  --exact-size 1000000 \
+  --generic-size 100000 \
+  -k 10 100 1000 \
+  -r 7 \
+  --json-output adaptive-keyed-topk.json
+```
+
+The gate is evaluated only with both complete canonical shapes. Exact cases
+compare the adaptive and frozen strict cores with `heapq`; generic cases use
+arbitrary-size integers, strings, integer tuples, and finite floats.
+
 ## Research: adaptive generic keys
 
 The follow-up selector keeps `key` generic, calls user code exactly once, and

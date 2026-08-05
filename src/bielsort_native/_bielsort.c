@@ -2156,6 +2156,28 @@ PyDoc_STRVAR(
     "Protótipo privado: retorna os registros do top-k estável por key int64."
 );
 
+PyDoc_STRVAR(
+    topk_by_key_prototype_doc,
+    "_topk_by_key_prototype(iterable, k, key, largest=False, /)\n"
+    "--\n\n"
+    "Protótipo privado: top-k estável adaptativo para keys comparáveis."
+);
+
+PyDoc_STRVAR(
+    topk_by_key_prototype_strategy_doc,
+    "_topk_by_key_prototype_with_strategy(iterable, k, key, "
+    "largest=False, /)\n"
+    "--\n\n"
+    "Retorna registros do top-k e a estratégia adaptativa privada."
+);
+
+PyDoc_STRVAR(
+    topk_by_key_worst_auxiliary_bytes_doc,
+    "_topk_by_key_worst_auxiliary_bytes(k, /)\n"
+    "--\n\n"
+    "Limite privado conservador dos buffers nativos do top-k adaptativo."
+);
+
 static PyMethodDef metodos[] = {
     {"sort", py_sort, METH_O, sort_doc},
     {"sort_with_strategy", py_sort_with_strategy, METH_O, strategy_doc},
@@ -2268,6 +2290,24 @@ static PyMethodDef metodos[] = {
         bielsort_py_topk_by_int64_key_prototype,
         METH_VARARGS,
         topk_by_int64_key_prototype_doc
+    },
+    {
+        "_topk_by_key_prototype",
+        bielsort_py_topk_by_key_prototype,
+        METH_VARARGS,
+        topk_by_key_prototype_doc
+    },
+    {
+        "_topk_by_key_prototype_with_strategy",
+        bielsort_py_topk_by_key_prototype_with_strategy,
+        METH_VARARGS,
+        topk_by_key_prototype_strategy_doc
+    },
+    {
+        "_topk_by_key_worst_auxiliary_bytes",
+        bielsort_py_topk_by_key_worst_auxiliary_bytes,
+        METH_O,
+        topk_by_key_worst_auxiliary_bytes_doc
     },
     {NULL, NULL, 0, NULL}
 };

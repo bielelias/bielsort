@@ -1232,6 +1232,520 @@ topk_by_int64_key_impl(
     return result;
 }
 
+typedef struct {
+    uint64_t normalized_key;
+    uint64_t index;
+    PyObject *key_object;
+} KeyedTopKEntry;
+
+static void
+keyed_topk_clear_entries(KeyedTopKEntry *entries, Py_ssize_t length)
+{
+    if (entries == NULL) {
+        return;
+    }
+    for (Py_ssize_t position = 0; position < length; position++) {
+        Py_XDECREF(entries[position].key_object);
+    }
+}
+
+static int
+keyed_topk_exact_is_better(KeyedTopKEntry left, KeyedTopKEntry right)
+{
+    return left.normalized_key < right.normalized_key
+        || (
+            left.normalized_key == right.normalized_key
+            && left.index < right.index
+        );
+}
+
+static int
+keyed_topk_exact_is_worse(KeyedTopKEntry left, KeyedTopKEntry right)
+{
+    return left.normalized_key > right.normalized_key
+        || (
+            left.normalized_key == right.normalized_key
+            && left.index > right.index
+        );
+}
+
+static void
+keyed_topk_exact_sift_down(
+    KeyedTopKEntry *heap,
+    Py_ssize_t length,
+    Py_ssize_t root
+)
+{
+    while (length >= 2 && root <= (length - 2) / 2) {
+        Py_ssize_t child = root * 2 + 1;
+        if (
+            child + 1 < length
+            && keyed_topk_exact_is_worse(heap[child + 1], heap[child])
+        ) {
+            child++;
+        }
+        if (!keyed_topk_exact_is_worse(heap[child], heap[root])) {
+            return;
+        }
+        const KeyedTopKEntry swap = heap[root];
+        heap[root] = heap[child];
+        heap[child] = swap;
+        root = child;
+    }
+}
+
+static int
+keyed_topk_exact_compare_best_first(
+    const void *left_pointer,
+    const void *right_pointer
+)
+{
+    const KeyedTopKEntry left = *(const KeyedTopKEntry *)left_pointer;
+    const KeyedTopKEntry right = *(const KeyedTopKEntry *)right_pointer;
+    if (keyed_topk_exact_is_better(left, right)) {
+        return -1;
+    }
+    if (keyed_topk_exact_is_better(right, left)) {
+        return 1;
+    }
+    return 0;
+}
+
+static int
+keyed_topk_generic_compare_best(
+    const KeyedTopKEntry *left,
+    const KeyedTopKEntry *right,
+    int largest,
+    int *comparison
+)
+{
+    int left_is_better;
+    int right_is_better;
+    if (largest) {
+        left_is_better = PyObject_RichCompareBool(
+            right->key_object,
+            left->key_object,
+            Py_LT
+        );
+    } else {
+        left_is_better = PyObject_RichCompareBool(
+            left->key_object,
+            right->key_object,
+            Py_LT
+        );
+    }
+    if (left_is_better < 0) {
+        return -1;
+    }
+    if (left_is_better) {
+        *comparison = -1;
+        return 0;
+    }
+
+    if (largest) {
+        right_is_better = PyObject_RichCompareBool(
+            left->key_object,
+            right->key_object,
+            Py_LT
+        );
+    } else {
+        right_is_better = PyObject_RichCompareBool(
+            right->key_object,
+            left->key_object,
+            Py_LT
+        );
+    }
+    if (right_is_better < 0) {
+        return -1;
+    }
+    if (right_is_better) {
+        *comparison = 1;
+        return 0;
+    }
+
+    if (left->index < right->index) {
+        *comparison = -1;
+    } else if (left->index > right->index) {
+        *comparison = 1;
+    } else {
+        *comparison = 0;
+    }
+    return 0;
+}
+
+static int
+keyed_topk_generic_sift_down(
+    KeyedTopKEntry *heap,
+    Py_ssize_t length,
+    Py_ssize_t root,
+    int largest
+)
+{
+    while (length >= 2 && root <= (length - 2) / 2) {
+        Py_ssize_t child = root * 2 + 1;
+        int comparison;
+        if (child + 1 < length) {
+            if (
+                keyed_topk_generic_compare_best(
+                    &heap[child + 1],
+                    &heap[child],
+                    largest,
+                    &comparison
+                ) < 0
+            ) {
+                return -1;
+            }
+            if (comparison > 0) {
+                child++;
+            }
+        }
+        if (
+            keyed_topk_generic_compare_best(
+                &heap[child],
+                &heap[root],
+                largest,
+                &comparison
+            ) < 0
+        ) {
+            return -1;
+        }
+        if (comparison <= 0) {
+            return 0;
+        }
+        const KeyedTopKEntry swap = heap[root];
+        heap[root] = heap[child];
+        heap[child] = swap;
+        root = child;
+    }
+    return 0;
+}
+
+static Py_ssize_t
+keyed_topk_bounded_add(
+    Py_ssize_t start,
+    Py_ssize_t increment,
+    Py_ssize_t limit
+)
+{
+    return increment > limit - start ? limit : start + increment;
+}
+
+static int
+keyed_topk_generic_merge_sort(
+    KeyedTopKEntry *entries,
+    Py_ssize_t length,
+    int largest
+)
+{
+    if (length < 2) {
+        return 0;
+    }
+    if ((size_t)length > SIZE_MAX / sizeof(*entries)) {
+        return PyErr_NoMemory(), -1;
+    }
+    KeyedTopKEntry *temporary = PyMem_Malloc(
+        (size_t)length * sizeof(*temporary)
+    );
+    if (temporary == NULL) {
+        return PyErr_NoMemory(), -1;
+    }
+
+    KeyedTopKEntry *source = entries;
+    KeyedTopKEntry *destination = temporary;
+    Py_ssize_t width = 1;
+    while (width < length) {
+        Py_ssize_t left = 0;
+        while (left < length) {
+            const Py_ssize_t middle = keyed_topk_bounded_add(
+                left,
+                width,
+                length
+            );
+            const Py_ssize_t right = keyed_topk_bounded_add(
+                middle,
+                width,
+                length
+            );
+            Py_ssize_t first = left;
+            Py_ssize_t second = middle;
+            Py_ssize_t output = left;
+            while (first < middle && second < right) {
+                int comparison;
+                if (
+                    keyed_topk_generic_compare_best(
+                        &source[first],
+                        &source[second],
+                        largest,
+                        &comparison
+                    ) < 0
+                ) {
+                    PyMem_Free(temporary);
+                    return -1;
+                }
+                if (comparison <= 0) {
+                    destination[output++] = source[first++];
+                } else {
+                    destination[output++] = source[second++];
+                }
+            }
+            while (first < middle) {
+                destination[output++] = source[first++];
+            }
+            while (second < right) {
+                destination[output++] = source[second++];
+            }
+            left = right;
+        }
+        KeyedTopKEntry *swap = source;
+        source = destination;
+        destination = swap;
+        width = width > length / 2 ? length : width * 2;
+    }
+    if (source != entries) {
+        memcpy(entries, source, (size_t)length * sizeof(*entries));
+    }
+    PyMem_Free(temporary);
+    return 0;
+}
+
+static int
+keyed_topk_try_normalize(
+    PyObject *key_object,
+    int largest,
+    uint64_t *normalized_key
+)
+{
+    if (!PyLong_CheckExact(key_object)) {
+        return 0;
+    }
+    const long long signed_value = PyLong_AsLongLong(key_object);
+    if (signed_value == -1 && PyErr_Occurred()) {
+        if (PyErr_ExceptionMatches(PyExc_OverflowError)) {
+            PyErr_Clear();
+            return 0;
+        }
+        return -1;
+    }
+    uint64_t key = (
+        (uint64_t)(int64_t)signed_value
+    ) ^ (UINT64_C(1) << 63);
+    *normalized_key = largest ? ~key : key;
+    return 1;
+}
+
+static PyObject *
+topk_by_key_adaptive_impl(
+    PyObject *iterable,
+    Py_ssize_t k,
+    PyObject *key_function,
+    int largest,
+    int diagnostic
+)
+{
+    if (k < 0) {
+        PyErr_SetString(PyExc_ValueError, "k must be non-negative");
+        return NULL;
+    }
+    if (k == 0) {
+        return finalize_argsort(
+            PyList_New(0),
+            "seleção vazia sem avaliação de key",
+            diagnostic
+        );
+    }
+    if (!PyCallable_Check(key_function)) {
+        PyErr_SetString(PyExc_TypeError, "key must be callable");
+        return NULL;
+    }
+    PyObject *records = PySequence_Fast(
+        iterable,
+        "_topk_by_key_prototype requires an iterable"
+    );
+    if (records == NULL) {
+        return NULL;
+    }
+    const Py_ssize_t source_length = PySequence_Fast_GET_SIZE(records);
+    if (k > source_length) {
+        k = source_length;
+    }
+    if (k == 0) {
+        Py_DECREF(records);
+        return finalize_argsort(
+            PyList_New(0),
+            "entrada vazia",
+            diagnostic
+        );
+    }
+    if ((size_t)k > SIZE_MAX / sizeof(KeyedTopKEntry)) {
+        Py_DECREF(records);
+        return PyErr_NoMemory();
+    }
+    KeyedTopKEntry *heap = PyMem_Calloc(
+        (size_t)k,
+        sizeof(*heap)
+    );
+    if (heap == NULL) {
+        Py_DECREF(records);
+        return PyErr_NoMemory();
+    }
+
+    int exact_int64 = 1;
+    Py_ssize_t retained = 0;
+    for (Py_ssize_t index = 0; index < source_length; index++) {
+        PyObject *record = PySequence_Fast_GET_ITEM(records, index);
+        PyObject *key_object = PyObject_CallOneArg(key_function, record);
+        if (key_object == NULL) {
+            keyed_topk_clear_entries(heap, retained);
+            PyMem_Free(heap);
+            Py_DECREF(records);
+            return NULL;
+        }
+
+        uint64_t normalized_key = 0;
+        if (exact_int64) {
+            const int normalization = keyed_topk_try_normalize(
+                key_object,
+                largest,
+                &normalized_key
+            );
+            if (normalization < 0) {
+                Py_DECREF(key_object);
+                keyed_topk_clear_entries(heap, retained);
+                PyMem_Free(heap);
+                Py_DECREF(records);
+                return NULL;
+            }
+            if (normalization == 0) {
+                exact_int64 = 0;
+            }
+        }
+
+        const KeyedTopKEntry candidate = {
+            normalized_key,
+            (uint64_t)index,
+            key_object,
+        };
+        if (index < k) {
+            heap[index] = candidate;
+            retained = index + 1;
+            if (index == k - 1) {
+                for (Py_ssize_t parent = k / 2; parent > 0; parent--) {
+                    if (exact_int64) {
+                        keyed_topk_exact_sift_down(heap, k, parent - 1);
+                    } else if (
+                        keyed_topk_generic_sift_down(
+                            heap,
+                            k,
+                            parent - 1,
+                            largest
+                        ) < 0
+                    ) {
+                        keyed_topk_clear_entries(heap, retained);
+                        PyMem_Free(heap);
+                        Py_DECREF(records);
+                        return NULL;
+                    }
+                }
+            }
+            continue;
+        }
+
+        int candidate_is_better;
+        if (exact_int64) {
+            candidate_is_better = keyed_topk_exact_is_better(
+                candidate,
+                heap[0]
+            );
+        } else {
+            int comparison;
+            if (
+                keyed_topk_generic_compare_best(
+                    &candidate,
+                    &heap[0],
+                    largest,
+                    &comparison
+                ) < 0
+            ) {
+                Py_DECREF(key_object);
+                keyed_topk_clear_entries(heap, retained);
+                PyMem_Free(heap);
+                Py_DECREF(records);
+                return NULL;
+            }
+            candidate_is_better = comparison < 0;
+        }
+        if (!candidate_is_better) {
+            Py_DECREF(key_object);
+            continue;
+        }
+
+        Py_DECREF(heap[0].key_object);
+        heap[0] = candidate;
+        if (exact_int64) {
+            keyed_topk_exact_sift_down(heap, k, 0);
+        } else if (
+            keyed_topk_generic_sift_down(heap, k, 0, largest) < 0
+        ) {
+            keyed_topk_clear_entries(heap, retained);
+            PyMem_Free(heap);
+            Py_DECREF(records);
+            return NULL;
+        }
+    }
+
+    if (exact_int64) {
+        qsort(
+            heap,
+            (size_t)k,
+            sizeof(*heap),
+            keyed_topk_exact_compare_best_first
+        );
+    } else if (keyed_topk_generic_merge_sort(heap, k, largest) < 0) {
+        keyed_topk_clear_entries(heap, retained);
+        PyMem_Free(heap);
+        Py_DECREF(records);
+        return NULL;
+    }
+
+    PyObject *result = PyList_New(k);
+    if (result == NULL) {
+        keyed_topk_clear_entries(heap, retained);
+        PyMem_Free(heap);
+        Py_DECREF(records);
+        return NULL;
+    }
+    for (Py_ssize_t position = 0; position < k; position++) {
+        const uint64_t index = heap[position].index;
+        if (index >= (uint64_t)source_length) {
+            Py_DECREF(result);
+            keyed_topk_clear_entries(heap, retained);
+            PyMem_Free(heap);
+            Py_DECREF(records);
+            PyErr_SetString(
+                PyExc_SystemError,
+                "adaptive top-k heap contains an invalid internal index"
+            );
+            return NULL;
+        }
+        PyObject *record = PySequence_Fast_GET_ITEM(
+            records,
+            (Py_ssize_t)index
+        );
+        Py_INCREF(record);
+        PyList_SET_ITEM(result, position, record);
+    }
+    keyed_topk_clear_entries(heap, retained);
+    PyMem_Free(heap);
+    Py_DECREF(records);
+    return finalize_argsort(
+        result,
+        exact_int64
+            ? "heap nativo estável adaptativo: key int64"
+            : "heap nativo estável adaptativo: key Python",
+        diagnostic
+    );
+}
+
 static int
 parse_argsort_arguments(PyObject *args, PyObject **sequence, int *reverse)
 {
@@ -1346,6 +1860,116 @@ bielsort_py_topk_by_int64_key_prototype(
         key_function,
         largest
     );
+}
+
+static int
+parse_keyed_topk_arguments(
+    PyObject *args,
+    const char *function_name,
+    PyObject **iterable,
+    Py_ssize_t *k,
+    PyObject **key_function,
+    int *largest
+)
+{
+    char format[96];
+    PyOS_snprintf(format, sizeof(format), "OnO|p:%s", function_name);
+    return PyArg_ParseTuple(
+        args,
+        format,
+        iterable,
+        k,
+        key_function,
+        largest
+    );
+}
+
+PyObject *
+bielsort_py_topk_by_key_prototype(
+    PyObject *Py_UNUSED(module),
+    PyObject *args
+)
+{
+    PyObject *iterable;
+    PyObject *key_function;
+    Py_ssize_t k;
+    int largest = 0;
+    if (
+        !parse_keyed_topk_arguments(
+            args,
+            "_topk_by_key_prototype",
+            &iterable,
+            &k,
+            &key_function,
+            &largest
+        )
+    ) {
+        return NULL;
+    }
+    return topk_by_key_adaptive_impl(
+        iterable,
+        k,
+        key_function,
+        largest,
+        0
+    );
+}
+
+PyObject *
+bielsort_py_topk_by_key_prototype_with_strategy(
+    PyObject *Py_UNUSED(module),
+    PyObject *args
+)
+{
+    PyObject *iterable;
+    PyObject *key_function;
+    Py_ssize_t k;
+    int largest = 0;
+    if (
+        !parse_keyed_topk_arguments(
+            args,
+            "_topk_by_key_prototype_with_strategy",
+            &iterable,
+            &k,
+            &key_function,
+            &largest
+        )
+    ) {
+        return NULL;
+    }
+    return topk_by_key_adaptive_impl(
+        iterable,
+        k,
+        key_function,
+        largest,
+        1
+    );
+}
+
+PyObject *
+bielsort_py_topk_by_key_worst_auxiliary_bytes(
+    PyObject *Py_UNUSED(module),
+    PyObject *argument
+)
+{
+    const Py_ssize_t k = PyLong_AsSsize_t(argument);
+    if (k == -1 && PyErr_Occurred()) {
+        return NULL;
+    }
+    if (k < 0) {
+        PyErr_SetString(PyExc_ValueError, "k must be non-negative");
+        return NULL;
+    }
+    if (
+        (size_t)k > SIZE_MAX / sizeof(KeyedTopKEntry)
+        || (size_t)k * sizeof(KeyedTopKEntry) > SIZE_MAX / 2
+    ) {
+        return PyErr_NoMemory();
+    }
+    const size_t worst_case = (
+        (size_t)k * sizeof(KeyedTopKEntry) * 2
+    );
+    return PyLong_FromSize_t(worst_case);
 }
 
 int

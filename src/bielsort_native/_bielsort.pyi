@@ -68,6 +68,24 @@ def _topk_by_int64_key_prototype(
     /,
 ) -> List[_T]: ...
 
+def _topk_by_key_prototype(
+    iterable: Iterable[_T],
+    k: int,
+    key: Callable[[_T], Any],
+    largest: bool = ...,
+    /,
+) -> List[_T]: ...
+
+def _topk_by_key_prototype_with_strategy(
+    iterable: Iterable[_T],
+    k: int,
+    key: Callable[[_T], Any],
+    largest: bool = ...,
+    /,
+) -> Tuple[List[_T], str]: ...
+
+def _topk_by_key_worst_auxiliary_bytes(k: int, /) -> int: ...
+
 def _sort_by_int64_key_prototype(
     iterable: Iterable[_T],
     key: Callable[[_T], Any],

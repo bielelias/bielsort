@@ -199,3 +199,12 @@ more than 15% slower than `heapq`; acceleration is reported but is not a gate.
 Passing these gates authorizes common-`lambda`/`attrgetter` and isolated-memory
 experiments. It still does not approve `top_k`, a version bump, or a release.
 Thresholds must not change after canonical measurements.
+
+```bash
+python benchmarks/keyed_topk_fallback.py \
+  --exact-size 1000000 \
+  --generic-size 100000 \
+  -k 10 100 1000 \
+  -r 7 \
+  --json-output adaptive-keyed-topk.json
+```
