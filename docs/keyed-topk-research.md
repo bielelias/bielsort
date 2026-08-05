@@ -347,3 +347,89 @@ The [versioned complete result](https://github.com/bielelias/bielsort/blob/resea
 preserves all samples and links the earlier failed gate independently. The
 pass authorizes common-callable and isolated-memory experiments only; the
 operation and dispatcher remain private.
+
+## Stage three: practical callables and isolated memory
+
+The next private decision tests two remaining practical questions without
+changing the adaptive selection code: whether its advantage survives common
+Python key-call shapes, and whether its `O(k)` design produces a useful
+measured memory bound rather than only a structural claim.
+
+### Pre-registered callable protocol
+
+All performance cases use the same one-million-element collection of
+two-field named-tuple records with dense signed-int64 scores and stable
+duplicates. Only the callable changes:
+
+- `operator.itemgetter(0)`;
+- `lambda record: record[0]`;
+- `operator.attrgetter("score")`;
+- `lambda record: record.score`.
+
+Combining the four callables with `k` values 10, 100, and 1,000 and both
+smallest and largest directions produces 24 target cases. Each case compares
+the unchanged adaptive core with `heapq.nsmallest()` or `heapq.nlargest()`.
+Record construction and the stable identity reference remain outside timing.
+
+Each algorithm receives one untimed warm-up. The measurement then retains
+nine paired blocks of three complete calls, rotates algorithm order, keeps
+garbage collection outside timed regions, and identity-checks every result.
+The primary statistic is the median of paired `heapq/adaptive` block ratios;
+independent median ratios and median absolute deviations are diagnostic only.
+A separate untimed probe must confirm exactly one key call per encountered
+record for every callable and zero calls when `k == 0`.
+
+The callable gate passes only if the complete canonical shape is present,
+every semantic probe passes, at least 18 of 24 cases reach `1.10x` over
+`heapq`, and no case falls below `0.90x`. These thresholds measure practical
+usefulness while allowing callable cost shared by both algorithms to reduce
+the larger core-only speedups.
+
+### Pre-registered isolated-memory protocol
+
+Peak memory is measured before performance timing so the supervisor has never
+held a large workload. Every algorithm/domain/direction/repetition runs in a
+fresh child process. The child constructs one million named-tuple records,
+starts measurement only after construction and garbage collection, retains
+the returned result while reading the peak, and validates exact stable object
+identity after stopping measurement.
+
+The eight memory cases combine:
+
+- dense exact signed-int64 scores and arbitrary-size integer scores;
+- `k` values 1,000 and 100,000;
+- smallest and largest directions;
+- `operator.attrgetter("score")` for both adaptive and `heapq` operations.
+
+Each case retains three isolated samples per algorithm. Incremental traced
+peak memory is the primary metric because it observes Python allocator and
+`PyMem` blocks after the input baseline; incremental process peak RSS is
+retained as an operating-system diagnostic. Worker elapsed time is also
+diagnostic and cannot decide the memory gate.
+
+The memory gate requires a measurable median traced peak for every comparator,
+no adaptive/comparator median ratio above `1.25x`, and at least two of the four
+`k=100,000` cases at or below `0.80x`. Code inspection and the existing guard
+must still confirm at most `O(k)` retained key objects/native entries and no
+`O(n)` key array for reusable inputs. RSS values are reported honestly but
+cannot fail the gate because allocator high-water behavior is platform
+dependent.
+
+Both callable and memory gates must pass before a private promotion review.
+Passing would authorize an API proposal and build-only wheel validation, not
+a public symbol, version bump, tag, merge, or package release. Thresholds and
+canonical shapes will not change after measurement, and a failed result will
+remain versioned.
+
+```bash
+python -m benchmarks.keyed_topk_practical \
+  --time-size 1000000 \
+  --memory-size 1000000 \
+  -k 10 100 1000 \
+  --time-blocks 9 \
+  --calls-per-block 3 \
+  --memory-k 1000 100000 \
+  --memory-repetitions 3 \
+  --implementation-commit COMMIT_SHA \
+  --json-output adaptive-keyed-topk-practical.json
+```
