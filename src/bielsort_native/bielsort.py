@@ -232,4 +232,4 @@ __all__ = [
     "biel_sort_in_place_diagnostico",
     "biel_sort_in_place_with_strategy",
 ]
-__version__ = "0.2.0rc1"
+__version__ = "0.2.0"

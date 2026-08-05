@@ -20,7 +20,7 @@ git clone https://github.com/bielelias/bielsort.git
 cd bielsort
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install bielsort==0.1.0
+python -m pip install bielsort==0.2.0
 ```
 
 On Windows PowerShell, activate with:

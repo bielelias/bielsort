@@ -1,16 +1,16 @@
 # Use cases and adoption
 
-BielSort has a deliberately narrow promise: make some large `list[int]` and,
-in the `0.2.0rc1` TestPyPI candidate, new-list signed-int64 `key=` workloads
-faster without requiring callers to migrate their data to a different
-container. The only reliable way to decide whether it helps is to measure the
-complete operation in the application that owns the data.
+BielSort has a deliberately narrow promise: make some large `list[int]` and
+new-list signed-int64 `key=` workloads faster without requiring callers to
+migrate their data to a different container. The only reliable way to decide
+whether it helps is to measure the complete operation in the application that
+owns the data.
 
 !!! success "A promising fit"
 
     Your data already exists as a large Python list, contains exact integers in
     the signed 64-bit range, needs natural ascending order, and is sufficiently
-    unsorted. In the candidate API, records with an exact signed-int64 key are
+    unsorted. In version 0.2, records with an exact signed-int64 key are
     also eligible for new-list sorting. Sorting must account for a meaningful
     share of the pipeline runtime.
 
@@ -42,7 +42,7 @@ Native buffers are most relevant for tens or hundreds of thousands of values.
 
 <div class="biel-card" markdown>
 ### Natural ascending order?
-Natural integers are the original target. The candidate also supports an
+Natural integers are the original target. Version 0.2 also supports an
 explicit new-list key returning exact signed-int64 integers.
 </div>
 

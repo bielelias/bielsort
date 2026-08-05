@@ -16,7 +16,7 @@ execução.
 <div class="biel-card" markdown>
 ### Compatível com Python
 
-Mantém ordenação estável. A candidata 0.2 pode acelerar `sort(key=...)` quando
+Mantém ordenação estável. A versão 0.2 pode acelerar `sort(key=...)` quando
 a chave retorna `int64` exato; outros casos continuam no Timsort.
 </div>
 
@@ -40,10 +40,10 @@ python -m pip install bielsort
 Para instalar exatamente a versão estável atual:
 
 ```bash
-python -m pip install bielsort==0.1.0
+python -m pip install bielsort==0.2.0
 ```
 
-Para testar a candidata `0.2.0rc1` publicada separadamente no TestPyPI:
+Para reproduzir a candidata validada que permanece arquivada no TestPyPI:
 
 ```bash
 python -m pip install \
@@ -90,8 +90,7 @@ bielsort.sort_in_place(numeros) # modifica a lista usando o BielSort
 | `bielsort.sort_in_place_with_strategy()` | sim | estratégia |
 | `bielsort.sort_with_info()` | não | lista e diagnóstico estruturado |
 
-`sort_with_info()` está disponível na candidata `0.2.0rc1` do TestPyPI. As
-outras quatro funções também formam a API estável da série 0.1.
+As cinco funções formam a API pública estável da série 0.2.
 
 ### Ordenação in-place
 
@@ -122,7 +121,7 @@ O texto da estratégia serve para diagnóstico e benchmarks. Não use uma frase
 exata como condição necessária para a lógica do seu programa, pois essa frase
 pode evoluir antes da versão 1.0.
 
-### Explicação estruturada e limite de memória — candidata 0.2
+### Explicação estruturada e limite de memória
 
 ```python
 import bielsort
@@ -156,7 +155,7 @@ o domínio e intervalo das chaves, passagens do Radix e os limites/estimativas
 de memória aplicáveis. Toda operação concluída é estável e chama `key`
 exatamente uma vez por registro; essas garantias são documentadas em vez de
 duplicadas no objeto. Consulte a
-[referência da API](api.md#sort_with_info-testpypi-candidate) para todos os
+[referência da API](api.md#sort_with_info) para todos os
 campos e exclusões.
 
 ## Como o algoritmo é escolhido
@@ -196,8 +195,8 @@ especialização nativa não compensa.
 === "Bom candidato"
 
     - listas grandes de inteiros;
-    - ou listas de objetos com chave inteira signed 64-bit usando a candidata
-      new-list `sort(key=...)`;
+    - ou listas de objetos com chave inteira signed 64-bit usando
+      `sort(key=...)` para criar uma nova lista;
     - valores entre `-(2**63)` e `2**63 - 1`;
     - dados que normalmente não chegam quase ordenados;
     - velocidade importante e memória auxiliar aceitável;

@@ -118,7 +118,7 @@ def _fallback_info(
             reason = "native worst-case estimate exceeds the configured limit"
             decision = "timsort"
         memory_scope = (
-            "native candidate estimate only; excludes Timsort allocations"
+            "native BielSort estimate only; excludes Timsort allocations"
         )
 
     return {

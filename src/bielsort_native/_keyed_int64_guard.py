@@ -119,7 +119,7 @@ def _timsort_info(size, worst_case, limit, on_exceeded, reverse):
         "estimated_variable_auxiliary_bytes": None,
         "worst_case_variable_auxiliary_bytes": worst_case,
         "memory_estimate_scope": (
-            "native BielSort candidate only; excludes Timsort allocations"
+            "native BielSort estimate only; excludes Timsort allocations"
         ),
         "prototype": True,
         "guard": _guard_details(

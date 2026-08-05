@@ -1,16 +1,16 @@
 # Casos de uso e adoção
 
 A promessa do BielSort é propositalmente específica: acelerar algumas
-ordenações de grandes `list[int]` e, na candidata `0.2.0rc1` do TestPyPI,
-listas novas de objetos com `key` signed-int64, sem obrigar a aplicação a
-migrar os dados para outro contêiner. A única forma confiável de saber se ele
-ajuda é medir a operação completa dentro da aplicação que possui os dados.
+ordenações de grandes `list[int]` e listas novas de objetos com `key`
+signed-int64, sem obrigar a aplicação a migrar os dados para outro contêiner.
+A única forma confiável de saber se ele ajuda é medir a operação completa
+dentro da aplicação que possui os dados.
 
 !!! success "Um candidato promissor"
 
     Os dados já estão em uma lista Python grande, contêm inteiros exatos no
     intervalo signed 64-bit, precisam de ordem crescente natural e não chegam
-    quase ordenados. Na API candidata, registros com chave signed-int64 exata
+    quase ordenados. Na versão 0.2, registros com chave signed-int64 exata
     também são elegíveis para a operação new-list. A ordenação representa uma
     parte relevante do tempo total do pipeline.
 
@@ -44,7 +44,7 @@ valores.
 
 <div class="biel-card" markdown>
 ### Ordem crescente natural?
-Inteiros naturais são o alvo original. A candidata também aceita uma `key`
+Inteiros naturais são o alvo original. A versão 0.2 também aceita uma `key`
 new-list que retorne inteiros signed 64-bit exatos.
 </div>
 

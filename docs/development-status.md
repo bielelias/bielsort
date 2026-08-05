@@ -8,16 +8,16 @@ new contributor or development chat can resume from repository evidence.
 
 | Channel | Version | Status |
 |---|---|---|
-| Production PyPI | `0.1.0` | current stable release |
-| GitHub Release | `v0.1.0` | current stable tag |
-| TestPyPI | `0.2.0rc1` | published release candidate |
-| Repository metadata | `0.2.0rc1` | matches the TestPyPI candidate |
+| Production PyPI | `0.2.0` | current stable release |
+| GitHub Release | `v0.2.0` | current stable tag |
+| TestPyPI | `0.2.0rc1` | validated candidate archive |
+| Repository metadata | `0.2.0` | matches the stable release |
 
-The production PyPI version must remain `0.1.0` until the owner explicitly
-approves a stable `0.2.0` release. Published files and version numbers are
-immutable; a changed candidate must use a new version such as `0.2.0rc2`.
+The stable `0.2.0` release was prepared from the exact cross-platform validated
+`0.2.0rc1` candidate. Published files and version numbers are immutable; any
+future candidate or stable release must use a new PEP 440 version.
 
-## What the 0.2 candidate adds
+## What version 0.2 adds
 
 - stable native Counting or Radix selection for eligible new-list
   `sort(..., key=...)` calls with exact signed-int64 keys;
@@ -29,7 +29,7 @@ immutable; a changed candidate must use a new version such as `0.2.0rc2`.
 - direct Timsort behavior for in-place key calls and generic or unsuitable
   new-list workloads.
 
-The candidate deliberately does not promise to beat Timsort for every input.
+Version 0.2 deliberately does not promise to beat Timsort for every input.
 The accepted nearly ordered trade-off and measured wins/losses are recorded in
 the versioned benchmark reports.
 
@@ -50,12 +50,15 @@ the versioned benchmark reports.
   installed `0.2.0rc1` from TestPyPI and passed all 104 tests on Linux with
   CPython 3.9–3.14, Windows with CPython 3.11/3.14, Intel macOS with CPython
   3.11, and Apple Silicon macOS with CPython 3.14.
-- The public documentation builds in strict mode and distinguishes stable
-  `0.1.0` from candidate `0.2.0rc1`.
+- The public documentation builds in strict mode and presents stable `0.2.0`
+  while preserving the validated `0.2.0rc1` evidence as release history.
 - The final 0.2 API review freezes canonical exports and signatures, compares
   six runtime modules with their PEP 561 stubs through `mypy.stubtest`, and
   verifies representative type inference in strict mode. A clean wheel and
   source distribution include the type files and pass `twine check`.
+- The proposed stable `0.2.0` source distribution and CPython 3.11 wheel pass
+  `twine check`; a fresh environment installed that local wheel and passed all
+  105 tests outside the source tree.
 
 ## Promotion gates
 
@@ -63,7 +66,7 @@ the versioned benchmark reports.
   `0.2.0rc1` wheels on Linux, Windows, Intel macOS, and Apple Silicon macOS.
 - [x] Review the stable API surface and type hints once more after the
   published-wheel matrix passes.
-- [ ] Prepare the stable `0.2.0` metadata and changelog on a dedicated branch,
+- [x] Prepare the stable `0.2.0` metadata and changelog on a dedicated branch,
   without publishing.
 - [ ] Obtain explicit owner approval before creating `v0.2.0` or dispatching
   the production PyPI workflow.

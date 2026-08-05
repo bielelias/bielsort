@@ -44,9 +44,9 @@ Splitting the operations matters: `sorted()` and `bielsort.sort()` allocate a
 new list, while `list.sort()` and `bielsort.sort_in_place()` mutate an existing
 list. Input copies for in-place benchmarks are created before timing.
 
-## TestPyPI `sort(key=...)` candidate
+## Version 0.2 `sort(key=...)`
 
-The `0.2.0rc1` candidate connects the existing new-list `key` parameter to the
+Version 0.2 connects the existing new-list `key` parameter to the
 adaptive signed-int64 selector. Eleven rotated samples pinned to one CPU
 measured these speedups over `sorted(key=...)`:
 
@@ -59,7 +59,7 @@ measured these speedups over `sorted(key=...)`:
 | reverse random int64 | 2.42× | 2.68× | 3.53× |
 | reverse string fallback | 1.04× | 0.98× | 0.98× |
 
-The in-place keyed experiment was rejected for this candidate: despite large
+The in-place keyed experiment was rejected for this release: despite large
 integer-key gains, its private compatibility copy made sampled generic keys up
 to 17% slower. `sort_in_place(key=...)` therefore remains a direct Timsort
 operation. See the

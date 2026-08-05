@@ -24,13 +24,13 @@ python -m pip install bielsort
 Pin the current stable release when reproducibility matters:
 
 ```bash
-python -m pip install bielsort==0.1.0
+python -m pip install bielsort==0.2.0
 ```
 
-### Test the 0.2 release candidate
+### Reproduce the validated release candidate
 
-The `0.2.0rc1` candidate is isolated on TestPyPI and is not selected by the
-normal stable installation command:
+The `0.2.0rc1` pre-release remains archived on TestPyPI for release-history
+reproduction and is not selected by the normal stable installation command:
 
 ```bash
 python -m pip install \
@@ -66,7 +66,7 @@ python -c "import bielsort; print(bielsort.__version__)"
 Expected output for the current release:
 
 ```text
-0.1.0
+0.2.0
 ```
 
 Then run a small sort:
@@ -109,11 +109,10 @@ assert numbers == [8, -4, 10, 3, -4]
 
 ## `key=` and `reverse=`
 
-Both options are supported. In the `0.2.0rc1` TestPyPI candidate, new-list
-`sort(key=...)` may use stable native Counting or Radix when the key returns
-exact signed-int64 integers. Other new-list keys and every in-place key call
-retain Timsort behavior. The published 0.1.0 wheel still uses Timsort for all
-key calls.
+Both options are supported. In version 0.2, new-list `sort(key=...)` may use
+stable native Counting or Radix when the key returns exact signed-int64
+integers. Other new-list keys and every in-place key call retain Timsort
+behavior.
 
 ```python
 import bielsort

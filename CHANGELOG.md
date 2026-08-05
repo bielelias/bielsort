@@ -8,8 +8,20 @@ release.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-05
+
+Prepared from the cross-platform validated `0.2.0rc1` candidate.
+
 ### Added
 
+- Added stable native Counting and Radix paths for eligible new-list
+  `sort(key=...)` calls with exact signed-int64 keys, including stable
+  `reverse=True`, one key call per record, and exact-object Timsort replay.
+- Added `sort_with_info()` and immutable `SortInfo` diagnostics with an
+  optional conservative pre-key limit for BielSort's variable native
+  auxiliary buffers.
+- Added public keyed benchmarks, selector diagnostics, privacy-preserving
+  workload evaluation, and bilingual adoption guidance.
 - Added a reusable hosted-runner matrix that installs exact release-candidate
   wheels from TestPyPI and runs the complete suite against the published
   package.
@@ -17,6 +29,13 @@ release.
   contributors and chats can resume from verified project evidence.
 - Added CI checks that compare public stubs with the runtime API and verify
   representative type inference for canonical and compatibility imports.
+
+### Changed
+
+- Kept in-place key calls, generic keys, unsuitable ordered inputs, and
+  keyless reverse calls on CPython's Timsort rather than forcing a native path.
+- Documented the bounded nearly ordered trade-off instead of claiming a
+  universal speedup.
 
 ### Fixed
 
