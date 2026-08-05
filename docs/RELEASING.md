@@ -12,6 +12,9 @@ The first stable release, `0.1.0`, was published on 2026-07-31. PyPI release
 files and metadata cannot be replaced in place; every subsequent publication
 must use a new PEP 440 version.
 
+The current stable release is `0.2.0`. Its release branch was prepared from
+the exact `0.2.0rc1` artifacts that passed the published-wheel matrix.
+
 ## Publish documentation
 
 The documentation website is independent from a PyPI release. Changes under

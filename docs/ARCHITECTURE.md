@@ -2,24 +2,25 @@
 
 ## Public layer
 
-The canonical `bielsort` package exposes four stable 0.1 functions:
+The canonical `bielsort` package exposes five stable 0.2 functions:
 
 - `sort`: returns a new sorted list;
 - `sort_in_place`: mutates an exact list and returns `None`;
 - `sort_with_strategy` and `sort_in_place_with_strategy`: diagnostic variants
-  that also report the selected strategy.
+  that also report the selected strategy;
+- `sort_with_info`: returns a new sorted list and structured selection details.
 
-The earlier `biel_sort*` spellings are compatibility aliases for the 0.1
-series. The older `bielsort_native` package import also remains available for
+The earlier `biel_sort*` spellings remain compatibility aliases. The older
+`bielsort_native` package import also remains available for
 compatibility, but new applications should use `import bielsort`.
 
-The `0.2.0rc1` TestPyPI candidate routes new-list `sort(key=...)` through the
+Version 0.2 routes new-list `sort(key=...)` through the
 internal adaptive selector. Exact signed-int64 results may use stable native
 Counting or Radix; incompatible results use exact-object Timsort replay. The
 in-place key path and keyless reverse path deliberately remain on Python's
 built-in sorting to avoid generic-key regressions and semantic drift.
 
-The same candidate adds `sort_with_info()` and the immutable `SortInfo` value
+The same release adds `sort_with_info()` and the immutable `SortInfo` value
 for explicit keyed calls. The public object normalizes private selector names
 and exposes only reviewed fields. Its optional native-memory guard makes a
 conservative pre-key decision for exact `list` or `tuple` inputs; it does not

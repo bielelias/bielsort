@@ -10,7 +10,7 @@ on:
         description: Exact stable BielSort version to install from PyPI
         required: true
         type: string
-        default: "0.1.0"
+        default: "0.2.0"
       repetitions:
         description: Median repetition count
         required: true

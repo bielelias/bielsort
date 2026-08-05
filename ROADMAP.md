@@ -1,8 +1,7 @@
 # Roadmap
 
-Current stable release: [`0.1.0` on PyPI](https://pypi.org/project/bielsort/0.1.0/)
-and [`v0.1.0` on GitHub](https://github.com/bielelias/bielsort/releases/tag/v0.1.0),
-published on 2026-07-31.
+Current stable release: [`0.2.0` on PyPI](https://pypi.org/project/bielsort/0.2.0/)
+and [`v0.2.0` on GitHub](https://github.com/bielelias/bielsort/releases/tag/v0.2.0).
 
 ## Foundation completed for 0.1.0
 
@@ -64,7 +63,7 @@ published on 2026-07-31.
 - [x] Validate the published TestPyPI wheels on the supported hosted-runner
   matrix.
 - [x] Complete a final API/type-hint review for stable `0.2.0`.
-- [ ] Prepare stable metadata and changelog without publishing.
+- [x] Prepare stable metadata and changelog without publishing.
 - [ ] Publish `0.2.0` only after explicit owner approval.
 
 ## Future research

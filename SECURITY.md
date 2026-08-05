@@ -2,15 +2,15 @@
 
 ## Supported versions
 
-Only the latest patch release in the `0.1.x` series receives security fixes.
+Only the latest patch release in the `0.2.x` series receives security fixes.
 Pre-releases and older source snapshots are not supported.
 The current supported release is
-[`0.1.0`](https://pypi.org/project/bielsort/0.1.0/).
+[`0.2.0`](https://pypi.org/project/bielsort/0.2.0/).
 
 | Version | Supported |
 |---|---|
-| Latest `0.1.x` | Yes |
-| `< 0.1` | No |
+| Latest `0.2.x` | Yes |
+| `< 0.2` | No |
 
 ## Reporting a vulnerability
 

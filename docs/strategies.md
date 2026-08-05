@@ -13,7 +13,7 @@ correct result.
 ### Preserve Python semantics
 
 In-place `key=` and keyless `reverse=` use Timsort. An explicit key on the
-new-list API enters the 0.2 release-candidate adaptive keyed selector.
+new-list API enters the 0.2 adaptive keyed selector.
 </div>
 
 <div class="biel-flow-step" data-step="Step 2" markdown>
@@ -73,7 +73,7 @@ runs.
 
 ## Adaptive signed-int64 keys
 
-<span class="biel-pill">TestPyPI · 0.2.0rc1</span>
+<span class="biel-pill">Stable · 0.2.0</span>
 
 For `sort(records, key=callable)`, the C extractor evaluates each key exactly
 once in encounter order and retains the exact Python key object until the
@@ -154,8 +154,7 @@ print(strategy)
 Diagnostic wording can change as the pre-1.0 heuristics evolve. Application
 correctness should never depend on the exact string.
 
-The `0.2.0rc1` candidate also supports structured inspection for an
-explicit key:
+Version 0.2 also supports structured inspection for an explicit key:
 
 ```python
 ordered, info = bielsort.sort_with_info(

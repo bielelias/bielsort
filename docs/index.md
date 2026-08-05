@@ -5,7 +5,7 @@ hide:
 
 <div class="biel-hero" markdown>
 
-<span class="biel-kicker">Stable 0.1.0 · TestPyPI candidate 0.2.0rc1</span>
+<span class="biel-kicker">Stable release · 0.2.0</span>
 
 # Sorting that adapts to your data
 
@@ -18,15 +18,15 @@ Python's Timsort whenever that is the safer or more compatible choice.
 [Explore the API](api.md){ .md-button }
 [Is BielSort a fit?](use-cases.md){ .md-button }
 [View on PyPI](https://pypi.org/project/bielsort/){ .md-button }
-[Test 0.2.0rc1](https://test.pypi.org/project/bielsort/0.2.0rc1/){ .md-button }
+[View release](https://github.com/bielelias/bielsort/releases/tag/v0.2.0){ .md-button }
 </div>
 
 </div>
 
 <div class="biel-stats" markdown>
 <div class="biel-stat"><strong>3.9–3.14</strong><span>CPython versions</span></div>
-<div class="biel-stat"><strong>4</strong><span>canonical functions</span></div>
-<div class="biel-stat"><strong>36</strong><span>0.2 candidate wheels</span></div>
+<div class="biel-stat"><strong>5</strong><span>canonical functions</span></div>
+<div class="biel-stat"><strong>36</strong><span>prebuilt wheels</span></div>
 <div class="biel-stat"><strong>MIT</strong><span>open source license</span></div>
 </div>
 
@@ -44,9 +44,9 @@ Timsort instead of forcing one algorithm onto every input.
 <div class="biel-card" markdown>
 ### Python-compatible
 
-Sorting remains stable. The TestPyPI candidate can accelerate signed-int64
-results from new-list `key=` calls; generic keys, in-place keys, non-integers,
-huge integers, and unsuitable ordered inputs retain Python's mature Timsort.
+Sorting remains stable. Version 0.2 can accelerate signed-int64 results from
+new-list `key=` calls; generic keys, in-place keys, non-integers, huge integers,
+and unsuitable ordered inputs retain Python's mature Timsort.
 </div>
 
 <div class="biel-card" markdown>
@@ -95,7 +95,7 @@ python -m pip install bielsort
 | Mutate an existing list | `values.sort()` | `bielsort.sort_in_place(values)` |
 | See the selected strategy | — | `bielsort.sort_with_strategy(values)` |
 | Mutate and see the strategy | — | `bielsort.sort_in_place_with_strategy(values)` |
-| Inspect keyed algorithm and native memory | — | `bielsort.sort_with_info(values, key=...)` *(0.2.0rc1 candidate)* |
+| Inspect keyed algorithm and native memory | — | `bielsort.sort_with_info(values, key=...)` |
 
 !!! note "A specialized tool, not a universal replacement"
 

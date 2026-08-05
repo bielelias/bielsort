@@ -6,9 +6,9 @@
 [![CI](https://github.com/bielelias/bielsort/actions/workflows/ci.yml/badge.svg)](https://github.com/bielelias/bielsort/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-> Current stable release: [`0.1.0` on PyPI](https://pypi.org/project/bielsort/0.1.0/)
-> and [`v0.1.0` on GitHub](https://github.com/bielelias/bielsort/releases/tag/v0.1.0).
-> The public API is stable for the 0.1 series, while performance heuristics may
+> Current stable release: [`0.2.0` on PyPI](https://pypi.org/project/bielsort/0.2.0/)
+> and [`v0.2.0` on GitHub](https://github.com/bielelias/bielsort/releases/tag/v0.2.0).
+> The public API is stable for the 0.2 series, while performance heuristics may
 > continue to evolve before 1.0.
 
 BielSort is an adaptive, stable sorting library for CPython. It specializes in
@@ -27,9 +27,9 @@ It provides separate APIs to compete fairly with both `sorted()` and
 
 ## Status
 
-- Development stage: beta (`0.2.0rc1` TestPyPI candidate)
-- Published stable: PyPI and GitHub Releases (`0.1.0`)
-- Published candidate: [TestPyPI `0.2.0rc1`](https://test.pypi.org/project/bielsort/0.2.0rc1/)
+- Development stage: beta (`0.2.0`)
+- Published stable: PyPI and GitHub Releases (`0.2.0`)
+- Validated candidate archive: [TestPyPI `0.2.0rc1`](https://test.pypi.org/project/bielsort/0.2.0rc1/)
 - Runtime: CPython 3.9+
 - Native language: C
 - Type information: PEP 561 stubs checked against the runtime API in CI
@@ -50,13 +50,13 @@ python -m pip install bielsort
 For a reproducible installation, pin the current release:
 
 ```bash
-python -m pip install bielsort==0.1.0
+python -m pip install bielsort==0.2.0
 ```
 
 The package has no runtime dependencies. The canonical import is `bielsort`.
 
-To test the exact 0.2 release candidate from TestPyPI in an isolated
-environment:
+The validated pre-release remains available from TestPyPI for release-history
+reproduction:
 
 ```bash
 python -m pip install \
@@ -100,10 +100,9 @@ Using the package namespace keeps the calls visually distinct from Python's
 `sorted()` function and `list.sort()` method. Python has no standalone built-in
 function named `sort()`.
 
-`key=` and `reverse=` are supported. In the `0.2.0rc1` TestPyPI candidate,
-`sort(..., key=...)` can accelerate exact signed-int64 key results with stable
-Counting or Radix while retaining Timsort for other keys. The stable 0.1 wheel
-and the in-place key API continue to use Timsort:
+`key=` and `reverse=` are supported. In 0.2, `sort(..., key=...)` can accelerate
+exact signed-int64 key results with stable Counting or Radix while retaining
+Timsort for other keys. The in-place key API continues to use Timsort:
 
 ```python
 import bielsort
@@ -125,8 +124,8 @@ ordered, strategy = bielsort.sort_with_strategy([3, 1, 2] * 10_000)
 print(strategy)
 ```
 
-The `0.2.0rc1` candidate also provides structured keyed diagnostics and an
-optional native-memory guard:
+Version 0.2 also provides structured keyed diagnostics and an optional
+native-memory guard:
 
 ```python
 ordered, info = bielsort.sort_with_info(
@@ -145,13 +144,13 @@ When a limit is set, the input must be an exact `list` or `tuple` so the guard
 can decide before calling `key`. Use `on_memory_limit="raise"` to reject the
 operation instead of falling back to Timsort.
 
-The public-key candidate measured `2.37x–5.13x` over
+The validated version 0.2 keyed implementation measured `2.37x–5.13x` over
 `sorted(key=...)` for the sampled integer-key workloads, while its string-key
 fallback stayed between `0.98x` and `1.04x`. See the
-[candidate report](benchmarks/results/2026-08-04-keyed-public-api-candidate.md).
+[versioned report](benchmarks/results/2026-08-04-keyed-public-api-candidate.md).
 
-The earlier `biel_sort*` names remain compatibility aliases for the 0.1
-series. New code should use the canonical `sort*` names shown above.
+The earlier `biel_sort*` names remain compatibility aliases. New code should
+use the canonical `sort*` names shown above.
 
 ## Complexity
 
@@ -227,8 +226,7 @@ python benchmarks/workload_evaluator.py \
 ## Scope and limitations
 
 - The accelerated path currently supports exact `int` objects in signed
-  64-bit range, including eligible key results in the `0.2.0rc1` new-list
-  candidate.
+  64-bit range, including eligible key results in the 0.2 new-list API.
 - Floats, strings, subclasses, mixed types, huge integers, `reverse=True`
   without a key, and in-place key calls use Timsort.
 - The project is CPython-specific because its native module uses the CPython C
@@ -251,8 +249,8 @@ python benchmarks/workload_evaluator.py \
 - [Casos de uso e adoção](https://bielelias.github.io/bielsort/use-cases-pt/)
 - [Avaliador de workload](https://bielelias.github.io/bielsort/evaluator-pt/)
 - [Hosted runner validation](https://bielelias.github.io/bielsort/external-validation/)
-- [Stable release on PyPI](https://pypi.org/project/bielsort/0.1.0/)
-- [GitHub release `v0.1.0`](https://github.com/bielelias/bielsort/releases/tag/v0.1.0)
+- [Stable release on PyPI](https://pypi.org/project/bielsort/0.2.0/)
+- [GitHub release `v0.2.0`](https://github.com/bielelias/bielsort/releases/tag/v0.2.0)
 - [Continuous integration](https://github.com/bielelias/bielsort/actions/workflows/ci.yml)
 - [Contributing guide](CONTRIBUTING.md)
 - [Architecture](docs/ARCHITECTURE.md)
@@ -278,15 +276,14 @@ O BielSort é uma biblioteca de ordenação estável e adaptativa para CPython.
 Ela acelera listas grandes de inteiros usando Counting Sort ou Radix Sort em C
 e recorre ao Timsort nos casos em que o algoritmo padrão é mais adequado.
 
-A primeira versão pública estável é a `0.1.0`, distribuída sob a licença MIT.
-A candidata `0.2.0rc1` está publicada no TestPyPI para testes de instalação;
-ela ainda não é a versão estável do PyPI principal.
+A versão pública estável atual é a `0.2.0`, distribuída sob a licença MIT.
+A candidata validada `0.2.0rc1` permanece arquivada no TestPyPI.
 A compilação e os testes de wheels foram validados no CI para CPython 3.9 até
 3.14 em Linux, Windows, macOS Intel e macOS Apple Silicon.
 
-A candidata 0.2 também pode acelerar `bielsort.sort(..., key=...)` quando a
-chave retorna um inteiro exato signed 64-bit. A API in-place com chave continua
-usando Timsort.
+A versão 0.2 também pode acelerar `bielsort.sort(..., key=...)` quando a chave
+retorna um inteiro exato signed 64-bit. A API in-place com chave continua usando
+Timsort.
 
 Instalação e uso recomendado:
 
