@@ -275,6 +275,12 @@ matched stable full sorting by identity. See the
 [versioned direct keyed top-k report](results/2026-08-05-keyed-topk.md) and its
 linked raw samples.
 
+The stage-two continuation is pre-registered in the same proposal. It will
+measure an adaptive `O(k)` heap over generic comparable keys, guard behavior,
+exact-int64 regression against the frozen private core, and generic fallback
+against `heapq`. Its thresholds are fixed before implementation; no canonical
+stage-two result exists yet.
+
 ## Research: adaptive generic keys
 
 The follow-up selector keeps `key` generic, calls user code exactly once, and

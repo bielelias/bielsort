@@ -34,6 +34,9 @@ release.
   results, one key call per record, iterable support, differential tests, and
   versioned raw timing evidence. Its first canonical gate passed, but generic
   fallback and public API review remain future work.
+- Pre-registered the semantic, memory, exact-int64 regression, and generic-key
+  gates for a private adaptive top-k continuation. No public API is added by
+  this stage-two design.
 
 ## [0.2.0] - 2026-08-05
 

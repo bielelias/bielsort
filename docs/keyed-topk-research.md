@@ -135,3 +135,67 @@ Before a public proposal, BielSort would still need to answer:
 
 Until those questions have evidence, `_Permutation`, `apply_many()`, and the
 new keyed operation remain implementation research.
+
+## Stage two: compatible generic keys and memory guard
+
+The next private candidate is an adaptive `_topk_by_key_prototype`. It starts
+with normalized exact-int64 comparisons, but retains only the key objects of
+the current `k` candidates. If an out-of-range integer or another Python key
+type appears, it switches the existing heap to Python `<` comparisons and
+continues without restarting iteration or calling `key` again.
+
+The generic comparison contract follows stable sorting for well-behaved
+strict weak orderings:
+
+- compare keys with `<`, never compare records;
+- treat keys as tied when neither is less than the other;
+- use encounter position only to preserve stable ties;
+- propagate key and comparison exceptions;
+- keep at most `k` key references and `O(k)` native entries;
+- use an exception-aware stable merge for the final `k` records rather than
+  `qsort()`, whose comparator cannot propagate Python exceptions.
+
+The strict `_topk_by_int64_key_prototype` remains unchanged so its versioned
+stage-one result stays reproducible.
+
+### Private memory guard
+
+A private Python dispatcher will optionally accept
+`max_native_auxiliary_bytes` and `on_memory_limit="heapq"` or `"raise"`.
+With a limit, the input must be an exact list or tuple so the conservative
+worst-case native allocation can be checked before calling `key`.
+
+The estimate covers two `k`-entry native buffers: the selection heap and the
+generic final-merge scratch space. It excludes the input objects and returned
+Python list. If the limit is exceeded, the dispatcher either delegates to
+`heapq.nsmallest()`/`nlargest()` before any key call or raises `MemoryError`
+before any key call. This is a private research contract, not an approved
+public signature.
+
+### Pre-registered stage-two gates
+
+Correctness and semantics are mandatory:
+
+1. identity-equivalent results to stable full sorting for exact int64,
+   arbitrary-size integers, strings, tuples, finite floats, and duplicate
+   keys in both directions;
+2. exactly one key call per encountered record, zero calls for `k == 0`, and
+   correct propagation of iteration, key, and comparison exceptions;
+3. guard decisions occur before key calls and both `heapq` and `raise`
+   policies obey the fixed limit;
+4. code inspection and tests confirm `O(k)` retained keys/native entries and
+   no `O(n)` key array for reusable inputs.
+
+The exact-int64 regression run reuses the 24 one-million-record stage-one
+cases and seven rotated samples. It advances only if at least 18 cases remain
+at or above `1.20x` over `heapq` and no adaptive case is more than 15% slower
+than the frozen strict-int64 core.
+
+The generic run uses 100,000 records, `k` values 10, 100, and 1,000, both
+directions, seven rotated samples, and four domains: arbitrary-size integers,
+strings, integer tuples, and finite floats. It advances only if no case is
+more than 15% slower than `heapq`; acceleration is reported but is not a gate.
+
+Passing these gates authorizes common-`lambda`/`attrgetter` and isolated-memory
+experiments. It still does not approve `top_k`, a version bump, or a release.
+Thresholds must not change after canonical measurements.

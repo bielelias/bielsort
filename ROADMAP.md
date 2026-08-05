@@ -93,8 +93,10 @@ published on 2026-08-05.
   Python records before implementing or exposing a public function.
 - [x] Implement and validate the private exact-int64 keyed top-k core without
   adding a public symbol.
-- [ ] Design a one-call-compatible generic-key fallback and memory guard for
+- [x] Design a one-call-compatible generic-key fallback and memory guard for
   direct keyed top-k before any public API proposal.
+- [ ] Implement and validate the private adaptive generic-key heap and
+  pre-key memory guard against the fixed stage-two gates.
 - [ ] Measure common `lambda` and `attrgetter` keys and isolated memory before
   deciding whether direct keyed top-k deserves promotion review.
 - [ ] Prototype native inverse and composition operations only after external
