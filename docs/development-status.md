@@ -170,9 +170,16 @@ The candidate passes 130 optimized and sanitized local tests, warning-clean
 native compilation, runtime/stub comparison, strict Python 3.9 typing, and
 strict documentation. The local wheel and source distribution pass metadata
 validation, and a clean environment installs the wheel and passes all 130
-tests outside the source tree. It remains private until supported-platform
-source and wheel gates pass; public API design and promotion remain later
-decisions.
+tests outside the source tree. Draft PR
+[#34](https://github.com/bielelias/bielsort/pull/34) passes source-build CI on
+Linux with CPython 3.9–3.14, Windows with CPython 3.11/3.14, and macOS with
+CPython 3.11/3.14, plus hosted sanitizers, public stubs, and strict
+documentation. Its non-publishing
+[build-only wheel run](https://github.com/bielelias/bielsort/actions/runs/31046012832)
+also passes on Linux, Windows, macOS Intel, and macOS Apple Silicon, including
+wheel tests, content validation, artifact upload, and source-distribution
+creation. The candidate remains private; public API design, promotion review,
+and any release remain later decisions.
 
 ## Resume checklist
 
