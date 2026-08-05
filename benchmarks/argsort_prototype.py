@@ -41,6 +41,8 @@ PYTHON = "python-sorted-indices"
 BIELSORT = "biel-compact-argsort"
 NUMPY_ARRAY = "numpy-array"
 NUMPY_E2E = "numpy-python-e2e"
+PYTHON_REUSE = "python-build-and-apply-three"
+BIELSORT_REUSE = "biel-build-and-apply-three"
 PRIMARY_ALGORITHMS = (PYTHON, BIELSORT)
 NUMPY_ALGORITHMS = (NUMPY_ARRAY, NUMPY_E2E)
 CASES = ("dense", "int32", "int64", "nearly-sorted", "ascending")
@@ -211,23 +213,38 @@ def apply_permutation(values, order):
     return [values[index] for index in order]
 
 
+def run_application(name, values, python_order, biel_order):
+    if name == "python-list-indices":
+        return apply_permutation(values, python_order)
+    if name == "biel-compact-iteration":
+        return apply_permutation(values, biel_order)
+    if name == "biel-native-apply":
+        return biel_order.apply(values)
+    raise ValueError(f"Unknown application operation: {name}")
+
+
 def measure_application(values, repetitions):
     python_order = run_construction(PYTHON, values)
     biel_order = run_construction(BIELSORT, values)
     expected = sorted(values)
-    orders = {
-        "python-list-indices": python_order,
-        "biel-compact-indices": biel_order,
-    }
-    samples = {name: [] for name in orders}
-    names = list(orders)
+    names = [
+        "python-list-indices",
+        "biel-compact-iteration",
+        "biel-native-apply",
+    ]
+    samples = {name: [] for name in names}
     for repetition in range(repetitions):
         for name in rotate(names, repetition):
             gc.collect()
             gc.disable()
             try:
                 started = time.perf_counter()
-                result = apply_permutation(values, orders[name])
+                result = run_application(
+                    name,
+                    values,
+                    python_order,
+                    biel_order,
+                )
                 elapsed = time.perf_counter() - started
             finally:
                 gc.enable()
@@ -236,6 +253,58 @@ def measure_application(values, repetitions):
             samples[name].append(elapsed)
             del result
     del expected, python_order, biel_order
+    gc.collect()
+    return samples
+
+
+def create_parallel_sequences(values):
+    size = len(values)
+    return [
+        values,
+        list(range(size)),
+        [index % 97 for index in range(size)],
+    ]
+
+
+def run_reuse(name, values, sequences):
+    if name == PYTHON_REUSE:
+        order = run_construction(PYTHON, values)
+        results = [apply_permutation(sequence, order) for sequence in sequences]
+        return order, results
+    if name == BIELSORT_REUSE:
+        order = run_construction(BIELSORT, values)
+        results = [order.apply(sequence) for sequence in sequences]
+        return order, results
+    raise ValueError(f"Unknown reuse operation: {name}")
+
+
+def measure_reuse(values, repetitions):
+    sequences = create_parallel_sequences(values)
+    expected_order = run_construction(PYTHON, values)
+    expected = [
+        apply_permutation(sequence, expected_order)
+        for sequence in sequences
+    ]
+    names = [
+        PYTHON_REUSE,
+        BIELSORT_REUSE,
+    ]
+    samples = {name: [] for name in names}
+    for repetition in range(repetitions):
+        for name in rotate(names, repetition):
+            gc.collect()
+            gc.disable()
+            try:
+                started = time.perf_counter()
+                order, results = run_reuse(name, values, sequences)
+                elapsed = time.perf_counter() - started
+            finally:
+                gc.enable()
+            if results != expected:
+                raise AssertionError("Reused permutation produced wrong rows")
+            samples[name].append(elapsed)
+            del results, order
+    del expected, expected_order, sequences
     gc.collect()
     return samples
 
@@ -314,9 +383,10 @@ def execute_application_benchmark(sizes, repetitions, cases):
     print("\nPYTHON-LIST APPLICATION TIME (median; lower is better)")
     print(
         f"{'n':>10}  {'case':<15}  {'list[int]':>12}"
-        f"  {'compact':>12}  {'compact/list':>13}"
+        f"  {'compact iter':>12}  {'native':>12}"
+        f"  {'list/native':>12}"
     )
-    print("-" * 70)
+    print("-" * 87)
     rows = []
     for size in sizes:
         for case in cases:
@@ -325,22 +395,70 @@ def execute_application_benchmark(sizes, repetitions, cases):
             python_median = statistics.median(
                 samples["python-list-indices"]
             )
-            biel_median = statistics.median(
-                samples["biel-compact-indices"]
+            compact_median = statistics.median(
+                samples["biel-compact-iteration"]
+            )
+            native_median = statistics.median(
+                samples["biel-native-apply"]
             )
             row = {
                 "size": size,
                 "case": case,
                 "python_list_median_s": python_median,
-                "biel_compact_median_s": biel_median,
-                "biel_to_python_ratio": biel_median / python_median,
+                "biel_compact_iteration_median_s": compact_median,
+                "biel_native_apply_median_s": native_median,
+                "native_speedup_over_python_list": (
+                    python_median / native_median
+                ),
+                "native_speedup_over_compact_iteration": (
+                    compact_median / native_median
+                ),
+                "samples_s": samples,
+            }
+            rows.append(row)
+            print(
+                f"{size:>10,}  {case:<15}  {python_median:>11.6f}s"
+                f"  {compact_median:>11.6f}s"
+                f"  {native_median:>11.6f}s"
+                f"  {row['native_speedup_over_python_list']:>11.2f}x"
+            )
+            del values
+            gc.collect()
+    return rows
+
+
+def execute_reuse_benchmark(sizes, repetitions, cases):
+    print("\nBUILD ONCE + APPLY TO THREE LISTS (median; higher gain is better)")
+    print(
+        f"{'n':>10}  {'case':<15}  {'Python':>12}"
+        f"  {'Biel native':>12}  {'gain':>9}"
+    )
+    print("-" * 67)
+    rows = []
+    for size in sizes:
+        for case in cases:
+            values = create_values(size, case, 5050 + size)
+            samples = measure_reuse(values, repetitions)
+            python_median = statistics.median(
+                samples[PYTHON_REUSE]
+            )
+            biel_median = statistics.median(
+                samples[BIELSORT_REUSE]
+            )
+            row = {
+                "size": size,
+                "case": case,
+                "sequence_count": 3,
+                "python_median_s": python_median,
+                "biel_median_s": biel_median,
+                "biel_speedup": python_median / biel_median,
                 "samples_s": samples,
             }
             rows.append(row)
             print(
                 f"{size:>10,}  {case:<15}  {python_median:>11.6f}s"
                 f"  {biel_median:>11.6f}s"
-                f"  {row['biel_to_python_ratio']:>12.2f}x"
+                f"  {row['biel_speedup']:>8.2f}x"
             )
             del values
             gc.collect()
@@ -348,6 +466,32 @@ def execute_application_benchmark(sizes, repetitions, cases):
 
 
 def run_memory_worker(algorithm, case, size, seed):
+    if algorithm in (PYTHON_REUSE, BIELSORT_REUSE):
+        values = create_values(size, case, seed)
+        sequences = create_parallel_sequences(values)
+        gc.collect()
+        baseline = peak_rss_bytes()
+        started = time.perf_counter()
+        order, results = run_reuse(algorithm, values, sequences)
+        elapsed = time.perf_counter() - started
+        incremental_peak = max(0, peak_rss_bytes() - baseline)
+        expected_order = run_construction(PYTHON, values)
+        expected = [
+            apply_permutation(sequence, expected_order)
+            for sequence in sequences
+        ]
+        if results != expected:
+            raise AssertionError("Reused permutation produced wrong rows")
+        return {
+            "algorithm": algorithm,
+            "case": case,
+            "size": size,
+            "elapsed_s": elapsed,
+            "incremental_peak_bytes": incremental_peak,
+            "order_storage": result_storage(order),
+            "sequence_count": len(sequences),
+        }
+
     array = None
     if algorithm == NUMPY_ARRAY:
         values = create_numpy_values(size, case, seed)
@@ -478,6 +622,57 @@ def execute_memory_benchmark(
     return rows
 
 
+def execute_reuse_memory_benchmark(size, repetitions, cases):
+    print("\nTHREE-LIST REUSE PEAK RSS (median incremental peak)")
+    print(
+        f"{'case':<15}  {'Python':>12}  {'Biel native':>12}"
+        f"  {'Biel/Python':>12}"
+    )
+    print("-" * 59)
+    rows = []
+    for case in cases:
+        by_algorithm = {}
+        for algorithm in (PYTHON_REUSE, BIELSORT_REUSE):
+            samples = [
+                invoke_memory_worker(
+                    algorithm,
+                    case,
+                    size,
+                    6060 + repetition,
+                )
+                for repetition in range(repetitions)
+            ]
+            by_algorithm[algorithm] = {
+                "median_incremental_peak_bytes": statistics.median(
+                    sample["incremental_peak_bytes"] for sample in samples
+                ),
+                "samples": samples,
+            }
+        python_peak = by_algorithm[PYTHON_REUSE][
+            "median_incremental_peak_bytes"
+        ]
+        biel_peak = by_algorithm[BIELSORT_REUSE][
+            "median_incremental_peak_bytes"
+        ]
+        ratio = biel_peak / python_peak if python_peak else None
+        row = {
+            "size": size,
+            "case": case,
+            "sequence_count": 3,
+            "python_peak_bytes": python_peak,
+            "biel_peak_bytes": biel_peak,
+            "biel_to_python_ratio": ratio,
+            "raw": by_algorithm,
+        }
+        rows.append(row)
+        print(
+            f"{case:<15}  {python_peak / 2**20:>10.2f} MiB"
+            f"  {biel_peak / 2**20:>10.2f} MiB"
+            f"  {ratio if ratio is not None else float('nan'):>11.2f}x"
+        )
+    return rows
+
+
 def evaluate_gate(time_rows, memory_rows):
     speed_cases = [
         {"size": row["size"], "case": row["case"], "speedup": row["biel_speedup"]}
@@ -524,6 +719,60 @@ def evaluate_gate(time_rows, memory_rows):
     }
 
 
+def evaluate_application_gate(application_rows, reuse_rows):
+    native_application_cases = [
+        {
+            "size": row["size"],
+            "case": row["case"],
+            "speedup": row["native_speedup_over_python_list"],
+        }
+        for row in application_rows
+        if row["size"] == 1_000_000
+        and row["native_speedup_over_python_list"] >= 1.50
+    ]
+    reuse_cases = [
+        {
+            "size": row["size"],
+            "case": row["case"],
+            "speedup": row["biel_speedup"],
+        }
+        for row in reuse_rows
+        if row["size"] >= 100_000
+        and row["case"] in DISORDERED_CASES
+        and row["biel_speedup"] >= 1.50
+    ]
+    nearly_sorted_regressions = [
+        {
+            "size": row["size"],
+            "case": row["case"],
+            "ratio": 1.0 / row["biel_speedup"],
+        }
+        for row in reuse_rows
+        if row["size"] >= 100_000
+        and row["case"] == "nearly-sorted"
+        and row["biel_speedup"] < (1.0 / 1.10)
+    ]
+    return {
+        "passed": (
+            len(native_application_cases) >= 4
+            and len(reuse_cases) >= 2
+            and not nearly_sorted_regressions
+        ),
+        "native_application_passed": (
+            len(native_application_cases) >= 4
+        ),
+        "native_application_cases": native_application_cases,
+        "three_sequence_reuse_passed": len(reuse_cases) >= 2,
+        "three_sequence_reuse_cases": reuse_cases,
+        "nearly_sorted_bound_passed": not nearly_sorted_regressions,
+        "nearly_sorted_regressions": nearly_sorted_regressions,
+        "note": (
+            "This gate evaluates the private native apply experiment, not a "
+            "public API or release decision."
+        ),
+    }
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -555,6 +804,11 @@ def main():
         "--skip-application",
         action="store_true",
         help="Skip applying precomputed permutations to Python lists.",
+    )
+    parser.add_argument(
+        "--skip-reuse",
+        action="store_true",
+        help="Skip constructing once and applying to three parallel lists.",
     )
     parser.add_argument(
         "--json-output",
@@ -591,6 +845,7 @@ def main():
         )
 
     memory_rows = []
+    reuse_memory_rows = []
     if not arguments.skip_memory:
         memory_rows = execute_memory_benchmark(
             max(arguments.sizes),
@@ -598,6 +853,12 @@ def main():
             arguments.cases,
             include_numpy,
         )
+        if not arguments.skip_reuse:
+            reuse_memory_rows = execute_reuse_memory_benchmark(
+                max(arguments.sizes),
+                arguments.memory_repetitions,
+                arguments.cases,
+            )
     time_rows = execute_time_benchmark(
         arguments.sizes,
         arguments.repetitions,
@@ -611,10 +872,29 @@ def main():
             arguments.repetitions,
             arguments.cases,
         )
+    reuse_rows = []
+    if not arguments.skip_reuse:
+        reuse_rows = execute_reuse_benchmark(
+            arguments.sizes,
+            arguments.repetitions,
+            arguments.cases,
+        )
     gate = evaluate_gate(time_rows, memory_rows)
+    application_gate = evaluate_application_gate(
+        application_rows,
+        reuse_rows,
+    )
     print(
         "\nPRE-REGISTERED GATE: "
         + ("PASS" if gate["passed"] else "NOT YET PASSED")
+    )
+    print(
+        "NATIVE APPLY GATE: "
+        + (
+            "PASS"
+            if application_gate["passed"]
+            else "NOT YET PASSED"
+        )
     )
 
     if arguments.json_output:
@@ -638,8 +918,11 @@ def main():
             },
             "construction_time": time_rows,
             "application_time": application_rows,
+            "reuse_time": reuse_rows,
             "memory": memory_rows,
+            "reuse_memory": reuse_memory_rows,
             "decision_gate": gate,
+            "application_decision_gate": application_gate,
         }
         arguments.json_output.parent.mkdir(parents=True, exist_ok=True)
         arguments.json_output.write_text(

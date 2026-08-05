@@ -108,6 +108,47 @@ Applying the compact indices to a Python list is 16%–32% slower in the tested
 one-million-element cases. NumPy also retains a major advantage when values
 already live in an ndarray, especially for ordered inputs.
 
+## Native application follow-up
+
+The next private experiment adds `Permutation.apply(sequence)` to avoid
+materializing one Python integer per index while applying the compact buffer.
+It must return a new list, preserve exact object identity, leave the source
+unchanged, reject one-shot iterables, and require the sequence length to match
+the permutation.
+
+Before the full-size run, the continuation gates are fixed as follows:
+
+1. Native application must reach at least `1.50x` over a Python list
+   comprehension driven by `list[int]` in at least four of the five
+   one-million-element cases.
+2. Constructing one order and applying it to three parallel lists must reach
+   `1.50x` in at least two disordered 100,000- or one-million-element cases.
+3. That complete three-list operation must not be more than 10% slower on a
+   nearly sorted input at either large size.
+
+Passing this follow-up would show that compact storage and fast reuse can
+coexist. It would still not make the type public or approve a release.
+
+## Native application result
+
+The 2026-08-05 continuation passes all three pre-registered gates on the local
+Linux machine:
+
+- at one million elements, native application is `2.14x–4.86x` faster than a
+  list comprehension driven by a precomputed Python `list[int]`;
+- building one order and applying it to three parallel lists is
+  `4.93x–6.41x` faster in the three disordered one-million-element cases;
+- the same complete operation is `1.21x` and `1.04x` faster for nearly sorted
+  inputs at 100,000 and one million elements, respectively;
+- incremental peak RSS for the three disordered one-million-element complete
+  flows is 51%–56% lower than the Python baseline.
+
+The native method avoids creating Python integer indices during application
+and preserves exact object identity. It remains private, and the nearly sorted
+construction stage by itself remains slower than Timsort. See the
+[native application research record](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-08-05-compact-argsort-native-apply.md)
+for tables, raw evidence, limitations, and reproduction commands.
+
 See the
 [full research record](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-08-05-compact-argsort.md)
 for the separate Python/NumPy scenarios, reproduction commands, raw samples,
@@ -118,8 +159,8 @@ does not add an API, change the package version, or establish market demand.
 
 - Should the first public version support only natural integer values, or ship
   with stable signed-int64 `key=` support at once?
-- Should `Permutation` expose a deliberate method for applying itself to a
-  Python sequence, or remain a small index container?
+- Should a future public `Permutation` expose the validated native application
+  method, and what name best communicates that it returns a new list?
 - Is a stable generic fallback valuable enough to include, or should the
   prototype reject unsupported domains explicitly?
 - Can 32-bit and 64-bit internal storage coexist without making the buffer

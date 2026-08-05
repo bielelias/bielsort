@@ -17,6 +17,9 @@ release.
   index buffer, compatible fallbacks, differential tests, and versioned
   construction, application, NumPy, and peak-memory evidence. No `argsort`
   name is public yet.
+- Added private native compact-permutation application research, including
+  exact-object and sequence-contract tests plus versioned time and peak-memory
+  evidence for reusing one order across three parallel Python lists.
 
 ## [0.2.0] - 2026-08-05
 

@@ -67,6 +67,67 @@ permutation_repr(PyObject *object)
     );
 }
 
+static PyObject *
+permutation_apply(BielSortPermutation *self, PyObject *sequence)
+{
+    if (!PySequence_Check(sequence)) {
+        PyErr_SetString(
+            PyExc_TypeError,
+            "permutation.apply requires a reusable sequence"
+        );
+        return NULL;
+    }
+    PyObject *values = PySequence_Fast(
+        sequence,
+        "permutation.apply requires a reusable sequence"
+    );
+    if (values == NULL) {
+        return NULL;
+    }
+    const Py_ssize_t length = PySequence_Fast_GET_SIZE(values);
+    if (length != self->length) {
+        Py_DECREF(values);
+        PyErr_Format(
+            PyExc_ValueError,
+            "permutation length %zd does not match sequence length %zd",
+            self->length,
+            length
+        );
+        return NULL;
+    }
+
+    PyObject *result = PyList_New(length);
+    if (result == NULL) {
+        Py_DECREF(values);
+        return NULL;
+    }
+    for (Py_ssize_t position = 0; position < length; position++) {
+        uint64_t index;
+        if (self->itemsize == 4) {
+            index = ((const uint32_t *)self->indices)[position];
+        } else {
+            index = ((const uint64_t *)self->indices)[position];
+        }
+        if (index >= (uint64_t)length) {
+            Py_DECREF(result);
+            Py_DECREF(values);
+            PyErr_SetString(
+                PyExc_SystemError,
+                "permutation contains an invalid internal index"
+            );
+            return NULL;
+        }
+        PyObject *item = PySequence_Fast_GET_ITEM(
+            values,
+            (Py_ssize_t)index
+        );
+        Py_INCREF(item);
+        PyList_SET_ITEM(result, position, item);
+    }
+    Py_DECREF(values);
+    return result;
+}
+
 static int
 permutation_getbuffer(PyObject *object, Py_buffer *view, int flags)
 {
@@ -110,6 +171,17 @@ static PyBufferProcs permutation_buffer = {
     .bf_getbuffer = permutation_getbuffer,
 };
 
+static PyMethodDef permutation_methods[] = {
+    {
+        "apply",
+        (PyCFunction)permutation_apply,
+        METH_O,
+        "apply($self, sequence, /)\n--\n\n"
+        "Return sequence values in this private permutation's order."
+    },
+    {NULL, NULL, 0, NULL}
+};
+
 static PyTypeObject bielsort_permutation_type = {
     PyVarObject_HEAD_INIT(NULL, 0)
     .tp_name = "bielsort_native._bielsort._Permutation",
@@ -118,6 +190,7 @@ static PyTypeObject bielsort_permutation_type = {
     .tp_repr = permutation_repr,
     .tp_as_sequence = &permutation_sequence,
     .tp_as_buffer = &permutation_buffer,
+    .tp_methods = permutation_methods,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_doc = "Private immutable compact permutation prototype.",
 };

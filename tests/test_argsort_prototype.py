@@ -171,6 +171,51 @@ class ArgsortPrototypeTests(unittest.TestCase):
         self.assertEqual(len(permutation), 2_048)
         self.assertTrue(all(reference() is None for reference in references))
 
+    def test_native_apply_matches_indexing_and_preserves_identity(self):
+        values = [
+            ComparableValue(index % 17, index)
+            for index in range(10_000)
+        ]
+        original = values.copy()
+        permutation = self.argsort(
+            [value.value for value in values]
+        )
+
+        result = permutation.apply(values)
+
+        self.assertEqual(
+            [value.identity for value in result],
+            [values[index].identity for index in permutation],
+        )
+        self.assertTrue(
+            all(
+                result[position] is values[index]
+                for position, index in enumerate(permutation)
+            )
+        )
+        self.assertEqual(values, original)
+
+    def test_native_apply_accepts_reusable_sequences(self):
+        values = [5, 1, 5, 2] * 1_000
+        permutation = self.argsort(values)
+
+        self.assertEqual(
+            permutation.apply(tuple(values)),
+            sorted(values),
+        )
+        self.assertEqual(
+            permutation.apply("abcd" * 1_000),
+            ["abcd"[index % 4] for index in permutation],
+        )
+
+    def test_native_apply_validates_sequence_and_length(self):
+        permutation = self.argsort([3, 1, 2] * 1_000)
+
+        with self.assertRaisesRegex(TypeError, "reusable sequence"):
+            permutation.apply(value for value in range(len(permutation)))
+        with self.assertRaisesRegex(ValueError, "does not match"):
+            permutation.apply([1, 2, 3])
+
     def test_rejects_one_shot_iterables(self):
         with self.assertRaisesRegex(TypeError, "reusable sequence"):
             self.argsort(value for value in [3, 1, 2])
