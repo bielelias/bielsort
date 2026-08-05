@@ -75,8 +75,8 @@ published on 2026-08-05.
   source-build CI and sanitizer workflow.
 - [x] Validate built keyless reverse wheels with the supported installation
   matrix before considering it for a release.
-- [x] Complete the promotion review and move PR #30 out of draft after its
-  source, sanitizer, documentation, and build-only wheel gates pass.
+- [x] Complete the promotion review and merge PR #30 after its source,
+  sanitizer, documentation, and build-only wheel gates pass.
 - [ ] Build a private compact stable `argsort` prototype and measure complete
   permutation creation and application costs.
 - Structured strategy analysis for diagnostics and evaluator reports.

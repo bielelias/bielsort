@@ -39,9 +39,9 @@ It provides separate APIs to compete fairly with both `sorted()` and
 - CI: CPython 3.9-3.14 on Linux, Windows, and macOS
 - Wheels: Linux x86-64, Windows x86/x64, and macOS Intel/Apple Silicon
 
-> Development note: the unreleased 0.3 research branch is evaluating native
+> Development note: the unreleased 0.3 research candidate on `main` adds native
 > keyless `reverse=True` for both new-list and in-place operations. Stable
-> `0.2.0` continues to use Timsort for those calls. See the
+> `0.2.0` on PyPI continues to use Timsort for those calls. See the
 > [versioned experiment](benchmarks/results/2026-08-05-keyless-reverse.md).
 
 ## Installation
