@@ -270,3 +270,65 @@ See the
 [versioned confirmation](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-adaptive-keyed-topk-confirmation.md).
 The original stage-two gate remains failed. A complete block-timed protocol
 must be pre-registered before any new promotion decision.
+
+### Pre-registered complete block-timed protocol
+
+The second complete stage-two decision keeps the adaptive selection code
+unchanged and repeats all 48 original cases with the block method used by the
+focused confirmation. It complements the first failed canonical run; it does
+not delete, replace, or reinterpret that result.
+
+The exact section retains all 24 combinations of one million records, the
+`dense`, `int32`, `int64`, and `heavy-duplicates` domains, `k` values 10, 100,
+and 1,000, and both directions. Each case compares `heapq`, the frozen strict
+int64 core, and the adaptive core. The generic section retains all 24
+combinations of 100,000 records, the arbitrary-size integer, string, integer
+tuple, and finite-float domains, the same `k` values, and both directions. It
+compares `heapq` and the adaptive core.
+
+For every case, the protocol will:
+
+1. construct records and the stable full-sort identity reference outside the
+   timed region;
+2. run one untimed, identity-checked warm-up per algorithm;
+3. collect 11 paired blocks, rotating algorithm order between blocks;
+4. time three complete calls per algorithm inside each block and retain their
+   per-call average as the block sample;
+5. keep garbage collection outside timed regions and identity-check every
+   result;
+6. preserve every raw block sample, the environment, and the fixed
+   configuration in a versioned JSON record.
+
+The primary comparisons are paired within each block. Each case reports the
+median of `comparator block / adaptive block`; ratios of independent medians
+are context only and cannot decide the gate. Timing spread is reported with
+the median absolute deviation, but it is diagnostic rather than an exclusion
+rule. The benchmark implementation itself must be committed before the one
+canonical execution.
+
+Correctness, one-call key semantics, memory-guard semantics, and the `O(k)`
+retained-key contract remain mandatory from stage two. The complete timing
+gate passes only if the canonical shape is present and:
+
+1. at least 18 of 24 exact cases have a median paired adaptive speedup of at
+   least `1.20x` over `heapq`;
+2. no exact case has a median paired adaptive speedup below `0.87x` against
+   the frozen strict core;
+3. no generic case has a median paired adaptive speedup below `0.87x` against
+   `heapq`.
+
+A passing result permits the already-planned common-`lambda`/`attrgetter` and
+isolated-memory experiments, followed by a private promotion review. It does
+not approve a public `top_k`, a version bump, a tag, or a package release. A
+failure remains versioned and requires profiling or redesign before another
+complete protocol is proposed; thresholds will not change after execution.
+
+```bash
+python -m benchmarks.keyed_topk_block_canonical \
+  --exact-size 1000000 \
+  --generic-size 100000 \
+  -k 10 100 1000 \
+  --blocks 11 \
+  --calls-per-block 3 \
+  --json-output adaptive-keyed-topk-block-canonical.json
+```

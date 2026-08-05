@@ -103,8 +103,10 @@ published on 2026-08-05.
 - [x] Run the unchanged-code confirmation. All failures and controls passed
   the fixed bound, consistent with host timing variability; the original
   failed gate remains recorded.
-- [ ] Pre-register a complete block-timed canonical protocol before any new
+- [x] Pre-register a complete block-timed canonical protocol before any new
   adaptive keyed top-k promotion decision.
+- [ ] Implement and version the complete block-timed benchmark before its
+  single canonical execution; preserve the earlier failed gate independently.
 - [ ] Measure common `lambda` and `attrgetter` keys and isolated memory before
   deciding whether direct keyed top-k deserves promotion review.
 - [ ] Prototype native inverse and composition operations only after external
