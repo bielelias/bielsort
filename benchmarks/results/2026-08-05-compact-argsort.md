@@ -116,11 +116,16 @@ against this measured cost before the result type is made public.
 - A clean local wheel and source distribution build includes the new native
   source and header; the wheel installs outside the source tree and exercises
   the compact Radix result successfully.
+- Draft PR
+  [#32](https://github.com/bielelias/bielsort/pull/32) passes source-build CI
+  on Linux with CPython 3.9–3.14, Windows with CPython 3.11/3.14, and macOS
+  with CPython 3.11/3.14, plus the hosted sanitizer, public-stub, and strict
+  documentation jobs.
 - The prototype remains private and does not change version `0.2.0`, the
   canonical public exports, or the published package.
 
-Supported cross-platform source and built-wheel validation remain release
-gates because this prototype adds native code and a new Python object type.
+Supported built-wheel validation remains a release gate because this
+prototype adds native code and a new Python object type.
 
 ## Raw evidence and reproduction
 

@@ -121,9 +121,12 @@ slower than applying `list[int]`. The complete evidence is in the
 [compact argsort research record](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-08-05-compact-argsort.md).
 The same 119 tests pass locally with AddressSanitizer and
 UndefinedBehaviorSanitizer. Stub/runtime comparison, strict Python 3.9 typing,
-and a clean local wheel/source build also pass. Cross-platform source and
-built-wheel validation remain outstanding before any public API or release
-decision.
+and a clean local wheel/source build also pass. Draft PR
+[#32](https://github.com/bielelias/bielsort/pull/32) passes source-build CI on
+Linux with CPython 3.9–3.14, Windows with CPython 3.11/3.14, and macOS with
+CPython 3.11/3.14, together with hosted sanitizer, public-stub, and strict
+documentation checks. Supported built-wheel validation remains outstanding
+before any public API or release decision.
 
 ## Resume checklist
 
