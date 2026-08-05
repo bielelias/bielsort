@@ -39,6 +39,11 @@ It provides separate APIs to compete fairly with both `sorted()` and
 - CI: CPython 3.9-3.14 on Linux, Windows, and macOS
 - Wheels: Linux x86-64, Windows x86/x64, and macOS Intel/Apple Silicon
 
+> Development note: the unreleased 0.3 research branch is evaluating native
+> keyless `reverse=True` for both new-list and in-place operations. Stable
+> `0.2.0` continues to use Timsort for those calls. See the
+> [versioned experiment](benchmarks/results/2026-08-05-keyless-reverse.md).
+
 ## Installation
 
 Install the stable release from PyPI:
@@ -228,7 +233,8 @@ python benchmarks/workload_evaluator.py \
 - The accelerated path currently supports exact `int` objects in signed
   64-bit range, including eligible key results in the 0.2 new-list API.
 - Floats, strings, subclasses, mixed types, huge integers, `reverse=True`
-  without a key, and in-place key calls use Timsort.
+  without a key, and in-place key calls use Timsort in stable `0.2.0`. The
+  unreleased source candidate can accelerate eligible keyless reverse calls.
 - The project is CPython-specific because its native module uses the CPython C
   API.
 - Prebuilt wheels currently target Linux x86-64, Windows x86/x64, and macOS

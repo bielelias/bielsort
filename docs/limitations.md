@@ -4,6 +4,12 @@ BielSort remains correct outside its fast path because it delegates to
 Timsort. The distinction is about expected performance and supported binary
 platforms, not about producing a different sorted order.
 
+!!! note "Stable release versus research source"
+
+    This page describes stable `0.2.0`. The unreleased 0.3 research branch
+    additionally evaluates native keyless `reverse=True` for eligible exact
+    signed-int64 values. It has not passed the release matrix yet.
+
 ## Compatibility matrix
 
 | Area | Current support |

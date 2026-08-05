@@ -8,6 +8,14 @@ release.
 
 ## [Unreleased]
 
+### Added
+
+- Added an unreleased research candidate for stable native keyless
+  `reverse=True` in both new-list and in-place operations, with dedicated
+  correctness, sanitizer, typing, and reproducible performance evidence.
+- Added a design proposal and fixed measurement gates for a future compact
+  stable `argsort` prototype. No `argsort` name is public yet.
+
 ## [0.2.0] - 2026-08-05
 
 Prepared from the cross-platform validated `0.2.0rc1` candidate.

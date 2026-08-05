@@ -189,6 +189,89 @@ class BielSortTests(unittest.TestCase):
             grupos_in_place.setdefault(valor, []).append(id(valor))
         self.assertEqual(grupos_in_place, grupos_originais)
 
+    def test_reverse_nativo_radix_preserva_resultado_e_entrada(self):
+        rng = random.Random(2040)
+        valores = [
+            -(1 << 63),
+            (1 << 63) - 1,
+            0,
+            -1,
+            1,
+            *[
+                rng.randint(-(1 << 63), (1 << 63) - 1)
+                for _ in range(100_000)
+            ],
+        ]
+        original = valores.copy()
+
+        resultado, estrategia = sort_with_strategy(
+            valores,
+            reverse=True,
+        )
+
+        self.assertEqual(resultado, sorted(valores, reverse=True))
+        self.assertEqual(valores, original)
+        self.assertIn("radix nativo", estrategia)
+
+    def test_reverse_nativo_counting_e_in_place(self):
+        rng = random.Random(2041)
+        valores = [rng.randint(-1_000, 1_000) for _ in range(260_000)]
+        esperado = sorted(valores, reverse=True)
+
+        resultado, estrategia = sort_with_strategy(
+            valores,
+            reverse=True,
+        )
+        self.assertEqual(resultado, esperado)
+        self.assertEqual(estrategia, "counting nativo estável")
+
+        copia = valores.copy()
+        identidade = id(copia)
+        estrategia_in_place = sort_in_place_with_strategy(
+            copia,
+            reverse=True,
+        )
+        self.assertEqual(id(copia), identidade)
+        self.assertEqual(copia, esperado)
+        self.assertEqual(estrategia_in_place, "counting nativo estável")
+
+    def test_reverse_nativo_preserva_estabilidade_de_inteiros_iguais(self):
+        rng = random.Random(2042)
+        valores = [int(str(10_000 + indice % 31)) for indice in range(10_000)]
+        rng.shuffle(valores)
+        grupos_originais = {}
+        for valor in valores:
+            grupos_originais.setdefault(valor, []).append(id(valor))
+
+        resultado = sort(valores, reverse=True)
+        grupos_resultado = {}
+        for valor in resultado:
+            grupos_resultado.setdefault(valor, []).append(id(valor))
+
+        self.assertEqual(resultado, sorted(valores, reverse=True))
+        self.assertEqual(grupos_resultado, grupos_originais)
+
+    def test_reverse_fallback_preserva_estabilidade_e_iteraveis(self):
+        valores = [
+            InteiroComNome(3),
+            InteiroComNome(1),
+            InteiroComNome(3),
+            InteiroComNome(1),
+        ] * 1_000
+        esperado = sorted(valores, reverse=True)
+
+        resultado, estrategia = sort_with_strategy(
+            (valor for valor in valores),
+            reverse=True,
+        )
+
+        self.assertEqual(resultado, esperado)
+        self.assertTrue(estrategia.startswith("timsort:"))
+        self.assertEqual(
+            [id(valor) for valor in resultado],
+            [id(valor) for valor in esperado],
+        )
+
     def test_fallback_para_inteiros_gigantes(self):
         rng = random.Random(2028)
         valores = [
