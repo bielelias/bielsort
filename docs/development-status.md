@@ -93,10 +93,13 @@ integer samples measured `2.71x–6.17x` over `sorted(reverse=True)` and
 `2.87x–7.41x` over `list.sort(reverse=True)`. Ordered Timsort fallbacks ranged
 from `0.91x` to `1.13x`, including the negative result.
 
-The candidate passes 109 optimized and sanitized tests, warning-clean native
-compilation, and the typed API checks. It is not a release: the supported
-cross-platform CI and wheel matrix remain required. The full report is the
-versioned [keyless reverse research record](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-08-05-keyless-reverse.md).
+The candidate passes 109 optimized and sanitized local tests, warning-clean
+native compilation, and the typed API checks. Draft PR
+[#30](https://github.com/bielelias/bielsort/pull/30) then passed source-build CI
+on CPython 3.9–3.14 for Linux and representative Windows and macOS hosts, the
+hosted sanitizer job, public-stub checks, and strict documentation. It is not a
+release: the built-wheel installation matrix remains required. The full report
+is the versioned [keyless reverse research record](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-08-05-keyless-reverse.md).
 
 A separate [compact stable `argsort` proposal](argsort-research.md) fixes the
 intended semantics and benchmark gates without adding a public function.

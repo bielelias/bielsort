@@ -75,9 +75,13 @@ Raw samples and environment metadata are in
 - Dedicated tests cover stable duplicate identities, full signed-int64 Radix,
   dense Counting, both operation shapes, generators, and stable generic
   fallback.
+- Draft PR [#30](https://github.com/bielelias/bielsort/pull/30) passes
+  source-build CI on Linux with CPython 3.9–3.14, Windows with CPython
+  3.11/3.14, and macOS with CPython 3.11/3.14, plus the hosted sanitizer,
+  public-stub, and strict-documentation jobs.
 
-Native-core release consideration still requires the supported cross-platform
-CI and wheel matrix. No tag, TestPyPI upload, or production publication was
+Native-core release consideration still requires building and installing the
+supported wheel matrix. No tag, TestPyPI upload, or production publication was
 created by this experiment.
 
 ## Reproduction

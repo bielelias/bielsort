@@ -71,8 +71,10 @@ published on 2026-08-05.
 
 - [x] Prototype stable native keyless `reverse=True` for both public operation
   shapes and record the first local benchmark gate.
-- [ ] Validate the keyless reverse candidate in the supported cross-platform
-  CI and wheel matrix before considering it for a release.
+- [x] Validate the keyless reverse candidate in the supported cross-platform
+  source-build CI and sanitizer workflow.
+- [ ] Validate built keyless reverse wheels with the supported installation
+  matrix before considering it for a release.
 - [ ] Build a private compact stable `argsort` prototype and measure complete
   permutation creation and application costs.
 - Structured strategy analysis for diagnostics and evaluator reports.
