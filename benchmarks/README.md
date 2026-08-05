@@ -321,6 +321,27 @@ gate. See the
 [versioned confirmation report](results/2026-08-05-adaptive-keyed-topk-confirmation.md)
 and its linked raw samples.
 
+A new complete protocol was then pre-registered and its implementation
+committed before execution. It repeats all 48 cases with 11 rotated blocks of
+three calls and uses median paired speedup ratios for the decision:
+
+```bash
+python -m benchmarks.keyed_topk_block_canonical \
+  --exact-size 1000000 \
+  --generic-size 100000 \
+  -k 10 100 1000 \
+  --blocks 11 \
+  --calls-per-block 3 \
+  --implementation-commit COMMIT_SHA \
+  --json-output adaptive-keyed-topk-block-canonical.json
+```
+
+The complete gate passed, authorizing only further private callable and
+isolated-memory experiments. The first failed result is still part of the
+record. See the
+[complete block-timed report](results/2026-08-05-adaptive-keyed-topk-block-canonical.md)
+and its linked raw samples.
+
 ## Research: adaptive generic keys
 
 The follow-up selector keeps `key` generic, calls user code exactly once, and
@@ -397,6 +418,7 @@ samples are retained.
 
 ## Versioned results
 
+- [Adaptive keyed top-k complete block protocol — 2026-08-05](results/2026-08-05-adaptive-keyed-topk-block-canonical.md)
 - [Keyless stable reverse prototype — 2026-08-05](results/2026-08-05-keyless-reverse.md)
 - [Keyed nearly ordered release gate — 2026-08-04](results/2026-08-04-keyed-nearly-ordered-release-gate.md)
 - [Candidate public `sort(key=...)` API — 2026-08-04](results/2026-08-04-keyed-public-api-candidate.md)

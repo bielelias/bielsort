@@ -333,3 +333,17 @@ python -m benchmarks.keyed_topk_block_canonical \
   --implementation-commit COMMIT_SHA \
   --json-output adaptive-keyed-topk-block-canonical.json
 ```
+
+### Complete block-timed result
+
+The 2026-08-05 execution passed the fixed complete gate. Nineteen of 24 exact
+cases reached `1.20x` over `heapq`; no exact case fell below `0.87x` against
+the frozen strict core, and no generic case fell below `0.87x` against
+`heapq`. The observed paired ranges were `1.10x–1.82x` over `heapq` and
+`0.94x–1.02x` against the strict core for exact inputs, and `1.05x–1.36x`
+over `heapq` for generic inputs.
+
+The [versioned complete result](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-adaptive-keyed-topk-block-canonical.md)
+preserves all samples and links the earlier failed gate independently. The
+pass authorizes common-callable and isolated-memory experiments only; the
+operation and dispatcher remain private.

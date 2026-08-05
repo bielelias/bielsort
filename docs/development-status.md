@@ -227,8 +227,13 @@ over `heapq`, consistent with host variability. The
 does not replace the failed canonical gate; a new complete block-timed
 protocol is required for reconsideration. That protocol is now pre-registered
 in the proposal: it retains all 48 cases, uses 11 rotated three-call blocks,
-and makes median paired ratios the primary statistic. Its implementation must
-be committed before the canonical run, and a pass would authorize only the
+and makes median paired ratios the primary statistic. The implementation was
+committed before execution, and the complete gate passed: 19 of 24 exact
+cases reached `1.20x` over `heapq`, exact comparisons with the strict core
+ranged from `0.94x–1.02x`, and all generic comparisons beat `heapq` by
+`1.05x–1.36x`. The
+[complete block-timed record](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-adaptive-keyed-topk-block-canonical.md)
+preserves the earlier failure separately. The pass authorizes only the
 remaining private callable and isolated-memory experiments.
 
 ## Resume checklist

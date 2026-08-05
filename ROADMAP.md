@@ -107,7 +107,7 @@ published on 2026-08-05.
   adaptive keyed top-k promotion decision.
 - [x] Implement and version the complete block-timed benchmark before its
   single canonical execution; preserve the earlier failed gate independently.
-- [ ] Run the single complete block-timed canonical execution and record its
+- [x] Run the single complete block-timed canonical execution and record its
   raw samples and decision without replacing the earlier failed result.
 - [ ] Measure common `lambda` and `attrgetter` keys and isolated memory before
   deciding whether direct keyed top-k deserves promotion review.

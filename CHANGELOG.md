@@ -46,6 +46,10 @@ release.
 - Recorded that all four failures and both controls passed the confirmation
   bound without code changes, consistent with host timing variability. The
   original stage-two gate remains failed.
+- Added and pre-registered a complete paired-block stage-two protocol before
+  execution. Its separate 48-case gate passed without changing selection
+  code, while preserving the first failed result; only further private
+  callable and isolated-memory experiments are authorized.
 
 ## [0.2.0] - 2026-08-05
 
