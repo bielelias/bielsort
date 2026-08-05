@@ -45,12 +45,17 @@ the versioned benchmark reports.
 - TestPyPI contains 36 wheels and one source distribution for `0.2.0rc1`.
 - A clean CPython 3.11 environment installed the published manylinux wheel and
   passed the complete 104-test suite outside the source tree.
+- The published-wheel
+  [hosted matrix](https://github.com/bielelias/bielsort/actions/runs/30971193214)
+  installed `0.2.0rc1` from TestPyPI and passed all 104 tests on Linux with
+  CPython 3.9–3.14, Windows with CPython 3.11/3.14, Intel macOS with CPython
+  3.11, and Apple Silicon macOS with CPython 3.14.
 - The public documentation builds in strict mode and distinguishes stable
   `0.1.0` from candidate `0.2.0rc1`.
 
 ## Promotion gates
 
-- [ ] Run the manual TestPyPI candidate matrix against the published
+- [x] Run the manual TestPyPI candidate matrix against the published
   `0.2.0rc1` wheels on Linux, Windows, Intel macOS, and Apple Silicon macOS.
 - [ ] Review the stable API surface and type hints once more after the
   published-wheel matrix passes.

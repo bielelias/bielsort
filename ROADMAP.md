@@ -61,7 +61,7 @@ published on 2026-07-31.
 - [x] Document and accept the bounded nearly ordered trade-off.
 - [x] Pass local, cross-platform, sanitizer, wheel, and documentation checks.
 - [x] Publish and clean-install `0.2.0rc1` from TestPyPI.
-- [ ] Validate the published TestPyPI wheels on the supported hosted-runner
+- [x] Validate the published TestPyPI wheels on the supported hosted-runner
   matrix.
 - [ ] Complete a final API/type-hint review for stable `0.2.0`.
 - [ ] Prepare stable metadata and changelog without publishing.
