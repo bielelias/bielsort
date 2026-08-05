@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "_argsort.h"
+
 #define RADIX_BITS 11
 #define RADIX_BASE (1U << RADIX_BITS)
 #define RADIX_MASCARA (RADIX_BASE - 1U)
@@ -2118,6 +2120,20 @@ PyDoc_STRVAR(
     "Protótipo interno: reproduz um prefixo e avalia as chaves restantes."
 );
 
+PyDoc_STRVAR(
+    argsort_int64_prototype_doc,
+    "_argsort_int64_prototype(sequence, reverse=False, /)\n"
+    "--\n\n"
+    "Protótipo privado: retorna uma permutação compacta e estável."
+);
+
+PyDoc_STRVAR(
+    argsort_int64_prototype_strategy_doc,
+    "_argsort_int64_prototype_with_strategy(sequence, reverse=False, /)\n"
+    "--\n\n"
+    "Retorna a permutação compacta e a estratégia selecionada."
+);
+
 static PyMethodDef metodos[] = {
     {"sort", py_sort, METH_O, sort_doc},
     {"sort_with_strategy", py_sort_with_strategy, METH_O, strategy_doc},
@@ -2201,6 +2217,18 @@ static PyMethodDef metodos[] = {
         METH_VARARGS,
         prefix_cached_key_replay_prototype_doc
     },
+    {
+        "_argsort_int64_prototype",
+        bielsort_py_argsort_int64_prototype,
+        METH_VARARGS,
+        argsort_int64_prototype_doc
+    },
+    {
+        "_argsort_int64_prototype_with_strategy",
+        bielsort_py_argsort_int64_prototype_with_strategy,
+        METH_VARARGS,
+        argsort_int64_prototype_strategy_doc
+    },
     {NULL, NULL, 0, NULL}
 };
 
@@ -2222,5 +2250,13 @@ PyInit__bielsort(void)
     if (PyType_Ready(&tipo_replay_chaves) < 0) {
         return NULL;
     }
-    return PyModule_Create(&modulo);
+    PyObject *module = PyModule_Create(&modulo);
+    if (module == NULL) {
+        return NULL;
+    }
+    if (bielsort_argsort_add_type(module) < 0) {
+        Py_DECREF(module);
+        return NULL;
+    }
+    return module;
 }

@@ -1,6 +1,11 @@
-from typing import Any, Callable, Iterable, List, Tuple, TypeVar
+from typing import Any, Callable, Iterable, List, Sequence, Tuple, TypeVar, final
 
 _T = TypeVar("_T")
+
+@final
+class _Permutation:
+    def __len__(self) -> int: ...
+    def __getitem__(self, index: int, /) -> int: ...
 
 def sort(iterable: Iterable[_T], /) -> List[_T]: ...
 
@@ -23,6 +28,18 @@ def _sort_reverse_with_strategy(
 def _sort_in_place_reverse(lista: List[_T], /) -> None: ...
 
 def _sort_in_place_reverse_with_strategy(lista: List[_T], /) -> str: ...
+
+def _argsort_int64_prototype(
+    sequence: Sequence[Any],
+    reverse: bool = ...,
+    /,
+) -> _Permutation: ...
+
+def _argsort_int64_prototype_with_strategy(
+    sequence: Sequence[Any],
+    reverse: bool = ...,
+    /,
+) -> Tuple[_Permutation, str]: ...
 
 def _sort_by_int64_key_prototype(
     iterable: Iterable[_T],

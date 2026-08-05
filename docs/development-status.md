@@ -110,7 +110,20 @@ is the versioned
 [keyless reverse research record](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-08-05-keyless-reverse.md).
 
 A separate [compact stable `argsort` proposal](argsort-research.md) fixes the
-intended semantics and benchmark gates without adding a public function.
+intended semantics and benchmark gates without adding a public function. Its
+first private implementation now passes 119 optimized local tests and both
+pre-registered research gates. At one million disordered integers, the
+seven-sample local timing record measures `4.51x–8.04x` over Python's stable
+index baseline, while isolated peak RSS is 45%–47% lower. The same report
+records the negative cases: nearly sorted construction is 32% slower with 14%
+more peak RSS, and applying compact indices to Python lists is generally
+slower than applying `list[int]`. The complete evidence is in the
+[compact argsort research record](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-08-05-compact-argsort.md).
+The same 119 tests pass locally with AddressSanitizer and
+UndefinedBehaviorSanitizer. Stub/runtime comparison, strict Python 3.9 typing,
+and a clean local wheel/source build also pass. Cross-platform source and
+built-wheel validation remain outstanding before any public API or release
+decision.
 
 ## Resume checklist
 
