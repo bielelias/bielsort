@@ -225,8 +225,29 @@ results. It compares the 2,048-key adaptive policy against random-tail controls
 at 10,000 and 100,000 records, and explains why another narrow threshold was
 rejected instead of tuned to one machine.
 
+## Research: keyless stable reverse
+
+The unreleased 0.3 candidate tests whether the natural integer path can support
+stable descending order without reversing equal-value groups:
+
+```bash
+python -m benchmarks.keyless_reverse_benchmark \
+  --sizes 10000,100000,1000000 \
+  --cases dense-int64,random-int32,random-int64,nearly-descending,ascending \
+  --repetitions 7 \
+  --output keyless-reverse.json
+```
+
+The harness compares both equivalent operation shapes:
+`sorted(reverse=True)` against `bielsort.sort(reverse=True)`, and
+`list.sort(reverse=True)` against `bielsort.sort_in_place(reverse=True)`.
+Copies for the in-place inputs and expected outputs are prepared outside the
+timed region. Algorithm order is rotated, every result is checked, and raw
+samples are retained.
+
 ## Versioned results
 
+- [Keyless stable reverse prototype — 2026-08-05](results/2026-08-05-keyless-reverse.md)
 - [Keyed nearly ordered release gate — 2026-08-04](results/2026-08-04-keyed-nearly-ordered-release-gate.md)
 - [Candidate public `sort(key=...)` API — 2026-08-04](results/2026-08-04-keyed-public-api-candidate.md)
 - [Adaptive generic-key selector v3 — 2026-08-04](results/2026-08-04-keyed-adaptive-selector-v3.md)

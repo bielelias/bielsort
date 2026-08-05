@@ -76,9 +76,42 @@ finalizar_resultado(PyObject *lista, const char *estrategia, TipoRetorno tipo)
 }
 
 static PyObject *
-usar_timsort(PyObject *lista, const char *motivo, TipoRetorno tipo)
+usar_timsort(
+    PyObject *lista,
+    const char *motivo,
+    TipoRetorno tipo,
+    int reverso
+)
 {
-    if (PyList_Sort(lista) < 0) {
+    int resultado;
+    if (!reverso) {
+        resultado = PyList_Sort(lista);
+    } else {
+        PyObject *metodo = PyObject_GetAttrString(lista, "sort");
+        PyObject *argumentos = NULL;
+        PyObject *opcoes = NULL;
+        PyObject *retorno = NULL;
+        if (metodo != NULL) {
+            argumentos = PyTuple_New(0);
+        }
+        if (argumentos != NULL) {
+            opcoes = Py_BuildValue("{s:O}", "reverse", Py_True);
+        }
+        if (opcoes != NULL) {
+            retorno = PyObject_Call(metodo, argumentos, opcoes);
+        }
+        Py_XDECREF(opcoes);
+        Py_XDECREF(argumentos);
+        Py_XDECREF(metodo);
+        if (retorno == NULL) {
+            Py_DECREF(lista);
+            return NULL;
+        }
+        Py_DECREF(retorno);
+        resultado = 0;
+    }
+
+    if (resultado < 0) {
         Py_DECREF(lista);
         return NULL;
     }
@@ -366,7 +399,7 @@ contar_digitos_variaveis(uint64_t variacao)
 }
 
 static PyObject *
-biel_sort_impl(PyObject *iteravel, TipoRetorno tipo, int copiar)
+biel_sort_impl(PyObject *iteravel, TipoRetorno tipo, int copiar, int reverso)
 {
     PyObject *lista;
     if (!copiar) {
@@ -402,7 +435,12 @@ biel_sort_impl(PyObject *iteravel, TipoRetorno tipo, int copiar)
      * do CPython. Evitamos até mesmo alocar os buffers do radix nesse caso.
      */
     if (n < 2048) {
-        return usar_timsort(lista, "timsort: entrada pequena", tipo);
+        return usar_timsort(
+            lista,
+            "timsort: entrada pequena",
+            tipo,
+            reverso
+        );
     }
 
     /*
@@ -414,7 +452,7 @@ biel_sort_impl(PyObject *iteravel, TipoRetorno tipo, int copiar)
     const Py_ssize_t total_amostras = n < 256 ? n : 256;
     Py_ssize_t descidas_amostra = 0;
     Py_ssize_t subidas_amostra = 0;
-    int64_t anterior_amostra = 0;
+    uint64_t anterior_amostra = 0;
     for (Py_ssize_t amostra = 0; amostra < total_amostras; amostra++) {
         const Py_ssize_t intervalo = n - 1;
         const Py_ssize_t divisor = total_amostras - 1;
@@ -427,7 +465,8 @@ biel_sort_impl(PyObject *iteravel, TipoRetorno tipo, int copiar)
             return usar_timsort(
                 lista,
                 "timsort: amostra incompatível com int64",
-                tipo
+                tipo,
+                reverso
             );
         }
 
@@ -438,20 +477,26 @@ biel_sort_impl(PyObject *iteravel, TipoRetorno tipo, int copiar)
                 return usar_timsort(
                     lista,
                     "timsort: magnitude detectada na amostra",
-                    tipo
+                    tipo,
+                    reverso
                 );
             }
             Py_DECREF(lista);
             return NULL;
         }
 
-        if (amostra > 0 && (int64_t)valor < anterior_amostra) {
+        uint64_t chave_amostra =
+            ((uint64_t)(int64_t)valor) ^ (UINT64_C(1) << 63);
+        if (reverso) {
+            chave_amostra = ~chave_amostra;
+        }
+        if (amostra > 0 && chave_amostra < anterior_amostra) {
             descidas_amostra++;
         }
-        if (amostra > 0 && (int64_t)valor > anterior_amostra) {
+        if (amostra > 0 && chave_amostra > anterior_amostra) {
             subidas_amostra++;
         }
-        anterior_amostra = (int64_t)valor;
+        anterior_amostra = chave_amostra;
     }
 
     if (
@@ -461,7 +506,8 @@ biel_sort_impl(PyObject *iteravel, TipoRetorno tipo, int copiar)
         return usar_timsort(
             lista,
             "timsort: amostra quase monotônica",
-            tipo
+            tipo,
+            reverso
         );
     }
 
@@ -480,7 +526,7 @@ biel_sort_impl(PyObject *iteravel, TipoRetorno tipo, int copiar)
     uint64_t menor_chave = UINT64_MAX;
     uint64_t maior_chave = 0;
     uint64_t variacao = 0;
-    int64_t anterior = 0;
+    uint64_t chave_anterior = 0;
     Py_ssize_t descidas = 0;
     Py_ssize_t subidas = 0;
     int somente_inteiros_64 = 1;
@@ -506,9 +552,14 @@ biel_sort_impl(PyObject *iteravel, TipoRetorno tipo, int copiar)
 
         /*
          * O XOR com o bit de sinal converte a ordem signed em ordem unsigned:
-         * INT64_MIN vira 0 e INT64_MAX vira UINT64_MAX.
+         * INT64_MIN vira 0 e INT64_MAX vira UINT64_MAX. Para reverse, o
+         * complemento preserva empates e transforma ordem decrescente em
+         * ordem crescente no domínio usado pelo Counting/Radix.
          */
         uint64_t chave = ((uint64_t)(int64_t)valor) ^ (UINT64_C(1) << 63);
+        if (reverso) {
+            chave = ~chave;
+        }
         origem[i].objeto = objeto;
         origem[i].chave = chave;
         if (chave < menor_chave) {
@@ -522,14 +573,14 @@ biel_sort_impl(PyObject *iteravel, TipoRetorno tipo, int copiar)
             primeira_chave = chave;
         } else {
             variacao |= chave ^ primeira_chave;
-            if ((int64_t)valor < anterior) {
+            if (chave < chave_anterior) {
                 descidas++;
             }
-            if ((int64_t)valor > anterior) {
+            if (chave > chave_anterior) {
                 subidas++;
             }
         }
-        anterior = (int64_t)valor;
+        chave_anterior = chave;
     }
 
     if (!somente_inteiros_64) {
@@ -537,7 +588,8 @@ biel_sort_impl(PyObject *iteravel, TipoRetorno tipo, int copiar)
         return usar_timsort(
             lista,
             "timsort: tipo ou magnitude fora de int64",
-            tipo
+            tipo,
+            reverso
         );
     }
 
@@ -552,7 +604,12 @@ biel_sort_impl(PyObject *iteravel, TipoRetorno tipo, int copiar)
      */
     if (descidas <= n / 128 || subidas <= n / 128) {
         PyMem_Free(origem);
-        return usar_timsort(lista, "timsort: entrada quase monotônica", tipo);
+        return usar_timsort(
+            lista,
+            "timsort: entrada quase monotônica",
+            tipo,
+            reverso
+        );
     }
 
     int passagens = contar_digitos_variaveis(variacao);
@@ -1647,25 +1704,55 @@ criar_replay_chaves_cacheadas(
 static PyObject *
 py_sort(PyObject *Py_UNUSED(modulo), PyObject *iteravel)
 {
-    return biel_sort_impl(iteravel, RETORNO_LISTA, 1);
+    return biel_sort_impl(iteravel, RETORNO_LISTA, 1, 0);
 }
 
 static PyObject *
 py_sort_with_strategy(PyObject *Py_UNUSED(modulo), PyObject *iteravel)
 {
-    return biel_sort_impl(iteravel, RETORNO_DIAGNOSTICO, 1);
+    return biel_sort_impl(iteravel, RETORNO_DIAGNOSTICO, 1, 0);
 }
 
 static PyObject *
 py_sort_in_place(PyObject *Py_UNUSED(modulo), PyObject *lista)
 {
-    return biel_sort_impl(lista, RETORNO_NONE, 0);
+    return biel_sort_impl(lista, RETORNO_NONE, 0, 0);
 }
 
 static PyObject *
 py_sort_in_place_with_strategy(PyObject *Py_UNUSED(modulo), PyObject *lista)
 {
-    return biel_sort_impl(lista, RETORNO_ESTRATEGIA, 0);
+    return biel_sort_impl(lista, RETORNO_ESTRATEGIA, 0, 0);
+}
+
+static PyObject *
+py_sort_reverse(PyObject *Py_UNUSED(modulo), PyObject *iteravel)
+{
+    return biel_sort_impl(iteravel, RETORNO_LISTA, 1, 1);
+}
+
+static PyObject *
+py_sort_reverse_with_strategy(
+    PyObject *Py_UNUSED(modulo),
+    PyObject *iteravel
+)
+{
+    return biel_sort_impl(iteravel, RETORNO_DIAGNOSTICO, 1, 1);
+}
+
+static PyObject *
+py_sort_in_place_reverse(PyObject *Py_UNUSED(modulo), PyObject *lista)
+{
+    return biel_sort_impl(lista, RETORNO_NONE, 0, 1);
+}
+
+static PyObject *
+py_sort_in_place_reverse_with_strategy(
+    PyObject *Py_UNUSED(modulo),
+    PyObject *lista
+)
+{
+    return biel_sort_impl(lista, RETORNO_ESTRATEGIA, 0, 1);
 }
 
 static PyObject *
@@ -1935,6 +2022,34 @@ PyDoc_STRVAR(
 );
 
 PyDoc_STRVAR(
+    reverse_doc,
+    "_sort_reverse(iterable, /)\n"
+    "--\n\n"
+    "Caminho interno estável para ordem decrescente sem key."
+);
+
+PyDoc_STRVAR(
+    reverse_strategy_doc,
+    "_sort_reverse_with_strategy(iterable, /)\n"
+    "--\n\n"
+    "Retorna ordem decrescente e a estratégia selecionada."
+);
+
+PyDoc_STRVAR(
+    in_place_reverse_doc,
+    "_sort_in_place_reverse(lista, /)\n"
+    "--\n\n"
+    "Ordena uma lista no lugar em ordem decrescente."
+);
+
+PyDoc_STRVAR(
+    in_place_reverse_strategy_doc,
+    "_sort_in_place_reverse_with_strategy(lista, /)\n"
+    "--\n\n"
+    "Ordena no lugar em ordem decrescente e retorna a estratégia."
+);
+
+PyDoc_STRVAR(
     keyed_prototype_doc,
     "_sort_by_int64_key_prototype(iterable, key, reverse=False, /)\n"
     "--\n\n"
@@ -2012,6 +2127,25 @@ static PyMethodDef metodos[] = {
         py_sort_in_place_with_strategy,
         METH_O,
         in_place_strategy_doc
+    },
+    {"_sort_reverse", py_sort_reverse, METH_O, reverse_doc},
+    {
+        "_sort_reverse_with_strategy",
+        py_sort_reverse_with_strategy,
+        METH_O,
+        reverse_strategy_doc
+    },
+    {
+        "_sort_in_place_reverse",
+        py_sort_in_place_reverse,
+        METH_O,
+        in_place_reverse_doc
+    },
+    {
+        "_sort_in_place_reverse_with_strategy",
+        py_sort_in_place_reverse_with_strategy,
+        METH_O,
+        in_place_reverse_strategy_doc
     },
     {
         "_sort_by_int64_key_prototype",

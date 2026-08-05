@@ -10,6 +10,10 @@ from typing import Optional
 try:
     from ._bielsort import sort as _sort
     from ._bielsort import sort_in_place as _sort_in_place
+    from ._bielsort import _sort_in_place_reverse
+    from ._bielsort import _sort_in_place_reverse_with_strategy
+    from ._bielsort import _sort_reverse
+    from ._bielsort import _sort_reverse_with_strategy
     from ._bielsort import (
         sort_in_place_with_strategy as _sort_in_place_with_strategy,
     )
@@ -134,8 +138,8 @@ def _public_sort_info(info):
 def sort(iterable, *, key=None, reverse=False):
     """Return a new sorted list.
 
-    Native integer paths apply to natural ascending order and eligible exact
-    signed-int64 ``key`` results. Other cases retain Timsort semantics.
+    Native integer paths apply to eligible natural-order and exact
+    signed-int64 ``key`` workloads. Other cases retain Timsort semantics.
     """
     if key is not None:
         return _sort_by_key_adaptive(
@@ -144,7 +148,7 @@ def sort(iterable, *, key=None, reverse=False):
             reverse=bool(reverse),
         )
     if reverse:
-        return sorted(iterable, key=key, reverse=reverse)
+        return _sort_reverse(iterable)
     return _sort(iterable)
 
 
@@ -159,10 +163,7 @@ def sort_with_strategy(iterable, *, key=None, reverse=False):
         )
         return result, _keyed_strategy(info)
     if reverse:
-        return (
-            sorted(iterable, key=key, reverse=reverse),
-            "timsort: key ou reverse",
-        )
+        return _sort_reverse_with_strategy(iterable)
     return _sort_with_strategy(iterable)
 
 
@@ -197,16 +198,20 @@ def sort_with_info(
 
 def sort_in_place(values, *, key=None, reverse=False):
     """Sort an exact list in place and return ``None``, like ``list.sort()``."""
-    if key is not None or reverse:
+    if key is not None:
         return values.sort(key=key, reverse=reverse)
+    if reverse:
+        return _sort_in_place_reverse(values)
     return _sort_in_place(values)
 
 
 def sort_in_place_with_strategy(values, *, key=None, reverse=False):
     """Sort in place and return the selected strategy for diagnostics."""
-    if key is not None or reverse:
+    if key is not None:
         values.sort(key=key, reverse=reverse)
         return "timsort: key ou reverse"
+    if reverse:
+        return _sort_in_place_reverse_with_strategy(values)
     return _sort_in_place_with_strategy(values)
 
 

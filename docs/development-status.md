@@ -84,6 +84,23 @@ External workload reports remain valuable adoption evidence, but they are not
 an arbitrary waiting requirement for the stable release. Performance claims
 must continue to distinguish synthetic measurements from real workloads.
 
+## Unreleased 0.3 research
+
+The `research/keyless-reverse-0.3` branch contains the first post-0.2
+candidate. It applies the stable native Counting/Radix transformation to
+keyless `reverse=True` for both new-list and in-place calls. Local disordered
+integer samples measured `2.71x–6.17x` over `sorted(reverse=True)` and
+`2.87x–7.41x` over `list.sort(reverse=True)`. Ordered Timsort fallbacks ranged
+from `0.91x` to `1.13x`, including the negative result.
+
+The candidate passes 109 optimized and sanitized tests, warning-clean native
+compilation, and the typed API checks. It is not a release: the supported
+cross-platform CI and wheel matrix remain required. The full report is the
+versioned [keyless reverse research record](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-08-05-keyless-reverse.md).
+
+A separate [compact stable `argsort` proposal](argsort-research.md) fixes the
+intended semantics and benchmark gates without adding a public function.
+
 ## Resume checklist
 
 Start from the repository root and inspect the current evidence:

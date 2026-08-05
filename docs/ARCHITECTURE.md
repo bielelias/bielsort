@@ -20,6 +20,12 @@ Counting or Radix; incompatible results use exact-object Timsort replay. The
 in-place key path and keyless reverse path deliberately remain on Python's
 built-in sorting to avoid generic-key regressions and semantic drift.
 
+The unreleased 0.3 research branch changes only the second part of that
+decision: eligible exact signed-int64 keyless reverse calls may use the same
+stable native core. It complements the monotonic transformed integer key
+before Counting or Radix distribution, so equal values retain encounter order.
+The in-place `key=` path remains on Timsort.
+
 The same release adds `sort_with_info()` and the immutable `SortInfo` value
 for explicit keyed calls. The public object normalizes private selector names
 and exposes only reviewed fields. Its optional native-memory guard makes a
