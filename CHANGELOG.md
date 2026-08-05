@@ -39,7 +39,8 @@ release.
   this stage-two design.
 - Implemented the private adaptive `O(k)` keyed heap, exception-aware stable
   generic merge, and pre-key `heapq`/`raise` native-memory guard. Canonical
-  stage-two performance evidence remains pending.
+  stage-two semantics and memory checks passed, but the unchanged performance
+  gate failed in four cases, so the candidate is not approved for promotion.
 
 ## [0.2.0] - 2026-08-05
 

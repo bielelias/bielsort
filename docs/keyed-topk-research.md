@@ -208,3 +208,16 @@ python benchmarks/keyed_topk_fallback.py \
   -r 7 \
   --json-output adaptive-keyed-topk.json
 ```
+
+### First stage-two result
+
+The 2026-08-05 canonical run did **not** pass the unchanged gate. Semantic and
+`O(k)` memory requirements passed. Nineteen of 24 exact-int64 cases reached
+`1.20x` over `heapq`, but 3 exceeded the allowed 15% regression against the
+frozen strict core. One of 24 generic cases exceeded the allowed 15%
+regression against `heapq`.
+
+The implementation remains private. See the
+[versioned failure report](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-adaptive-keyed-topk.md)
+and its linked raw samples. Any profiling or confirmation run must be
+pre-registered separately and cannot erase this result.

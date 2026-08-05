@@ -95,8 +95,11 @@ published on 2026-08-05.
   adding a public symbol.
 - [x] Design a one-call-compatible generic-key fallback and memory guard for
   direct keyed top-k before any public API proposal.
-- [ ] Implement and validate the private adaptive generic-key heap and
-  pre-key memory guard against the fixed stage-two gates.
+- [x] Implement and validate the private adaptive generic-key heap and
+  pre-key memory guard. Semantic and memory gates passed, but the fixed
+  performance gate did not; no promotion is approved.
+- [ ] Pre-register a focused profiling and confirmation experiment for the
+  four stage-two regression cases without replacing the failed result.
 - [ ] Measure common `lambda` and `attrgetter` keys and isolated memory before
   deciding whether direct keyed top-k deserves promotion review.
 - [ ] Prototype native inverse and composition operations only after external

@@ -209,8 +209,13 @@ conservative pre-key native-memory guard. All 154 local tests, warning-clean
 native compilation, runtime/stub comparison, strict Python 3.9 typing, and
 strict documentation pass. Exact-int64 regression and four generic domains
 have fixed continuation gates in the
-[direct keyed top-k proposal](keyed-topk-research.md); their canonical run and
-hosted cross-platform validation remain pending.
+[direct keyed top-k proposal](keyed-topk-research.md). The canonical run did
+not pass: 3 of 24 exact cases exceeded the strict-core regression bound and 1
+of 24 generic cases exceeded the `heapq` regression bound. Semantic and memory
+requirements passed. See the
+[adaptive keyed top-k research record](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-adaptive-keyed-topk.md).
+Hosted cross-platform validation remains pending; the failed performance gate
+already prevents promotion.
 
 ## Resume checklist
 

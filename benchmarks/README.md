@@ -275,11 +275,10 @@ matched stable full sorting by identity. See the
 [versioned direct keyed top-k report](results/2026-08-05-keyed-topk.md) and its
 linked raw samples.
 
-The stage-two continuation is pre-registered in the same proposal. It will
+The stage-two continuation was pre-registered in the same proposal. It
 measure an adaptive `O(k)` heap over generic comparable keys, guard behavior,
 exact-int64 regression against the frozen private core, and generic fallback
-against `heapq`. Its thresholds are fixed before implementation; no canonical
-stage-two result exists yet.
+against `heapq`. Its thresholds were fixed before implementation.
 
 The implemented benchmark command is:
 
@@ -295,6 +294,12 @@ python benchmarks/keyed_topk_fallback.py \
 The gate is evaluated only with both complete canonical shapes. Exact cases
 compare the adaptive and frozen strict cores with `heapq`; generic cases use
 arbitrary-size integers, strings, integer tuples, and finite floats.
+
+The first canonical run did not pass: three exact cases exceeded the strict-
+core regression limit and one generic case exceeded the `heapq` regression
+limit. Semantic and memory gates passed. See the
+[versioned adaptive keyed top-k report](results/2026-08-05-adaptive-keyed-topk.md)
+and its linked raw samples.
 
 ## Research: adaptive generic keys
 
