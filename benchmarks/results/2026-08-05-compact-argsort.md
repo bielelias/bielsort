@@ -121,11 +121,18 @@ against this measured cost before the result type is made public.
   on Linux with CPython 3.9–3.14, Windows with CPython 3.11/3.14, and macOS
   with CPython 3.11/3.14, plus the hosted sanitizer, public-stub, and strict
   documentation jobs.
+- The non-publishing
+  [build-only wheel run](https://github.com/bielelias/bielsort/actions/runs/31038877694)
+  passes on Linux, Windows, macOS Intel, and macOS ARM. It builds and tests the
+  supported wheels, validates their contents, uploads the artifacts, and
+  builds the source distribution. TestPyPI and PyPI jobs were skipped by
+  design.
 - The prototype remains private and does not change version `0.2.0`, the
   canonical public exports, or the published package.
 
-Supported built-wheel validation remains a release gate because this
-prototype adds native code and a new Python object type.
+The source-build, sanitizer, and supported built-wheel gates pass for this
+private experiment. Public API design and an explicit promotion review remain
+separate future decisions.
 
 ## Raw evidence and reproduction
 

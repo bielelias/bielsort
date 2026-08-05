@@ -125,8 +125,12 @@ and a clean local wheel/source build also pass. Draft PR
 [#32](https://github.com/bielelias/bielsort/pull/32) passes source-build CI on
 Linux with CPython 3.9–3.14, Windows with CPython 3.11/3.14, and macOS with
 CPython 3.11/3.14, together with hosted sanitizer, public-stub, and strict
-documentation checks. Supported built-wheel validation remains outstanding
-before any public API or release decision.
+documentation checks. The non-publishing
+[build-only wheel run](https://github.com/bielelias/bielsort/actions/runs/31038877694)
+also passes on Linux, Windows, macOS Intel, and macOS ARM, including wheel
+tests, content validation, artifact upload, and source-distribution creation.
+The prototype has therefore passed its private research gates; public API
+design and promotion remain separate decisions.
 
 ## Resume checklist
 
