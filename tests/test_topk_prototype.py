@@ -63,6 +63,44 @@ class TopKPrototypeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "does not match"):
             order.apply(scores[:4])
 
+    def test_apply_many_aligns_parallel_sequences_and_identity(self):
+        scores = [30, 10, 20, 10, 40, 20]
+        names = [object() for _ in scores]
+        groups = tuple(index % 3 for index in range(len(scores)))
+        order = self.topk(scores, 4)
+        expected = expected_topk(scores, 4)
+
+        ordered_scores, ordered_names, ordered_groups = order.apply_many(
+            scores,
+            names,
+            groups,
+        )
+
+        self.assertEqual(
+            ordered_scores,
+            [scores[index] for index in expected],
+        )
+        self.assertEqual(
+            ordered_groups,
+            [groups[index] for index in expected],
+        )
+        self.assertTrue(
+            all(
+                ordered_names[position] is names[index]
+                for position, index in enumerate(expected)
+            )
+        )
+
+    def test_apply_many_validates_all_inputs_before_application(self):
+        values = [3, 1, 2] * 1_000
+        order = self.topk(values, 100)
+
+        self.assertEqual(order.apply_many(), ())
+        with self.assertRaisesRegex(TypeError, "argument 2"):
+            order.apply_many(values, (value for value in values))
+        with self.assertRaisesRegex(ValueError, "argument 2"):
+            order.apply_many(values, values[:-1])
+
     def test_randomized_int64_differential(self):
         rng = random.Random(7070)
         values = [

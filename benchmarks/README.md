@@ -226,6 +226,21 @@ The first canonical run passed all fixed gates; its medians, limitations, and
 raw-sample link are in the
 [versioned stable top-k report](results/2026-08-05-stable-topk.md).
 
+The private continuation compares applying the same compact order through
+repeated native `apply()` calls with one fused `apply_many()` call:
+
+```bash
+python benchmarks/permutation_apply_many.py \
+  -n 100000 1000000 \
+  -r 9 \
+  --json-output apply-many.json
+```
+
+Both operations produce identical tuples of new Python lists; permutation
+construction stays outside the timed region. Small results are batched and
+normalized per call. The fixed gate is documented in the
+[top-k research proposal](../docs/topk-research.md).
+
 ## Research: adaptive generic keys
 
 The follow-up selector keeps `key` generic, calls user code exactly once, and

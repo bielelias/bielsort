@@ -86,8 +86,10 @@ published on 2026-08-05.
 - [x] Implement the first private stable compact top-k prototype.
 - [x] Validate stable compact top-k construction, three-sequence reuse, and
   compact storage against the fixed canonical gates.
-- [ ] Prototype native `apply_many()`, inverse, and composition operations only
-  after the compact permutation contract passes promotion review.
+- [ ] Validate private fused `apply_many()` against repeated native
+  application without regressing complete permutations.
+- [ ] Prototype native inverse and composition operations only after the
+  compact permutation and `apply_many()` contracts pass promotion review.
 - [ ] Evaluate fused sorted-group boundaries and counts for telemetry/event
   workloads.
 - [ ] Add an unsigned 64-bit fast path after a dedicated semantic and

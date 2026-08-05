@@ -131,6 +131,137 @@ permutation_apply(BielSortPermutation *self, PyObject *sequence)
     return result;
 }
 
+static PyObject *
+permutation_apply_many(BielSortPermutation *self, PyObject *sequences)
+{
+    const Py_ssize_t sequence_count = PyTuple_GET_SIZE(sequences);
+    PyObject *results = PyTuple_New(sequence_count);
+    if (results == NULL) {
+        return NULL;
+    }
+    if (sequence_count == 0) {
+        return results;
+    }
+    if ((size_t)sequence_count > SIZE_MAX / sizeof(PyObject *)) {
+        Py_DECREF(results);
+        return PyErr_NoMemory();
+    }
+    PyObject **fast_sequences = PyMem_Calloc(
+        (size_t)sequence_count,
+        sizeof(*fast_sequences)
+    );
+    if (fast_sequences == NULL) {
+        Py_DECREF(results);
+        return PyErr_NoMemory();
+    }
+
+    for (Py_ssize_t sequence_index = 0;
+         sequence_index < sequence_count;
+         sequence_index++) {
+        PyObject *sequence = PyTuple_GET_ITEM(sequences, sequence_index);
+        if (!PySequence_Check(sequence)) {
+            PyErr_Format(
+                PyExc_TypeError,
+                "permutation.apply_many argument %zd requires a reusable "
+                "sequence",
+                sequence_index + 1
+            );
+            goto error;
+        }
+        PyObject *values = PySequence_Fast(
+            sequence,
+            "permutation.apply_many requires reusable sequences"
+        );
+        if (values == NULL) {
+            goto error;
+        }
+        fast_sequences[sequence_index] = values;
+        const Py_ssize_t length = PySequence_Fast_GET_SIZE(values);
+        if (length != self->source_length) {
+            PyErr_Format(
+                PyExc_ValueError,
+                "permutation source length %zd does not match argument %zd "
+                "length %zd",
+                self->source_length,
+                sequence_index + 1,
+                length
+            );
+            goto error;
+        }
+        PyObject *result = PyList_New(self->length);
+        if (result == NULL) {
+            goto error;
+        }
+        PyTuple_SET_ITEM(results, sequence_index, result);
+    }
+
+    PyObject *first_values = fast_sequences[0];
+    PyObject *first_result = PyTuple_GET_ITEM(results, 0);
+    for (Py_ssize_t position = 0;
+         position < self->length;
+         position++) {
+        uint64_t index;
+        if (self->itemsize == 4) {
+            index = ((const uint32_t *)self->indices)[position];
+        } else {
+            index = ((const uint64_t *)self->indices)[position];
+        }
+        if (index >= (uint64_t)self->source_length) {
+            PyErr_SetString(
+                PyExc_SystemError,
+                "permutation contains an invalid internal index"
+            );
+            goto error;
+        }
+        PyObject *item = PySequence_Fast_GET_ITEM(
+            first_values,
+            (Py_ssize_t)index
+        );
+        Py_INCREF(item);
+        PyList_SET_ITEM(first_result, position, item);
+    }
+    for (Py_ssize_t sequence_index = 1;
+         sequence_index < sequence_count;
+         sequence_index++) {
+        PyObject *values = fast_sequences[sequence_index];
+        PyObject *result = PyTuple_GET_ITEM(results, sequence_index);
+        for (Py_ssize_t position = 0;
+             position < self->length;
+             position++) {
+            uint64_t index;
+            if (self->itemsize == 4) {
+                index = ((const uint32_t *)self->indices)[position];
+            } else {
+                index = ((const uint64_t *)self->indices)[position];
+            }
+            PyObject *item = PySequence_Fast_GET_ITEM(
+                values,
+                (Py_ssize_t)index
+            );
+            Py_INCREF(item);
+            PyList_SET_ITEM(result, position, item);
+        }
+    }
+
+    for (Py_ssize_t sequence_index = 0;
+         sequence_index < sequence_count;
+         sequence_index++) {
+        Py_DECREF(fast_sequences[sequence_index]);
+    }
+    PyMem_Free(fast_sequences);
+    return results;
+
+error:
+    for (Py_ssize_t sequence_index = 0;
+         sequence_index < sequence_count;
+         sequence_index++) {
+        Py_XDECREF(fast_sequences[sequence_index]);
+    }
+    PyMem_Free(fast_sequences);
+    Py_DECREF(results);
+    return NULL;
+}
+
 static int
 permutation_getbuffer(PyObject *object, Py_buffer *view, int flags)
 {
@@ -181,6 +312,13 @@ static PyMethodDef permutation_methods[] = {
         METH_O,
         "apply($self, sequence, /)\n--\n\n"
         "Return sequence values in this private permutation's order."
+    },
+    {
+        "apply_many",
+        (PyCFunction)permutation_apply_many,
+        METH_VARARGS,
+        "apply_many($self, /, *sequences)\n--\n\n"
+        "Apply this private permutation to parallel reusable sequences."
     },
     {NULL, NULL, 0, NULL}
 };

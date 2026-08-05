@@ -103,3 +103,43 @@ See the
 [versioned report](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-stable-topk.md)
 and its linked raw samples. This result permits further private validation;
 it does not yet approve a public function or a release.
+
+## Parallel application continuation
+
+The next private question is whether the compact result should apply itself to
+several aligned sequences in one call:
+
+```python
+ordered_scores, ordered_names, ordered_metadata = order.apply_many(
+    scores,
+    names,
+    metadata,
+)
+```
+
+The candidate validates every reusable sequence and its original length before
+reading selected items, returns one new list per input sequence, preserves
+exact object identity, and mutates nothing. It uses `O(m)` temporary native
+pointers for `m` sequences; the returned Python lists have the same payload as
+calling `apply()` `m` times.
+
+The canonical application-only gate uses one million source elements, top-k
+lengths 10, 100, and 1,000, full random and identity permutations, 2, 3, and 5
+parallel lists, and nine rotated samples. The method advances only if:
+
+1. every fused result is identity-equivalent to repeated native `apply()`;
+2. at least 9 of 15 target cases reach `1.05x` over repeated calls;
+3. at least 3 of the 6 full-permutation cases reach `1.10x`;
+4. no target case is more than 5% slower.
+
+Small top-k calls are batched to stabilize sub-microsecond measurements. The
+reported samples are normalized to one call and retain the batch size. Passing
+the gate would support a permutation-toolkit proposal, not a public API or
+release.
+
+```bash
+python benchmarks/permutation_apply_many.py \
+  -n 100000 1000000 \
+  -r 9 \
+  --json-output apply-many.json
+```
