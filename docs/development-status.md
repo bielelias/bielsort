@@ -56,8 +56,15 @@ the versioned benchmark reports.
   six runtime modules with their PEP 561 stubs through `mypy.stubtest`, and
   verifies representative type inference in strict mode. A clean wheel and
   source distribution include the type files and pass `twine check`.
-- The proposed stable `0.2.0` source distribution and CPython 3.11 wheel pass
-  `twine check`; a fresh environment installed that local wheel and passed all
+- The prepublication stable `0.2.0` source distribution and CPython 3.11 wheel
+  passed `twine check`; a fresh environment installed that local wheel and
+  passed all 105 tests outside the source tree.
+- The approved production
+  [workflow](https://github.com/bielelias/bielsort/actions/runs/30973448781)
+  rebuilt, tested, and published 36 wheels plus the source distribution from
+  the exact `v0.2.0` tag through PyPI Trusted Publishing.
+- A clean CPython 3.11 environment downloaded the public `0.2.0` manylinux
+  wheel without cache, exercised the native keyed Radix path, and passed all
   105 tests outside the source tree.
 
 ## Promotion gates
@@ -68,9 +75,9 @@ the versioned benchmark reports.
   published-wheel matrix passes.
 - [x] Prepare the stable `0.2.0` metadata and changelog on a dedicated branch,
   without publishing.
-- [ ] Obtain explicit owner approval before creating `v0.2.0` or dispatching
+- [x] Obtain explicit owner approval before creating `v0.2.0` or dispatching
   the production PyPI workflow.
-- [ ] Install and test the production wheel in a fresh environment only after
+- [x] Install and test the production wheel in a fresh environment only after
   an approved publication.
 
 External workload reports remain valuable adoption evidence, but they are not
