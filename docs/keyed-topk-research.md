@@ -249,3 +249,12 @@ at least `0.87x`. Otherwise the regression is treated as reproducible and the
 implementation must be profiled or redesigned. Passing this confirmation
 does not retroactively pass stage two; a new complete canonical protocol
 would still need separate pre-registration.
+
+```bash
+python -m benchmarks.keyed_topk_confirmation \
+  --exact-size 1000000 \
+  --generic-size 100000 \
+  --blocks 15 \
+  --calls-per-block 3 \
+  --json-output adaptive-keyed-topk-confirmation.json
+```

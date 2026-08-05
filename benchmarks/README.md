@@ -306,6 +306,15 @@ controls with warm-ups, three calls per block, and 15 rotated blocks. It does
 not alter the failed gate or authorize promotion; its purpose is to separate
 repeatable overhead from host timing shifts.
 
+```bash
+python -m benchmarks.keyed_topk_confirmation \
+  --exact-size 1000000 \
+  --generic-size 100000 \
+  --blocks 15 \
+  --calls-per-block 3 \
+  --json-output adaptive-keyed-topk-confirmation.json
+```
+
 ## Research: adaptive generic keys
 
 The follow-up selector keeps `key` generic, calls user code exactly once, and
