@@ -35,7 +35,10 @@ setup(
     ext_modules=[
         Extension(
             "bielsort_native._bielsort",
-            sources=["src/bielsort_native/_bielsort.c"],
+            sources=[
+                "src/bielsort_native/_argsort.c",
+                "src/bielsort_native/_bielsort.c",
+            ],
             extra_compile_args=compile_args,
             extra_link_args=link_args,
         )

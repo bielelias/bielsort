@@ -1,9 +1,9 @@
-# Research proposal: compact stable `argsort`
+# Research: compact stable `argsort`
 
-!!! warning "Design only"
+!!! warning "Private prototype"
 
-    BielSort does not currently expose `argsort`. This page defines an
-    experimental contract and measurement gates; it is not released API.
+    BielSort does not expose `argsort`. A native prototype now tests the
+    contract and measurement gates below, but it is not released API.
 
 ## Problem
 
@@ -67,7 +67,7 @@ The proposed `Permutation` object would store unsigned native indices:
   without making NumPy a BielSort runtime dependency.
 
 The exact buffer format and serialization behavior must be fixed before the
-name becomes public. The first implementation should remain private as
+name becomes public. The current implementation remains private as
 `_argsort_int64_prototype`.
 
 ## Measurement gates
@@ -91,6 +91,29 @@ Negative ordered cases, result-application cost, platform, compiler, raw
 samples, and peak memory remain part of the report. Passing these gates would
 justify further engineering, not prove external demand.
 
+## First prototype result
+
+The 2026-08-05 local experiment passes both alternative research gates:
+
+- the three disordered integer cases reach `3.47x–5.86x` at 100,000 elements
+  and `4.51x–8.04x` at one million against Python's stable index baseline;
+- at one million, those cases reduce median incremental peak RSS by 45%–47%;
+- a one-million-index BielSort result uses a 4,000,000-byte payload, compared
+  with NumPy's 8,000,000-byte `intp` payload and a Python list's 8,000,056
+  shallow bytes before its integer objects are counted.
+
+The negative results are equally important. Nearly sorted construction is
+about 32% slower at one million and uses 14% more incremental peak memory.
+Applying the compact indices to a Python list is 16%–32% slower in the tested
+one-million-element cases. NumPy also retains a major advantage when values
+already live in an ndarray, especially for ordered inputs.
+
+See the
+[full research record](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-08-05-compact-argsort.md)
+for the separate Python/NumPy scenarios, reproduction commands, raw samples,
+and environment. This pass authorizes continued private engineering only; it
+does not add an API, change the package version, or establish market demand.
+
 ## Open questions
 
 - Should the first public version support only natural integer values, or ship
@@ -102,5 +125,5 @@ justify further engineering, not prove external demand.
 - Can 32-bit and 64-bit internal storage coexist without making the buffer
   contract surprising?
 
-These questions will be answered by a private implementation and benchmark,
-not by committing the public API in advance.
+These questions will be answered by further private implementation and
+benchmark work, not by committing the public API in advance.

@@ -77,7 +77,7 @@ published on 2026-08-05.
   matrix before considering it for a release.
 - [x] Complete the promotion review and merge PR #30 after its source,
   sanitizer, documentation, and build-only wheel gates pass.
-- [ ] Build a private compact stable `argsort` prototype and measure complete
+- [x] Build a private compact stable `argsort` prototype and measure complete
   permutation creation and application costs.
 - Structured strategy analysis for diagnostics and evaluator reports.
 - Unsigned 64-bit fast path.

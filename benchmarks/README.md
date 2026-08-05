@@ -171,6 +171,30 @@ Passing these gates is evidence for continued engineering, not evidence of
 market demand. Failing them means the API direction should be discarded or
 redesigned before publication.
 
+## Research: compact stable argsort
+
+The private compact-index prototype compares stable permutation construction,
+application to a Python list, result storage, isolated peak RSS, and two
+explicit NumPy scenarios:
+
+```bash
+python benchmarks/argsort_prototype.py \
+  -n 100000 1000000 \
+  -r 5 \
+  --memory-repetitions 3 \
+  --json-output compact-argsort.json
+```
+
+`NumPy array` starts with an existing `int64` ndarray. `NumPy E2E` includes
+conversion from the same Python list received by BielSort. These are reported
+separately because combining them would compare different input contracts.
+The BielSort result is private, immutable, and exposed as a read-only 32- or
+64-bit buffer; no public `argsort` API is implied by this benchmark.
+
+The pre-registered gate and the first local result are recorded in the
+[versioned research report](results/2026-08-05-compact-argsort.md). Raw timing,
+application, memory, and environment samples are linked from that report.
+
 ## Research: adaptive generic keys
 
 The follow-up selector keeps `key` generic, calls user code exactly once, and
