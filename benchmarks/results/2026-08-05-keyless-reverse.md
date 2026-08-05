@@ -79,10 +79,15 @@ Raw samples and environment metadata are in
   source-build CI on Linux with CPython 3.9–3.14, Windows with CPython
   3.11/3.14, and macOS with CPython 3.11/3.14, plus the hosted sanitizer,
   public-stub, and strict-documentation jobs.
+- The non-publishing
+  [build-only wheel run](https://github.com/bielelias/bielsort/actions/runs/31032231434)
+  passes on Linux, Windows, macOS Intel, and macOS ARM. It builds and tests the
+  wheels, validates their contents, uploads the artifacts, and builds the source
+  distribution. TestPyPI and PyPI jobs were skipped by design.
 
-Native-core release consideration still requires building and installing the
-supported wheel matrix. No tag, TestPyPI upload, or production publication was
-created by this experiment.
+The source-build, sanitizer, and supported built-wheel gates recorded for this
+experiment pass. It remains a draft research candidate: no merge, version bump,
+tag, TestPyPI upload, or production publication was created by this experiment.
 
 ## Reproduction
 

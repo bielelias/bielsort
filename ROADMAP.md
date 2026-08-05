@@ -73,7 +73,7 @@ published on 2026-08-05.
   shapes and record the first local benchmark gate.
 - [x] Validate the keyless reverse candidate in the supported cross-platform
   source-build CI and sanitizer workflow.
-- [ ] Validate built keyless reverse wheels with the supported installation
+- [x] Validate built keyless reverse wheels with the supported installation
   matrix before considering it for a release.
 - [ ] Build a private compact stable `argsort` prototype and measure complete
   permutation creation and application costs.
