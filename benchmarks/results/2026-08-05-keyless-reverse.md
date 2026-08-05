@@ -75,7 +75,7 @@ Raw samples and environment metadata are in
 - Dedicated tests cover stable duplicate identities, full signed-int64 Radix,
   dense Counting, both operation shapes, generators, and stable generic
   fallback.
-- Draft PR [#30](https://github.com/bielelias/bielsort/pull/30) passes
+- PR [#30](https://github.com/bielelias/bielsort/pull/30) passes
   source-build CI on Linux with CPython 3.9–3.14, Windows with CPython
   3.11/3.14, and macOS with CPython 3.11/3.14, plus the hosted sanitizer,
   public-stub, and strict-documentation jobs.
@@ -86,8 +86,9 @@ Raw samples and environment metadata are in
   distribution. TestPyPI and PyPI jobs were skipped by design.
 
 The source-build, sanitizer, and supported built-wheel gates recorded for this
-experiment pass. It remains a draft research candidate: no merge, version bump,
-tag, TestPyPI upload, or production publication was created by this experiment.
+experiment pass. It is ready for review as an unreleased research candidate:
+no merge, version bump, tag, TestPyPI upload, or production publication was
+created by this experiment.
 
 ## Reproduction
 
