@@ -35,8 +35,8 @@ the versioned benchmark reports.
 
 ## Evidence already completed
 
-- 104 deterministic functional, differential, stress, memory-guard, GC, and
-  workload-tool tests pass locally and against a clean TestPyPI installation.
+- The current 105-test functional, differential, stress, memory-guard, GC,
+  workload-tool, and API-contract suite passes locally.
 - AddressSanitizer and UndefinedBehaviorSanitizer validation passed.
 - CI passed for CPython 3.9–3.14 on Linux and representative Windows and macOS
   hosts.
@@ -52,12 +52,16 @@ the versioned benchmark reports.
   3.11, and Apple Silicon macOS with CPython 3.14.
 - The public documentation builds in strict mode and distinguishes stable
   `0.1.0` from candidate `0.2.0rc1`.
+- The final 0.2 API review freezes canonical exports and signatures, compares
+  six runtime modules with their PEP 561 stubs through `mypy.stubtest`, and
+  verifies representative type inference in strict mode. A clean wheel and
+  source distribution include the type files and pass `twine check`.
 
 ## Promotion gates
 
 - [x] Run the manual TestPyPI candidate matrix against the published
   `0.2.0rc1` wheels on Linux, Windows, Intel macOS, and Apple Silicon macOS.
-- [ ] Review the stable API surface and type hints once more after the
+- [x] Review the stable API surface and type hints once more after the
   published-wheel matrix passes.
 - [ ] Prepare the stable `0.2.0` metadata and changelog on a dedicated branch,
   without publishing.

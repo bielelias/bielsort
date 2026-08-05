@@ -15,6 +15,13 @@ release.
   package.
 - Added durable repository guidance and a development-status handoff so future
   contributors and chats can resume from verified project evidence.
+- Added CI checks that compare public stubs with the runtime API and verify
+  representative type inference for canonical and compatibility imports.
+
+### Fixed
+
+- Declared runtime `__all__` values in the package stubs and added the missing
+  private native-extension stub required to validate the typed implementation.
 
 ## [0.2.0rc1] - 2026-08-04
 

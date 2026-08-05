@@ -1,3 +1,4 @@
+import inspect
 import random
 import struct
 import unittest
@@ -17,6 +18,7 @@ from bielsort import (
     sort_with_info,
     sort_with_strategy,
 )
+import bielsort
 import bielsort_native
 
 
@@ -48,6 +50,66 @@ class BielSortTests(unittest.TestCase):
         values = [3, 1, 2]
         self.assertIsNone(sort_in_place(values))
         self.assertEqual(values, [1, 2, 3])
+
+    def test_public_api_surface_and_signatures_are_frozen_for_0_2(self):
+        expected_exports = (
+            "SortInfo",
+            "sort",
+            "sort_with_strategy",
+            "sort_with_info",
+            "sort_in_place",
+            "sort_in_place_with_strategy",
+            "biel_sort",
+            "biel_sort_diagnostico",
+            "biel_sort_with_strategy",
+            "biel_sort_in_place",
+            "biel_sort_in_place_diagnostico",
+            "biel_sort_in_place_with_strategy",
+            "__version__",
+        )
+        self.assertEqual(tuple(bielsort.__all__), expected_exports)
+        self.assertEqual(tuple(bielsort_native.__all__), expected_exports)
+
+        expected_signatures = {
+            "sort": "(iterable, *, key=None, reverse=False)",
+            "sort_with_strategy": (
+                "(iterable, *, key=None, reverse=False)"
+            ),
+            "sort_with_info": (
+                "(iterable, *, key, reverse=False, "
+                "max_native_auxiliary_bytes=None, "
+                "on_memory_limit='timsort')"
+            ),
+            "sort_in_place": "(values, *, key=None, reverse=False)",
+            "sort_in_place_with_strategy": (
+                "(values, *, key=None, reverse=False)"
+            ),
+        }
+        for name, expected in expected_signatures.items():
+            with self.subTest(name=name):
+                self.assertEqual(
+                    str(inspect.signature(getattr(bielsort, name))),
+                    expected,
+                )
+
+        aliases = {
+            "biel_sort": "sort",
+            "biel_sort_diagnostico": "sort_with_strategy",
+            "biel_sort_with_strategy": "sort_with_strategy",
+            "biel_sort_in_place": "sort_in_place",
+            "biel_sort_in_place_diagnostico": (
+                "sort_in_place_with_strategy"
+            ),
+            "biel_sort_in_place_with_strategy": (
+                "sort_in_place_with_strategy"
+            ),
+        }
+        for alias, canonical in aliases.items():
+            with self.subTest(alias=alias):
+                self.assertIs(
+                    getattr(bielsort, alias),
+                    getattr(bielsort, canonical),
+                )
 
     def conferir(self, valores):
         original = list(valores)

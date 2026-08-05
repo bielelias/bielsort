@@ -11,6 +11,33 @@ permissions:
   contents: read
 
 jobs:
+  public-api-types:
+    name: Public API stubs
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: Install package and type-check tools
+        run: |
+          python -m pip install .
+          python -m pip install -r requirements-typecheck.txt
+          python -m pip check
+
+      - name: Compare public stubs with runtime
+        run: python -m mypy.stubtest bielsort bielsort_native
+
+      - name: Check public type inference
+        run: >-
+          python -m mypy --strict --python-version 3.9
+          tests/typing/api_contract.py
+
   python-versions:
     name: CPython ${{ matrix.python-version }} / Linux
     runs-on: ubuntu-latest

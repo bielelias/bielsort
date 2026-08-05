@@ -31,6 +31,13 @@ For documentation changes, also run:
 python -m mkdocs build --strict
 ```
 
+For public API or stub changes, install `requirements-typecheck.txt` and run:
+
+```bash
+python -m mypy.stubtest bielsort bielsort_native
+python -m mypy --strict --python-version 3.9 tests/typing/api_contract.py
+```
+
 Native-core changes require the sanitizer workflow and the supported
 cross-platform CI matrix before release consideration. Update
 `docs/development-status.md` when a release gate or project milestone changes.

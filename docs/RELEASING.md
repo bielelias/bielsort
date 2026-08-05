@@ -79,15 +79,17 @@ stable releases use this registered publisher and the same `pypi` environment.
 1. Confirm that `pyproject.toml` and `bielsort.__version__` contain the same
    PEP 440 version.
 2. Run the unit and stress tests.
-3. Build both the wheel and source distribution from a clean checkout without
+3. Compare the PEP 561 stubs with the runtime API and run the strict public
+   type-inference contract.
+4. Build both the wheel and source distribution from a clean checkout without
    pre-existing `build/`, `dist/`, or `wheelhouse/` directories.
-4. Inspect the wheel contents and validate distribution metadata.
-5. Install the wheel in a clean environment and run smoke tests outside the
+5. Inspect the wheel contents and validate distribution metadata.
+6. Install the wheel in a clean environment and run smoke tests outside the
    repository.
-6. Install the source distribution in a second clean environment and run the
+7. Install the source distribution in a second clean environment and run the
    same smoke tests.
-7. Confirm that the candidate version has not already been used on TestPyPI.
-8. Merge the candidate commit into `main` only after explicit approval.
+8. Confirm that the candidate version has not already been used on TestPyPI.
+9. Merge the candidate commit into `main` only after explicit approval.
 
 ## Publish to TestPyPI
 
