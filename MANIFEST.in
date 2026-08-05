@@ -4,6 +4,7 @@ include CONTRIBUTING.md
 include SECURITY.md
 include mkdocs.yml
 include requirements-docs.txt
+include requirements-typecheck.txt
 recursive-include src/bielsort_native *.c *.py *.pyi py.typed
 recursive-include tests *.py
 recursive-include benchmarks *.py *.md

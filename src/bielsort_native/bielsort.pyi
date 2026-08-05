@@ -10,7 +10,23 @@ from typing import (
     TypeVar,
 )
 
-T = TypeVar("T")
+_T = TypeVar("_T")
+
+__all__ = [
+    "SortInfo",
+    "sort",
+    "sort_with_strategy",
+    "sort_with_info",
+    "sort_in_place",
+    "sort_in_place_with_strategy",
+    "biel_sort",
+    "biel_sort_diagnostico",
+    "biel_sort_with_strategy",
+    "biel_sort_in_place",
+    "biel_sort_in_place_diagnostico",
+    "biel_sort_in_place_with_strategy",
+]
+__version__: str
 
 @dataclass(frozen=True)
 class SortInfo:
@@ -37,39 +53,39 @@ class SortInfo:
     def used_native(self) -> bool: ...
 
 def sort(
-    iterable: Iterable[T],
+    iterable: Iterable[_T],
     *,
-    key: Optional[Callable[[T], Any]] = ...,
+    key: Optional[Callable[[_T], Any]] = ...,
     reverse: bool = ...,
-) -> List[T]: ...
+) -> List[_T]: ...
 
 def sort_with_strategy(
-    iterable: Iterable[T],
+    iterable: Iterable[_T],
     *,
-    key: Optional[Callable[[T], Any]] = ...,
+    key: Optional[Callable[[_T], Any]] = ...,
     reverse: bool = ...,
-) -> Tuple[List[T], str]: ...
+) -> Tuple[List[_T], str]: ...
 
 def sort_with_info(
-    iterable: Iterable[T],
+    iterable: Iterable[_T],
     *,
-    key: Callable[[T], Any],
+    key: Callable[[_T], Any],
     reverse: bool = ...,
     max_native_auxiliary_bytes: Optional[int] = ...,
     on_memory_limit: Literal["timsort", "raise"] = ...,
-) -> Tuple[List[T], SortInfo]: ...
+) -> Tuple[List[_T], SortInfo]: ...
 
 def sort_in_place(
-    values: List[T],
+    values: List[_T],
     *,
-    key: Optional[Callable[[T], Any]] = ...,
+    key: Optional[Callable[[_T], Any]] = ...,
     reverse: bool = ...,
 ) -> None: ...
 
 def sort_in_place_with_strategy(
-    values: List[T],
+    values: List[_T],
     *,
-    key: Optional[Callable[[T], Any]] = ...,
+    key: Optional[Callable[[_T], Any]] = ...,
     reverse: bool = ...,
 ) -> str: ...
 

@@ -28,6 +28,21 @@ The C compiler must be compatible with the selected CPython distribution.
 For native changes on Linux, also run the sanitizer workflow or an equivalent
 local build with `BIELSORT_SANITIZE=1`.
 
+## Type checking
+
+Install the pinned type-checking toolchain when changing public functions,
+exports, aliases, dataclasses, or `.pyi` files:
+
+```bash
+python -m pip install -r requirements-typecheck.txt
+python -m mypy.stubtest bielsort bielsort_native
+python -m mypy --strict --python-version 3.9 tests/typing/api_contract.py
+```
+
+`stubtest` compares the declared package surface with runtime introspection.
+The strict contract verifies representative inference through both the
+canonical `bielsort` import and the compatibility package.
+
 ## Benchmarking
 
 ```bash

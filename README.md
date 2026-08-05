@@ -32,6 +32,7 @@ It provides separate APIs to compete fairly with both `sorted()` and
 - Published candidate: [TestPyPI `0.2.0rc1`](https://test.pypi.org/project/bielsort/0.2.0rc1/)
 - Runtime: CPython 3.9+
 - Native language: C
+- Type information: PEP 561 stubs checked against the runtime API in CI
 - Fast path: exact Python integers in signed 64-bit range
 - Fallback: Python-compatible stable sorting
 - License: MIT
