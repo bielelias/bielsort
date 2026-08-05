@@ -53,6 +53,20 @@ published on 2026-07-31.
 - [ ] Define performance changes from measured external workloads rather than
   synthetic wins alone.
 
+## 0.2 release candidate and promotion
+
+- [x] Add stable adaptive signed-int64 keys to the new-list API.
+- [x] Preserve one key call per record and exact-object Timsort fallback.
+- [x] Add structured strategy and native-memory diagnostics.
+- [x] Document and accept the bounded nearly ordered trade-off.
+- [x] Pass local, cross-platform, sanitizer, wheel, and documentation checks.
+- [x] Publish and clean-install `0.2.0rc1` from TestPyPI.
+- [ ] Validate the published TestPyPI wheels on the supported hosted-runner
+  matrix.
+- [ ] Complete a final API/type-hint review for stable `0.2.0`.
+- [ ] Prepare stable metadata and changelog without publishing.
+- [ ] Publish `0.2.0` only after explicit owner approval.
+
 ## Future research
 
 - Structured strategy analysis for diagnostics and evaluator reports.

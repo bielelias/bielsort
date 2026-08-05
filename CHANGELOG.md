@@ -8,6 +8,14 @@ release.
 
 ## [Unreleased]
 
+### Added
+
+- Added a reusable hosted-runner matrix that installs exact release-candidate
+  wheels from TestPyPI and runs the complete suite against the published
+  package.
+- Added durable repository guidance and a development-status handoff so future
+  contributors and chats can resume from verified project evidence.
+
 ## [0.2.0rc1] - 2026-08-04
 
 Published to TestPyPI for installation testing. The production PyPI release

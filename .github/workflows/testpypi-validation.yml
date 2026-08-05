@@ -1,0 +1,133 @@
+name: TestPyPI candidate validation
+
+run-name: >-
+  TestPyPI bielsort==${{ inputs.package_version }} published-wheel validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_version:
+        description: Exact BielSort release-candidate version on TestPyPI
+        required: true
+        type: string
+        default: "0.2.0rc1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bielsort-testpypi-${{ inputs.package_version }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: ${{ matrix.id }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - id: linux-py39
+            os: ubuntu-latest
+            python: "3.9"
+          - id: linux-py310
+            os: ubuntu-latest
+            python: "3.10"
+          - id: linux-py311
+            os: ubuntu-latest
+            python: "3.11"
+          - id: linux-py312
+            os: ubuntu-latest
+            python: "3.12"
+          - id: linux-py313
+            os: ubuntu-latest
+            python: "3.13"
+          - id: linux-py314
+            os: ubuntu-latest
+            python: "3.14"
+          - id: windows-py311
+            os: windows-latest
+            python: "3.11"
+          - id: windows-py314
+            os: windows-latest
+            python: "3.14"
+          - id: macos-intel-py311
+            os: macos-15-intel
+            python: "3.11"
+          - id: macos-arm-py314
+            os: macos-latest
+            python: "3.14"
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Validate requested candidate version
+        shell: python
+        env:
+          BIELSORT_CANDIDATE_VERSION: ${{ inputs.package_version }}
+        run: |
+          import os
+          import re
+
+          expected = os.environ["BIELSORT_CANDIDATE_VERSION"]
+          if re.fullmatch(
+              r"(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)rc[1-9]\d*",
+              expected,
+          ) is None:
+              raise SystemExit(
+                  f"Expected an exact X.Y.ZrcN candidate; received {expected}"
+              )
+
+          print(f"Validated candidate version {expected}")
+
+      - name: Install exact published wheel
+        shell: bash
+        env:
+          BIELSORT_CANDIDATE_VERSION: ${{ inputs.package_version }}
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install \
+            --index-url https://test.pypi.org/simple/ \
+            --no-deps \
+            --no-cache-dir \
+            --only-binary=:all: \
+            "bielsort==${BIELSORT_CANDIDATE_VERSION}"
+          python -m pip check
+
+      - name: Verify package identity and source
+        shell: python
+        env:
+          BIELSORT_CANDIDATE_VERSION: ${{ inputs.package_version }}
+        run: |
+          import importlib.metadata
+          import os
+          from pathlib import Path
+
+          import bielsort
+
+          expected = os.environ["BIELSORT_CANDIDATE_VERSION"]
+          metadata_version = importlib.metadata.version("bielsort")
+          if metadata_version != expected or bielsort.__version__ != expected:
+              raise SystemExit(
+                  "Installed package version mismatch: "
+                  f"metadata={metadata_version}, module={bielsort.__version__}, "
+                  f"expected={expected}"
+              )
+
+          package_path = Path(bielsort.__file__).resolve()
+          workspace = Path(os.environ["GITHUB_WORKSPACE"]).resolve()
+          if package_path == workspace or workspace in package_path.parents:
+              raise SystemExit(
+                  f"Imported repository source instead of TestPyPI: {package_path}"
+              )
+
+          print(f"Verified TestPyPI BielSort {expected} at {package_path}")
+
+      - name: Run complete tests against the published wheel
+        run: python -m unittest discover -s tests -v
