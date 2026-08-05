@@ -143,3 +143,33 @@ python benchmarks/permutation_apply_many.py \
   -r 9 \
   --json-output apply-many.json
 ```
+
+## Parallel application result
+
+The 2026-08-05 canonical run did **not** pass the fixed continuation gate.
+Correctness passed, no case was more than 5% slower, and 12 of 15 target cases
+reached `1.05x`. Only 2 of 6 complete-permutation cases reached `1.10x`, below
+the required 3.
+
+Small top-k results approached `2x`, but the absolute saving for top-k 10 was
+only about two tenths of a microsecond per call. Complete permutations were
+mixed. The method therefore remains private as an ergonomics experiment and
+is not promoted as a performance differentiator. See the
+[versioned report](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-permutation-apply-many.md)
+and its linked raw samples.
+
+## Next practical question: keyed records
+
+The reusable-index prototype proves the selection core, but most Python users
+hold records rather than separate integer-key and payload lists. The next
+private proposal will evaluate a direct stable operation shaped like:
+
+```python
+top_k(records, k, *, key=lambda record: record.score, largest=False)
+```
+
+The experiment must preserve exact record identity and stable ties, call
+`key` exactly once per encountered record, leave the input unchanged, and
+return a fully sorted result. It will remain private until its semantics,
+compatible fallback, memory guard, and pre-registered performance gates are
+reviewed independently.

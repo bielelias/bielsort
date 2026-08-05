@@ -86,10 +86,13 @@ published on 2026-08-05.
 - [x] Implement the first private stable compact top-k prototype.
 - [x] Validate stable compact top-k construction, three-sequence reuse, and
   compact storage against the fixed canonical gates.
-- [ ] Validate private fused `apply_many()` against repeated native
-  application without regressing complete permutations.
-- [ ] Prototype native inverse and composition operations only after the
-  compact permutation and `apply_many()` contracts pass promotion review.
+- [x] Validate private fused `apply_many()` against repeated native
+  application. The fixed performance gate did not pass, so no public
+  promotion is planned from this result.
+- [ ] Design and pre-register a direct stable keyed top-k experiment for
+  Python records before implementing or exposing a public function.
+- [ ] Prototype native inverse and composition operations only after external
+  demand justifies expanding the private permutation toolkit.
 - [ ] Evaluate fused sorted-group boundaries and counts for telemetry/event
   workloads.
 - [ ] Add an unsigned 64-bit fast path after a dedicated semantic and

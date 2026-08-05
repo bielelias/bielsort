@@ -33,7 +33,7 @@ sequences:
 The private experiment and its fixed continuation gates are described in the
 [stable top-k research proposal](topk-research.md).
 
-## Priority 2: permutation toolkit
+## Priority 3: permutation toolkit
 
 If the compact permutation becomes public, the next direct operations should
 be evaluated together:
@@ -48,7 +48,22 @@ These operations make the result useful as a small data-alignment primitive,
 not only as the output of one sorting function. They should remain private
 until naming, errors, memory behavior, and measurable benefit are fixed.
 
-## Priority 3: sorted groups and rank boundaries
+The first `apply_many()` experiment passed correctness and regression checks
+but missed its fixed complete-permutation performance gate. It remains a
+private ergonomics experiment, not a promoted performance feature. `inverse()`
+and `compose()` are deferred until users demonstrate a need for reusable
+parallel-list permutations.
+
+## Priority 2: direct keyed top-k
+
+The more direct Python workflow is selecting records by an integer field
+without asking users to build and apply an index object themselves. A private
+`top_k(records, k, key=...)` experiment should evaluate stable ties, exact
+record identity, one key call per record, `O(n log k)` eligible selection, and
+a compatible fallback. API design and fixed gates must be committed before
+canonical measurements; passing them would still not approve a release.
+
+## Priority 4: sorted groups and rank boundaries
 
 Telemetry and event workloads often need group starts, counts, ranks, or
 deduplicated integer keys immediately after sorting. A future experiment can
@@ -56,7 +71,7 @@ derive group boundaries from the ordered native keys while they are already
 in cache, avoiding a second Python pass. The useful output would be compact
 boundaries plus counts, not an attempt to become a DataFrame library.
 
-## Priority 4: wider integer domains
+## Priority 5: wider integer domains
 
 Unsigned 64-bit identifiers and timestamps are a practical extension of the
 existing signed-int64 specialization. This work should come after top-k

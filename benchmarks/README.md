@@ -241,6 +241,12 @@ construction stays outside the timed region. Small results are batched and
 normalized per call. The fixed gate is documented in the
 [top-k research proposal](../docs/topk-research.md).
 
+The canonical run did not pass the unchanged continuation gate: 12 of 15
+target cases reached `1.05x`, but only 2 of 6 complete-permutation cases
+reached the required `1.10x`. The method remains private. See the
+[versioned fused-application report](results/2026-08-05-permutation-apply-many.md)
+and its linked raw samples.
+
 ## Research: adaptive generic keys
 
 The follow-up selector keeps `key` generic, calls user code exactly once, and

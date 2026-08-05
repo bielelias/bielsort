@@ -166,11 +166,15 @@ selection and `15.41x–36.99x` over stable full index sorting; reuse measured
 bytes per selected index at this input size and preserves encounter order for
 ties. See the
 [stable top-k research record](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-stable-topk.md).
-The candidate passes 130 optimized and sanitized local tests, warning-clean
+The candidate passes 133 optimized and sanitized local tests, warning-clean
 native compilation, runtime/stub comparison, strict Python 3.9 typing, and
-strict documentation. The local wheel and source distribution pass metadata
+strict documentation. The private `apply_many()` continuation also passes
+the hosted source-build matrix and sanitizers, but its fixed performance gate
+did not pass: 12 of 15 target cases reached `1.05x`, while only 2 of 6 complete
+permutations reached the required `1.10x`. It is not approved for public
+promotion. The earlier local wheel and source distribution pass metadata
 validation, and a clean environment installs the wheel and passes all 130
-tests outside the source tree. Draft PR
+pre-continuation tests outside the source tree. Draft PR
 [#34](https://github.com/bielelias/bielsort/pull/34) passes source-build CI on
 Linux with CPython 3.9–3.14, Windows with CPython 3.11/3.14, and macOS with
 CPython 3.11/3.14, plus hosted sanitizers, public stubs, and strict

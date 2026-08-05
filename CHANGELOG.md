@@ -23,6 +23,10 @@ release.
 - Added an unreleased private stable compact top-k prototype and benchmark
   contract for selecting reusable smallest/largest indices without fully
   sorting eligible signed-int64 Python sequences.
+- Added a private fused compact-permutation application experiment. It passed
+  correctness, cross-platform CI, and the no-regression threshold but missed
+  its pre-registered complete-permutation performance gate, so it is not
+  proposed for public promotion.
 
 ## [0.2.0] - 2026-08-05
 
