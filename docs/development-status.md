@@ -214,8 +214,10 @@ not pass: 3 of 24 exact cases exceeded the strict-core regression bound and 1
 of 24 generic cases exceeded the `heapq` regression bound. Semantic and memory
 requirements passed. See the
 [adaptive keyed top-k research record](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-adaptive-keyed-topk.md).
-Hosted cross-platform validation remains pending; the failed performance gate
-already prevents promotion.
+The adaptive native commit passes hosted ASan/UBSan and source-build CI on
+Linux with CPython 3.9–3.14, Windows with CPython 3.11/3.14, and macOS with
+CPython 3.11/3.14. A fresh build-only wheel matrix and a passing complete
+performance protocol remain required before any promotion decision.
 
 An unchanged-code block-timed confirmation then placed all four failures and
 both controls above their fixed `0.87x` bound. Exact failures measured
