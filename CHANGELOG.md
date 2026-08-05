@@ -43,6 +43,9 @@ release.
   gate failed in four cases, so the candidate is not approved for promotion.
 - Pre-registered an unchanged-code, block-timed confirmation of those four
   failures plus two controls; it cannot replace the failed canonical result.
+- Recorded that all four failures and both controls passed the confirmation
+  bound without code changes, consistent with host timing variability. The
+  original stage-two gate remains failed.
 
 ## [0.2.0] - 2026-08-05
 

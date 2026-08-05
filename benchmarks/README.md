@@ -315,6 +315,12 @@ python -m benchmarks.keyed_topk_confirmation \
   --json-output adaptive-keyed-topk-confirmation.json
 ```
 
+All four failures and both controls passed the confirmation bound, consistent
+with host timing variability. This does not replace the failed canonical
+gate. See the
+[versioned confirmation report](results/2026-08-05-adaptive-keyed-topk-confirmation.md)
+and its linked raw samples.
+
 ## Research: adaptive generic keys
 
 The follow-up selector keeps `key` generic, calls user code exactly once, and

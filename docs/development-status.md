@@ -217,6 +217,14 @@ requirements passed. See the
 Hosted cross-platform validation remains pending; the failed performance gate
 already prevents promotion.
 
+An unchanged-code block-timed confirmation then placed all four failures and
+both controls above their fixed `0.87x` bound. Exact failures measured
+`0.95x–1.00x` against the strict core and the generic failure measured `1.33x`
+over `heapq`, consistent with host variability. The
+[confirmation record](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-adaptive-keyed-topk-confirmation.md)
+does not replace the failed canonical gate; a new complete block-timed
+protocol is required for reconsideration.
+
 ## Resume checklist
 
 Start from the repository root and inspect the current evidence:

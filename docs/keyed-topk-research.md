@@ -258,3 +258,15 @@ python -m benchmarks.keyed_topk_confirmation \
   --calls-per-block 3 \
   --json-output adaptive-keyed-topk-confirmation.json
 ```
+
+### Confirmation result
+
+The unchanged-code confirmation was consistent with host variability: every
+failed case and control exceeded the fixed `0.87x` bound. The three exact
+cases measured `0.95x–1.00x` against the strict core, and the previously
+failed huge-integer case measured `1.33x` over `heapq`.
+
+See the
+[versioned confirmation](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-adaptive-keyed-topk-confirmation.md).
+The original stage-two gate remains failed. A complete block-timed protocol
+must be pre-registered before any new promotion decision.

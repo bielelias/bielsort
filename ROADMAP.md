@@ -100,8 +100,11 @@ published on 2026-08-05.
   performance gate did not; no promotion is approved.
 - [x] Pre-register a focused profiling and confirmation experiment for the
   four stage-two regression cases without replacing the failed result.
-- [ ] Run the unchanged-code confirmation and decide whether to profile the
-  implementation or design a new full canonical protocol.
+- [x] Run the unchanged-code confirmation. All failures and controls passed
+  the fixed bound, consistent with host timing variability; the original
+  failed gate remains recorded.
+- [ ] Pre-register a complete block-timed canonical protocol before any new
+  adaptive keyed top-k promotion decision.
 - [ ] Measure common `lambda` and `attrgetter` keys and isolated memory before
   deciding whether direct keyed top-k deserves promotion review.
 - [ ] Prototype native inverse and composition operations only after external
