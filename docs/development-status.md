@@ -95,14 +95,18 @@ from `0.91x` to `1.13x`, including the negative result.
 
 The candidate passes 109 optimized and sanitized local tests, warning-clean
 native compilation, and the typed API checks. PR
-[#30](https://github.com/bielelias/bielsort/pull/30) then passed source-build CI
-on CPython 3.9–3.14 for Linux and representative Windows and macOS hosts, the
+[#30](https://github.com/bielelias/bielsort/pull/30) passed source-build CI on
+CPython 3.9–3.14 for Linux and representative Windows and macOS hosts, the
 hosted sanitizer job, public-stub checks, and strict documentation. The
 non-publishing [build-only wheel run](https://github.com/bielelias/bielsort/actions/runs/31032231434)
 also passed on Linux, Windows, macOS Intel, and macOS ARM, including wheel tests,
-content validation, artifact upload, and source-distribution creation. It is
-ready for review as an unreleased research candidate rather than a release.
-The full report is the versioned
+content validation, artifact upload, and source-distribution creation. The PR
+was merged into `main` as
+[commit `31fb517`](https://github.com/bielelias/bielsort/commit/31fb5179979b1d1718199eb1800ef3302caaed83),
+whose [post-merge CI](https://github.com/bielelias/bielsort/actions/runs/31034748359),
+sanitizer, and documentation deployment also passed. The code remains an
+unreleased research candidate rather than a package release. The full report
+is the versioned
 [keyless reverse research record](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-08-05-keyless-reverse.md).
 
 A separate [compact stable `argsort` proposal](argsort-research.md) fixes the
