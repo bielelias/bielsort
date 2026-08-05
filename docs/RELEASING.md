@@ -122,6 +122,12 @@ Replace `0.2.0rc1` with the candidate being tested. Do not reuse a version
 after it has been uploaded. If a candidate changes, increment its release
 candidate number or choose the next appropriate PEP 440 version.
 
+After the first clean local installation succeeds, manually run the
+`TestPyPI candidate validation` workflow from `main` with the exact candidate
+version. It installs binary wheels directly from TestPyPI and runs the complete
+test suite across the supported hosted-runner matrix. Record the successful
+run in `development-status.md` before preparing a stable release.
+
 ## Publish a stable release to PyPI
 
 Do not perform these steps until the candidate has passed review and the
