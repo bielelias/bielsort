@@ -174,8 +174,9 @@ redesigned before publication.
 ## Research: compact stable argsort
 
 The private compact-index prototype compares stable permutation construction,
-application to a Python list, result storage, isolated peak RSS, and two
-explicit NumPy scenarios:
+Python and native application to a Python sequence, reuse across three
+parallel lists, result storage, isolated peak RSS, and two explicit NumPy
+scenarios:
 
 ```bash
 python benchmarks/argsort_prototype.py \
@@ -194,6 +195,12 @@ The BielSort result is private, immutable, and exposed as a read-only 32- or
 The pre-registered gate and the first local result are recorded in the
 [versioned research report](results/2026-08-05-compact-argsort.md). Raw timing,
 application, memory, and environment samples are linked from that report.
+The native-application continuation and its separate pre-registered gates are
+recorded in the
+[native application report](results/2026-08-05-compact-argsort-native-apply.md).
+It measures both application in isolation and the complete build-once,
+apply-three-lists operation. Both implementations receive reusable sequences;
+one-shot generators are outside the prototype contract.
 
 ## Research: adaptive generic keys
 

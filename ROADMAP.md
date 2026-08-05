@@ -79,6 +79,8 @@ published on 2026-08-05.
   sanitizer, documentation, and build-only wheel gates pass.
 - [x] Build a private compact stable `argsort` prototype and measure complete
   permutation creation and application costs.
+- [x] Add and validate a private native application path for reusing one
+  compact permutation across parallel Python sequences.
 - Structured strategy analysis for diagnostics and evaluator reports.
 - Unsigned 64-bit fast path.
 - Safe float fast path with explicit NaN semantics.

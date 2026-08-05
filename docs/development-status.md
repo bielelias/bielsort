@@ -111,25 +111,48 @@ is the versioned
 
 A separate [compact stable `argsort` proposal](argsort-research.md) fixes the
 intended semantics and benchmark gates without adding a public function. Its
-first private implementation now passes 119 optimized local tests and both
-pre-registered research gates. At one million disordered integers, the
+first private implementation passed 119 optimized local tests and both
+pre-registered construction gates. At one million disordered integers, its
 seven-sample local timing record measures `4.51x–8.04x` over Python's stable
-index baseline, while isolated peak RSS is 45%–47% lower. The same report
-records the negative cases: nearly sorted construction is 32% slower with 14%
-more peak RSS, and applying compact indices to Python lists is generally
-slower than applying `list[int]`. The complete evidence is in the
+index baseline, while isolated peak RSS is 45%–47% lower. The first report
+also records that nearly sorted construction is 32% slower with 14% more peak
+RSS, and that iterating compact indices in Python is slower than applying an
+existing `list[int]`. The initial evidence is in the
 [compact argsort research record](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-08-05-compact-argsort.md).
-The same 119 tests pass locally with AddressSanitizer and
+The same 119 tests passed locally with AddressSanitizer and
 UndefinedBehaviorSanitizer. Stub/runtime comparison, strict Python 3.9 typing,
-and a clean local wheel/source build also pass. Draft PR
-[#32](https://github.com/bielelias/bielsort/pull/32) passes source-build CI on
+and a clean local wheel/source build also passed. PR
+[#32](https://github.com/bielelias/bielsort/pull/32) passed source-build CI on
 Linux with CPython 3.9–3.14, Windows with CPython 3.11/3.14, and macOS with
 CPython 3.11/3.14, together with hosted sanitizer, public-stub, and strict
 documentation checks. The non-publishing
 [build-only wheel run](https://github.com/bielelias/bielsort/actions/runs/31038877694)
-also passes on Linux, Windows, macOS Intel, and macOS ARM, including wheel
+also passed on Linux, Windows, macOS Intel, and macOS ARM, including wheel
 tests, content validation, artifact upload, and source-distribution creation.
-The prototype has therefore passed its private research gates; public API
+The PR was merged into `main` as
+[commit `ac3b771`](https://github.com/bielelias/bielsort/commit/ac3b7710366fb8835ed2ae6a71096eddf556b7c6).
+
+The follow-up private branch adds native permutation application without a
+public export. Its 122 optimized and sanitized local tests, warning-clean
+build, runtime/stub comparison, and strict Python 3.9 typing all pass. Native
+application is `2.14x–4.86x` faster than the precomputed Python-index baseline
+at one million elements. Building one order and applying it to three parallel
+lists reaches `4.93x–6.41x` in the three disordered one-million-element cases
+and reduces their measured incremental peak RSS by 51%–56%. Nearly sorted
+complete flows remain within the fixed no-regression gate, although their
+permutation construction alone is still slower. See the
+[native application research record](https://github.com/bielelias/bielsort/blob/main/benchmarks/results/2026-08-05-compact-argsort-native-apply.md).
+The local wheel and source distribution pass metadata validation, and a clean
+environment installs the wheel and exercises the native application outside
+the source tree.
+PR [#33](https://github.com/bielelias/bielsort/pull/33) passes source-build CI
+on Linux with CPython 3.9–3.14, Windows with CPython 3.11/3.14, and macOS with
+CPython 3.11/3.14, plus hosted sanitizers, public stubs, and strict
+documentation. Its non-publishing
+[build-only wheel run](https://github.com/bielelias/bielsort/actions/runs/31041438904)
+also passes on Linux, Windows, macOS Intel, and macOS Apple Silicon, including
+wheel tests, content validation, artifact upload, and source-distribution
+creation. The prototype has passed its private research gates; public API
 design and promotion remain separate decisions.
 
 ## Resume checklist

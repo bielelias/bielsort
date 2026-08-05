@@ -1,0 +1,1547 @@
+{
+  "application_decision_gate": {
+    "native_application_cases": [
+      {
+        "case": "dense",
+        "size": 1000000,
+        "speedup": 4.151976021147269
+      },
+      {
+        "case": "int32",
+        "size": 1000000,
+        "speedup": 4.425117968312591
+      },
+      {
+        "case": "int64",
+        "size": 1000000,
+        "speedup": 4.860174478638114
+      },
+      {
+        "case": "nearly-sorted",
+        "size": 1000000,
+        "speedup": 2.446909361177863
+      },
+      {
+        "case": "ascending",
+        "size": 1000000,
+        "speedup": 2.1391366530053815
+      }
+    ],
+    "native_application_passed": true,
+    "nearly_sorted_bound_passed": true,
+    "nearly_sorted_regressions": [],
+    "note": "This gate evaluates the private native apply experiment, not a public API or release decision.",
+    "passed": true,
+    "three_sequence_reuse_cases": [
+      {
+        "case": "dense",
+        "size": 100000,
+        "speedup": 6.137604920468299
+      },
+      {
+        "case": "int32",
+        "size": 100000,
+        "speedup": 5.174140918415566
+      },
+      {
+        "case": "int64",
+        "size": 100000,
+        "speedup": 3.865568255761481
+      },
+      {
+        "case": "dense",
+        "size": 1000000,
+        "speedup": 6.408197100981588
+      },
+      {
+        "case": "int32",
+        "size": 1000000,
+        "speedup": 6.354405156642198
+      },
+      {
+        "case": "int64",
+        "size": 1000000,
+        "speedup": 4.926756070246953
+      }
+    ],
+    "three_sequence_reuse_passed": true
+  },
+  "application_time": [
+    {
+      "biel_compact_iteration_median_s": 0.004633662998458021,
+      "biel_native_apply_median_s": 0.000700368000252638,
+      "case": "dense",
+      "native_speedup_over_compact_iteration": 6.6160404198743485,
+      "native_speedup_over_python_list": 4.85144238113787,
+      "python_list_median_s": 0.0033977949988184264,
+      "samples_s": {
+        "biel-compact-iteration": [
+          0.006668170999546419,
+          0.004488699998546508,
+          0.0038665820011374308,
+          0.004633662998458021,
+          0.0038365270011126995,
+          0.005910591000429122,
+          0.006645248999120668
+        ],
+        "biel-native-apply": [
+          0.000700368000252638,
+          0.0007433779992425116,
+          0.0006608210005651927,
+          0.0007133639992389362,
+          0.0006626899994444102,
+          0.000697588999173604,
+          0.0011753670005418826
+        ],
+        "python-list-indices": [
+          0.0033977949988184264,
+          0.0039509589987574145,
+          0.0044254450003791135,
+          0.0032625830008328194,
+          0.003200187000402366,
+          0.0030748640001547756,
+          0.005187749000469921
+        ]
+      },
+      "size": 100000
+    },
+    {
+      "biel_compact_iteration_median_s": 0.0038943340005062055,
+      "biel_native_apply_median_s": 0.0007303799993678695,
+      "case": "int32",
+      "native_speedup_over_compact_iteration": 5.331928590427832,
+      "native_speedup_over_python_list": 4.412055372579763,
+      "python_list_median_s": 0.0032224770002358127,
+      "samples_s": {
+        "biel-compact-iteration": [
+          0.0039120450001064455,
+          0.0038943340005062055,
+          0.0037495790002139984,
+          0.004355424000095809,
+          0.003854818998661358,
+          0.005735533999541076,
+          0.0035453279997454956
+        ],
+        "biel-native-apply": [
+          0.0007751630000711884,
+          0.0008959269998740638,
+          0.000682772000800469,
+          0.0006999230008659652,
+          0.0007303799993678695,
+          0.0006632399999944028,
+          0.0008281209993583616
+        ],
+        "python-list-indices": [
+          0.0035879999995813705,
+          0.003132065001409501,
+          0.004031743999803439,
+          0.0032224770002358127,
+          0.0031334410014096648,
+          0.003108154000074137,
+          0.00337126400154375
+        ]
+      },
+      "size": 100000
+    },
+    {
+      "biel_compact_iteration_median_s": 0.004869847000009031,
+      "biel_native_apply_median_s": 0.000947110998822609,
+      "case": "int64",
+      "native_speedup_over_compact_iteration": 5.1417912008866224,
+      "native_speedup_over_python_list": 5.487806611149012,
+      "python_list_median_s": 0.005197562000830658,
+      "samples_s": {
+        "biel-compact-iteration": [
+          0.004438803998709773,
+          0.004869847000009031,
+          0.00828568399992946,
+          0.008493181001540506,
+          0.006441649000407779,
+          0.004233854999256437,
+          0.004195303999949829
+        ],
+        "biel-native-apply": [
+          0.0007513180007663323,
+          0.000929584000914474,
+          0.001278241999898455,
+          0.0010743319999164669,
+          0.0011349090000294382,
+          0.000947110998822609,
+          0.0009112579991779057
+        ],
+        "python-list-indices": [
+          0.00484599000083108,
+          0.006836495000243303,
+          0.005114952000440098,
+          0.006196041000293917,
+          0.005197562000830658,
+          0.003663806999611552,
+          0.005582272000538069
+        ]
+      },
+      "size": 100000
+    },
+    {
+      "biel_compact_iteration_median_s": 0.0014562429987563519,
+      "biel_native_apply_median_s": 0.0002515180003683781,
+      "case": "nearly-sorted",
+      "native_speedup_over_compact_iteration": 5.7898162223916785,
+      "native_speedup_over_python_list": 4.383487454351606,
+      "python_list_median_s": 0.001102525999158388,
+      "samples_s": {
+        "biel-compact-iteration": [
+          0.0014250929998524953,
+          0.0014756180007680086,
+          0.0014562429987563519,
+          0.0014621919999626698,
+          0.0014821639997535385,
+          0.001418146001014975,
+          0.0014356770006997976
+        ],
+        "biel-native-apply": [
+          0.0003635579996625893,
+          0.0002515180003683781,
+          0.0002480669991200557,
+          0.00027732499984267633,
+          0.0002455529993312666,
+          0.00047083499885047786,
+          0.00023849300123401918
+        ],
+        "python-list-indices": [
+          0.001118368998504593,
+          0.001418791000105557,
+          0.0010917439994955203,
+          0.001102525999158388,
+          0.0010970969997288194,
+          0.001093736000257195,
+          0.001381575000777957
+        ]
+      },
+      "size": 100000
+    },
+    {
+      "biel_compact_iteration_median_s": 0.001358278999759932,
+      "biel_native_apply_median_s": 0.00027217299975745846,
+      "case": "ascending",
+      "native_speedup_over_compact_iteration": 4.990498693736466,
+      "native_speedup_over_python_list": 3.6647132556243944,
+      "python_list_median_s": 0.000997436000034213,
+      "samples_s": {
+        "biel-compact-iteration": [
+          0.0013570909995905822,
+          0.0013512360001186607,
+          0.001358278999759932,
+          0.001407525000104215,
+          0.0014061909987503896,
+          0.0013561929990828503,
+          0.0013889470010326477
+        ],
+        "biel-native-apply": [
+          0.0003244780000386527,
+          0.00023442599922418594,
+          0.00027217299975745846,
+          0.0002448390005156398,
+          0.00023631399926671293,
+          0.0002820409990818007,
+          0.00029565600016212557
+        ],
+        "python-list-indices": [
+          0.0009867159988061758,
+          0.001225095000336296,
+          0.001014522000332363,
+          0.0009821149997151224,
+          0.0009854319996520644,
+          0.000997436000034213,
+          0.001097301999834599
+        ]
+      },
+      "size": 100000
+    },
+    {
+      "biel_compact_iteration_median_s": 0.10868991899951652,
+      "biel_native_apply_median_s": 0.02056665899908694,
+      "case": "dense",
+      "native_speedup_over_compact_iteration": 5.2847630237046195,
+      "native_speedup_over_python_list": 4.151976021147269,
+      "python_list_median_s": 0.08539227499932167,
+      "samples_s": {
+        "biel-compact-iteration": [
+          0.10657914299918048,
+          0.10981951899884734,
+          0.10608050299924798,
+          0.11594590000095195,
+          0.10072953199960466,
+          0.11419506699894555,
+          0.10868991899951652
+        ],
+        "biel-native-apply": [
+          0.01834948700161476,
+          0.020594936000634334,
+          0.018445022999003413,
+          0.02056665899908694,
+          0.0216051890001836,
+          0.018572207000033814,
+          0.021136263001608313
+        ],
+        "python-list-indices": [
+          0.093455100999563,
+          0.08519014000012248,
+          0.09270194900091155,
+          0.084670833999553,
+          0.08745904200077348,
+          0.08539227499932167,
+          0.08468303399968136
+        ]
+      },
+      "size": 1000000
+    },
+    {
+      "biel_compact_iteration_median_s": 0.11211097299928952,
+      "biel_native_apply_median_s": 0.019855156999255996,
+      "case": "int32",
+      "native_speedup_over_compact_iteration": 5.646441023029457,
+      "native_speedup_over_python_list": 4.425117968312591,
+      "python_list_median_s": 0.08786141200107522,
+      "samples_s": {
+        "biel-compact-iteration": [
+          0.11779658299928997,
+          0.11244966100093734,
+          0.1161989159991208,
+          0.11040555500039773,
+          0.10219025500009593,
+          0.1112813340005232,
+          0.11211097299928952
+        ],
+        "biel-native-apply": [
+          0.019704770000316785,
+          0.02279587999873911,
+          0.03089293099947099,
+          0.019855156999255996,
+          0.023219640999741387,
+          0.018203510000603274,
+          0.018550651999248657
+        ],
+        "python-list-indices": [
+          0.09005577100106166,
+          0.09281923799971992,
+          0.10137006299919449,
+          0.08445079599914607,
+          0.08665913900040323,
+          0.08478134500001033,
+          0.08786141200107522
+        ]
+      },
+      "size": 1000000
+    },
+    {
+      "biel_compact_iteration_median_s": 0.10446126299939351,
+      "biel_native_apply_median_s": 0.018755781999061583,
+      "case": "int64",
+      "native_speedup_over_compact_iteration": 5.569549859591036,
+      "native_speedup_over_python_list": 4.860174478638114,
+      "python_list_median_s": 0.09115637299873924,
+      "samples_s": {
+        "biel-compact-iteration": [
+          0.10343302100045548,
+          0.11886668999977701,
+          0.10255876100018213,
+          0.10227687400038121,
+          0.12146235199907096,
+          0.10446126299939351,
+          0.10999105900009454
+        ],
+        "biel-native-apply": [
+          0.021933255000476493,
+          0.018699801999900956,
+          0.020646865999879083,
+          0.018408923000606592,
+          0.018755781999061583,
+          0.019305441999676987,
+          0.01853657799983921
+        ],
+        "python-list-indices": [
+          0.09680400000070222,
+          0.08597120900049049,
+          0.09115637299873924,
+          0.09180245800052944,
+          0.08789673399951425,
+          0.1084474079998472,
+          0.0877108410004439
+        ]
+      },
+      "size": 1000000
+    },
+    {
+      "biel_compact_iteration_median_s": 0.014885198999763816,
+      "biel_native_apply_median_s": 0.004840100000365055,
+      "case": "nearly-sorted",
+      "native_speedup_over_compact_iteration": 3.0753907974300385,
+      "native_speedup_over_python_list": 2.446909361177863,
+      "python_list_median_s": 0.011843285999930231,
+      "samples_s": {
+        "biel-compact-iteration": [
+          0.027943031000177143,
+          0.014301260000138427,
+          0.014581749999706517,
+          0.014885198999763816,
+          0.01521651999973983,
+          0.014998380000179168,
+          0.014864814000247861
+        ],
+        "biel-native-apply": [
+          0.004073837999385432,
+          0.004991697998775635,
+          0.003984465998655651,
+          0.004840100000365055,
+          0.004446360999281751,
+          0.005066248000730411,
+          0.00495061500078009
+        ],
+        "python-list-indices": [
+          0.012457057999199606,
+          0.010940793999907328,
+          0.011755612000342808,
+          0.011579908999920008,
+          0.012102225999115035,
+          0.012363867999738432,
+          0.011843285999930231
+        ]
+      },
+      "size": 1000000
+    },
+    {
+      "biel_compact_iteration_median_s": 0.014216772999134264,
+      "biel_native_apply_median_s": 0.005129316999955336,
+      "case": "ascending",
+      "native_speedup_over_compact_iteration": 2.7716697952686604,
+      "native_speedup_over_python_list": 2.1391366530053815,
+      "python_list_median_s": 0.010972309999488061,
+      "samples_s": {
+        "biel-compact-iteration": [
+          0.014387833000000683,
+          0.014251784999942174,
+          0.013909105000493582,
+          0.014068042999497266,
+          0.014216772999134264,
+          0.01410738500089792,
+          0.014258748000429478
+        ],
+        "biel-native-apply": [
+          0.00553638199926354,
+          0.004073023999808356,
+          0.005338876000678283,
+          0.003884707999532111,
+          0.005129316999955336,
+          0.006615533999138279,
+          0.00394699699972989
+        ],
+        "python-list-indices": [
+          0.012301962999117677,
+          0.010118346001036116,
+          0.01039144199967268,
+          0.010042807998615899,
+          0.011401929999919957,
+          0.011017152000931674,
+          0.010972309999488061
+        ]
+      },
+      "size": 1000000
+    }
+  ],
+  "benchmark": "compact-stable-argsort-prototype",
+  "configuration": {
+    "cases": [
+      "dense",
+      "int32",
+      "int64",
+      "nearly-sorted",
+      "ascending"
+    ],
+    "memory_repetitions": 0,
+    "numpy_included": true,
+    "repetitions": 7,
+    "sizes": [
+      100000,
+      1000000
+    ]
+  },
+  "construction_time": [
+    {
+      "biel_median_s": 0.002460256000631489,
+      "biel_result_storage": {
+        "itemsize": 4,
+        "kind": "compact-native-buffer",
+        "payload_bytes": 400000
+      },
+      "biel_speedup": 6.467943984120426,
+      "case": "dense",
+      "numpy_array_median_s": 0.00620708800124703,
+      "numpy_python_e2e_median_s": 0.008005743999092374,
+      "python_median_s": 0.015912797998680617,
+      "result_storage": {
+        "biel-compact-argsort": {
+          "itemsize": 4,
+          "kind": "compact-native-buffer",
+          "payload_bytes": 400000
+        },
+        "numpy-array": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 800000
+        },
+        "numpy-python-e2e": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 800000
+        },
+        "python-sorted-indices": {
+          "kind": "python-list",
+          "note": "Excludes memory owned by Python integer objects.",
+          "shallow_bytes": 800056
+        }
+      },
+      "samples_s": {
+        "biel-compact-argsort": [
+          0.003381869000804727,
+          0.002396978999968269,
+          0.0024917199989431538,
+          0.002460256000631489,
+          0.0024271410002256744,
+          0.002400336999926367,
+          0.004609646000972134
+        ],
+        "numpy-array": [
+          0.007269060999533394,
+          0.00620708800124703,
+          0.006098564001149498,
+          0.00608403599835583,
+          0.006245954000405618,
+          0.006167625000671251,
+          0.0063054959991859505
+        ],
+        "numpy-python-e2e": [
+          0.007909138999821153,
+          0.00877753800159553,
+          0.008005743999092374,
+          0.007878649001213489,
+          0.00818701299976965,
+          0.007866860998547054,
+          0.008815052999125328
+        ],
+        "python-sorted-indices": [
+          0.01695189199926972,
+          0.015912797998680617,
+          0.01512254399858648,
+          0.01514870600112772,
+          0.015290643999833264,
+          0.019355463000465534,
+          0.01987937400008377
+        ]
+      },
+      "size": 100000,
+      "strategy": "radix nativo est\u00e1vel de \u00edndices: 2 passagens"
+    },
+    {
+      "biel_median_s": 0.003996493000158807,
+      "biel_result_storage": {
+        "itemsize": 4,
+        "kind": "compact-native-buffer",
+        "payload_bytes": 400000
+      },
+      "biel_speedup": 4.535061865241963,
+      "case": "int32",
+      "numpy_array_median_s": 0.006515921000755043,
+      "numpy_python_e2e_median_s": 0.008308726000905153,
+      "python_median_s": 0.01812434299972665,
+      "result_storage": {
+        "biel-compact-argsort": {
+          "itemsize": 4,
+          "kind": "compact-native-buffer",
+          "payload_bytes": 400000
+        },
+        "numpy-array": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 800000
+        },
+        "numpy-python-e2e": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 800000
+        },
+        "python-sorted-indices": {
+          "kind": "python-list",
+          "note": "Excludes memory owned by Python integer objects.",
+          "shallow_bytes": 800056
+        }
+      },
+      "samples_s": {
+        "biel-compact-argsort": [
+          0.003995814000518294,
+          0.0035941609985457035,
+          0.003971313000874943,
+          0.004158437999649323,
+          0.003996493000158807,
+          0.00437101199895551,
+          0.004191934000118636
+        ],
+        "numpy-array": [
+          0.0065669670002534986,
+          0.006151309999040677,
+          0.006070776998967631,
+          0.006515921000755043,
+          0.0066632660000323085,
+          0.006951503000891535,
+          0.006121799000538886
+        ],
+        "numpy-python-e2e": [
+          0.008308726000905153,
+          0.00829902900113666,
+          0.008229607999965083,
+          0.008207679000406642,
+          0.009130013999310904,
+          0.009425473999726819,
+          0.008315213999594562
+        ],
+        "python-sorted-indices": [
+          0.018321666999327135,
+          0.017743024000083096,
+          0.017563851000886643,
+          0.01768967300085933,
+          0.019200381000700872,
+          0.01816457899985835,
+          0.01812434299972665
+        ]
+      },
+      "size": 100000,
+      "strategy": "radix nativo est\u00e1vel de \u00edndices: 3 passagens"
+    },
+    {
+      "biel_median_s": 0.005659198001012555,
+      "biel_result_storage": {
+        "itemsize": 4,
+        "kind": "compact-native-buffer",
+        "payload_bytes": 400000
+      },
+      "biel_speedup": 3.3350450006524426,
+      "case": "int64",
+      "numpy_array_median_s": 0.006096223998611094,
+      "numpy_python_e2e_median_s": 0.008408638001128566,
+      "python_median_s": 0.01887368000097922,
+      "result_storage": {
+        "biel-compact-argsort": {
+          "itemsize": 4,
+          "kind": "compact-native-buffer",
+          "payload_bytes": 400000
+        },
+        "numpy-array": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 800000
+        },
+        "numpy-python-e2e": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 800000
+        },
+        "python-sorted-indices": {
+          "kind": "python-list",
+          "note": "Excludes memory owned by Python integer objects.",
+          "shallow_bytes": 800056
+        }
+      },
+      "samples_s": {
+        "biel-compact-argsort": [
+          0.005659198001012555,
+          0.005332351000106428,
+          0.006441042000005837,
+          0.006095300001106807,
+          0.006153536998681375,
+          0.005333006000000751,
+          0.005655978000504547
+        ],
+        "numpy-array": [
+          0.006297529000221402,
+          0.006087817000661744,
+          0.0060718320000887616,
+          0.006096223998611094,
+          0.00615785800073354,
+          0.006222078000064357,
+          0.006015531000230112
+        ],
+        "numpy-python-e2e": [
+          0.008380971999940812,
+          0.008417331999226008,
+          0.008412478000536794,
+          0.008812870999463485,
+          0.008234977998654358,
+          0.008408638001128566,
+          0.008204202998967958
+        ],
+        "python-sorted-indices": [
+          0.01879918600025121,
+          0.01887368000097922,
+          0.020887312999548158,
+          0.02214872600052331,
+          0.018767289999232162,
+          0.018714010000621784,
+          0.01893594899956952
+        ]
+      },
+      "size": 100000,
+      "strategy": "radix nativo est\u00e1vel de \u00edndices: 6 passagens"
+    },
+    {
+      "biel_median_s": 0.005801773999337456,
+      "biel_result_storage": {
+        "itemsize": 4,
+        "kind": "compact-native-buffer",
+        "payload_bytes": 400000
+      },
+      "biel_speedup": 0.5470235481178766,
+      "case": "nearly-sorted",
+      "numpy_array_median_s": 0.0008113570002024062,
+      "numpy_python_e2e_median_s": 0.0027468490006867796,
+      "python_median_s": 0.003173706998495618,
+      "result_storage": {
+        "biel-compact-argsort": {
+          "itemsize": 4,
+          "kind": "compact-native-buffer",
+          "payload_bytes": 400000
+        },
+        "numpy-array": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 800000
+        },
+        "numpy-python-e2e": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 800000
+        },
+        "python-sorted-indices": {
+          "kind": "python-list",
+          "note": "Excludes memory owned by Python integer objects.",
+          "shallow_bytes": 800056
+        }
+      },
+      "samples_s": {
+        "biel-compact-argsort": [
+          0.00450115899911907,
+          0.004423042000780697,
+          0.005879342001207988,
+          0.011054946000513155,
+          0.005801773999337456,
+          0.0067038990000583,
+          0.005558362001465866
+        ],
+        "numpy-array": [
+          0.0007341790005739313,
+          0.0007782100001350045,
+          0.0007405790001939749,
+          0.0010311189998901682,
+          0.0009316800005763071,
+          0.000843449999592849,
+          0.0008113570002024062
+        ],
+        "numpy-python-e2e": [
+          0.0027468490006867796,
+          0.002113874001224758,
+          0.003186363999702735,
+          0.00442793399997754,
+          0.0023529109985247487,
+          0.0029204269994806964,
+          0.002322569998796098
+        ],
+        "python-sorted-indices": [
+          0.002863212001102511,
+          0.004430924000189407,
+          0.0027627809995465213,
+          0.007255204998728004,
+          0.003173706998495618,
+          0.003065773000344052,
+          0.003408984999623499
+        ]
+      },
+      "size": 100000,
+      "strategy": "timsort: entrada quase monot\u00f4nica"
+    },
+    {
+      "biel_median_s": 0.0009373029988637427,
+      "biel_result_storage": {
+        "itemsize": 4,
+        "kind": "compact-native-buffer",
+        "payload_bytes": 400000
+      },
+      "biel_speedup": 2.082487736420635,
+      "case": "ascending",
+      "numpy_array_median_s": 0.00026566300039121415,
+      "numpy_python_e2e_median_s": 0.0016710870004317258,
+      "python_median_s": 0.0019519220004440285,
+      "result_storage": {
+        "biel-compact-argsort": {
+          "itemsize": 4,
+          "kind": "compact-native-buffer",
+          "payload_bytes": 400000
+        },
+        "numpy-array": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 800000
+        },
+        "numpy-python-e2e": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 800000
+        },
+        "python-sorted-indices": {
+          "kind": "python-list",
+          "note": "Excludes memory owned by Python integer objects.",
+          "shallow_bytes": 800056
+        }
+      },
+      "samples_s": {
+        "biel-compact-argsort": [
+          0.0011165689993504202,
+          0.0010087760001624702,
+          0.0009373029988637427,
+          0.0009328770011052256,
+          0.0008616270006314153,
+          0.0008994279996841215,
+          0.0013585060005425476
+        ],
+        "numpy-array": [
+          0.00027832199884869624,
+          0.00025952999931178056,
+          0.0002998260006279452,
+          0.00026566300039121415,
+          0.00028079600087949075,
+          0.0002636720000737114,
+          0.0002568420004536165
+        ],
+        "numpy-python-e2e": [
+          0.0021519239999179263,
+          0.002439779000269482,
+          0.0016451789997518063,
+          0.0016710870004317258,
+          0.001655309000852867,
+          0.001656682999964687,
+          0.0025343479992443463
+        ],
+        "python-sorted-indices": [
+          0.0019211879989597946,
+          0.0019519220004440285,
+          0.002075391001199023,
+          0.002766002000498702,
+          0.001837093001086032,
+          0.0024980819998745574,
+          0.0019126179995510029
+        ]
+      },
+      "size": 100000,
+      "strategy": "j\u00e1 ordenado"
+    },
+    {
+      "biel_median_s": 0.029888446000768454,
+      "biel_result_storage": {
+        "itemsize": 4,
+        "kind": "compact-native-buffer",
+        "payload_bytes": 4000000
+      },
+      "biel_speedup": 7.80423461944916,
+      "case": "dense",
+      "numpy_array_median_s": 0.07843145100014226,
+      "numpy_python_e2e_median_s": 0.09894377999989956,
+      "python_median_s": 0.23325644500073395,
+      "result_storage": {
+        "biel-compact-argsort": {
+          "itemsize": 4,
+          "kind": "compact-native-buffer",
+          "payload_bytes": 4000000
+        },
+        "numpy-array": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 8000000
+        },
+        "numpy-python-e2e": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 8000000
+        },
+        "python-sorted-indices": {
+          "kind": "python-list",
+          "note": "Excludes memory owned by Python integer objects.",
+          "shallow_bytes": 8000056
+        }
+      },
+      "samples_s": {
+        "biel-compact-argsort": [
+          0.031564064000122016,
+          0.030761382999116904,
+          0.029514915999243385,
+          0.029888446000768454,
+          0.031899059998977464,
+          0.028387119000399252,
+          0.029101918000378646
+        ],
+        "numpy-array": [
+          0.07843145100014226,
+          0.0771025930007454,
+          0.08532349000051909,
+          0.07821154599878355,
+          0.09020821100057219,
+          0.08604402099990693,
+          0.07767477500055975
+        ],
+        "numpy-python-e2e": [
+          0.10010859800058824,
+          0.09894377999989956,
+          0.09462641200116195,
+          0.0995105149995652,
+          0.09525411399954464,
+          0.09453307800140465,
+          0.10952702699978545
+        ],
+        "python-sorted-indices": [
+          0.22857423700043,
+          0.22665739500007476,
+          0.24318914399918867,
+          0.23325644500073395,
+          0.2409769639998558,
+          0.23906659400017816,
+          0.23104392000095686
+        ]
+      },
+      "size": 1000000,
+      "strategy": "radix nativo est\u00e1vel de \u00edndices: 2 passagens"
+    },
+    {
+      "biel_median_s": 0.03890234100072121,
+      "biel_result_storage": {
+        "itemsize": 4,
+        "kind": "compact-native-buffer",
+        "payload_bytes": 4000000
+      },
+      "biel_speedup": 7.080244965061885,
+      "case": "int32",
+      "numpy_array_median_s": 0.07897272599984717,
+      "numpy_python_e2e_median_s": 0.09755188499912038,
+      "python_median_s": 0.2754381039994769,
+      "result_storage": {
+        "biel-compact-argsort": {
+          "itemsize": 4,
+          "kind": "compact-native-buffer",
+          "payload_bytes": 4000000
+        },
+        "numpy-array": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 8000000
+        },
+        "numpy-python-e2e": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 8000000
+        },
+        "python-sorted-indices": {
+          "kind": "python-list",
+          "note": "Excludes memory owned by Python integer objects.",
+          "shallow_bytes": 8000056
+        }
+      },
+      "samples_s": {
+        "biel-compact-argsort": [
+          0.041532636001647916,
+          0.04405219699947338,
+          0.04032298499987519,
+          0.03890234100072121,
+          0.03875366799911717,
+          0.03794065699912608,
+          0.03865939700153831
+        ],
+        "numpy-array": [
+          0.0783202499987965,
+          0.07897272599984717,
+          0.097119494999788,
+          0.07770315400011896,
+          0.08831129100144608,
+          0.08427872200081765,
+          0.07827732399891829
+        ],
+        "numpy-python-e2e": [
+          0.09660795200034045,
+          0.09879082899897185,
+          0.09494647900100972,
+          0.10655825499998173,
+          0.09755188499912038,
+          0.09639070599951083,
+          0.10227745399970445
+        ],
+        "python-sorted-indices": [
+          0.2754381039994769,
+          0.27379254100014805,
+          0.2807288730000437,
+          0.26534465300028387,
+          0.2794772359993658,
+          0.27478709400020307,
+          0.2761731249993318
+        ]
+      },
+      "size": 1000000,
+      "strategy": "radix nativo est\u00e1vel de \u00edndices: 3 passagens"
+    },
+    {
+      "biel_median_s": 0.060552570001163986,
+      "biel_result_storage": {
+        "itemsize": 4,
+        "kind": "compact-native-buffer",
+        "payload_bytes": 4000000
+      },
+      "biel_speedup": 4.9052890900161845,
+      "case": "int64",
+      "numpy_array_median_s": 0.07790772100088361,
+      "numpy_python_e2e_median_s": 0.10398783500022546,
+      "python_median_s": 0.297027860999151,
+      "result_storage": {
+        "biel-compact-argsort": {
+          "itemsize": 4,
+          "kind": "compact-native-buffer",
+          "payload_bytes": 4000000
+        },
+        "numpy-array": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 8000000
+        },
+        "numpy-python-e2e": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 8000000
+        },
+        "python-sorted-indices": {
+          "kind": "python-list",
+          "note": "Excludes memory owned by Python integer objects.",
+          "shallow_bytes": 8000056
+        }
+      },
+      "samples_s": {
+        "biel-compact-argsort": [
+          0.059282087999235955,
+          0.060552570001163986,
+          0.06154386200068984,
+          0.06505480099986016,
+          0.058014569000079064,
+          0.059160048000194365,
+          0.06833098600145604
+        ],
+        "numpy-array": [
+          0.07823254100003396,
+          0.07740675500099314,
+          0.07749903699914285,
+          0.07790772100088361,
+          0.08349238099981449,
+          0.08538073300042015,
+          0.07717606900041574
+        ],
+        "numpy-python-e2e": [
+          0.1059088090005389,
+          0.10533308400044916,
+          0.10763349499939068,
+          0.09832089799965615,
+          0.09905621300094936,
+          0.09685886199986271,
+          0.10398783500022546
+        ],
+        "python-sorted-indices": [
+          0.2840893299999152,
+          0.30071978399973887,
+          0.282343672000934,
+          0.30607712200071546,
+          0.2923234549998597,
+          0.297027860999151,
+          0.3059529260008276
+        ]
+      },
+      "size": 1000000,
+      "strategy": "radix nativo est\u00e1vel de \u00edndices: 6 passagens"
+    },
+    {
+      "biel_median_s": 0.07045798699982697,
+      "biel_result_storage": {
+        "itemsize": 4,
+        "kind": "compact-native-buffer",
+        "payload_bytes": 4000000
+      },
+      "biel_speedup": 0.6840106573004571,
+      "case": "nearly-sorted",
+      "numpy_array_median_s": 0.012287854000533116,
+      "numpy_python_e2e_median_s": 0.025980591999541502,
+      "python_median_s": 0.04819401399981871,
+      "result_storage": {
+        "biel-compact-argsort": {
+          "itemsize": 4,
+          "kind": "compact-native-buffer",
+          "payload_bytes": 4000000
+        },
+        "numpy-array": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 8000000
+        },
+        "numpy-python-e2e": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 8000000
+        },
+        "python-sorted-indices": {
+          "kind": "python-list",
+          "note": "Excludes memory owned by Python integer objects.",
+          "shallow_bytes": 8000056
+        }
+      },
+      "samples_s": {
+        "biel-compact-argsort": [
+          0.06887278400063224,
+          0.07271618000049784,
+          0.07090887300000759,
+          0.069761284001288,
+          0.06833899799858045,
+          0.07466713699977845,
+          0.07045798699982697
+        ],
+        "numpy-array": [
+          0.012219973999890499,
+          0.013258548999147024,
+          0.012287854000533116,
+          0.013123740000082762,
+          0.0119572479998169,
+          0.012489947999711148,
+          0.012165358999482123
+        ],
+        "numpy-python-e2e": [
+          0.025633009001467144,
+          0.02639532600005623,
+          0.02574582399938663,
+          0.028805134001231636,
+          0.025980591999541502,
+          0.026734644001408014,
+          0.02543360500021663
+        ],
+        "python-sorted-indices": [
+          0.0462086730003648,
+          0.04856381399986276,
+          0.05159010500028671,
+          0.047887060998618836,
+          0.04555931100003363,
+          0.04819401399981871,
+          0.050832839000577223
+        ]
+      },
+      "size": 1000000,
+      "strategy": "timsort: entrada quase monot\u00f4nica"
+    },
+    {
+      "biel_median_s": 0.010968438000418246,
+      "biel_result_storage": {
+        "itemsize": 4,
+        "kind": "compact-native-buffer",
+        "payload_bytes": 4000000
+      },
+      "biel_speedup": 2.623557155552223,
+      "case": "ascending",
+      "numpy_array_median_s": 0.0016062830000009853,
+      "numpy_python_e2e_median_s": 0.016267864000838017,
+      "python_median_s": 0.028776324001228204,
+      "result_storage": {
+        "biel-compact-argsort": {
+          "itemsize": 4,
+          "kind": "compact-native-buffer",
+          "payload_bytes": 4000000
+        },
+        "numpy-array": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 8000000
+        },
+        "numpy-python-e2e": {
+          "itemsize": 8,
+          "kind": "numpy-ndarray",
+          "payload_bytes": 8000000
+        },
+        "python-sorted-indices": {
+          "kind": "python-list",
+          "note": "Excludes memory owned by Python integer objects.",
+          "shallow_bytes": 8000056
+        }
+      },
+      "samples_s": {
+        "biel-compact-argsort": [
+          0.012303802999667823,
+          0.011680001000058837,
+          0.010863645000426914,
+          0.010867364000660018,
+          0.012049332000970026,
+          0.010968438000418246,
+          0.010870797001189203
+        ],
+        "numpy-array": [
+          0.0016062830000009853,
+          0.0014179429999785498,
+          0.0018099660010193475,
+          0.0014044699983060127,
+          0.0020770450009877095,
+          0.0014350900000863476,
+          0.0023269169996638084
+        ],
+        "numpy-python-e2e": [
+          0.016270531001282507,
+          0.015750838998428662,
+          0.016355911999198725,
+          0.016031952000048477,
+          0.016373264999856474,
+          0.01597382900035882,
+          0.016267864000838017
+        ],
+        "python-sorted-indices": [
+          0.02992351300053997,
+          0.02830465999977605,
+          0.03032466900003783,
+          0.028776324001228204,
+          0.028191000999868265,
+          0.028499707999799284,
+          0.030546904999937396
+        ]
+      },
+      "size": 1000000,
+      "strategy": "j\u00e1 ordenado"
+    }
+  ],
+  "decision_gate": {
+    "memory_gate_cases": [],
+    "memory_gate_passed": false,
+    "note": "A pass justifies continued private engineering; it is not a market-adoption or universal-performance claim.",
+    "passed": true,
+    "speed_gate_cases": [
+      {
+        "case": "dense",
+        "size": 100000,
+        "speedup": 6.467943984120426
+      },
+      {
+        "case": "int32",
+        "size": 100000,
+        "speedup": 4.535061865241963
+      },
+      {
+        "case": "int64",
+        "size": 100000,
+        "speedup": 3.3350450006524426
+      },
+      {
+        "case": "dense",
+        "size": 1000000,
+        "speedup": 7.80423461944916
+      },
+      {
+        "case": "int32",
+        "size": 1000000,
+        "speedup": 7.080244965061885
+      },
+      {
+        "case": "int64",
+        "size": 1000000,
+        "speedup": 4.9052890900161845
+      }
+    ],
+    "speed_gate_passed": true
+  },
+  "memory": [],
+  "numpy": "2.4.6",
+  "platform": "Linux-6.7.0-keepos-x86_64-with-glibc2.36",
+  "python": "3.11.2 (main, Apr  8 2026, 01:58:00) [GCC 12.2.0]",
+  "python_compiler": "GCC 12.2.0",
+  "reuse_time": [
+    {
+      "biel_median_s": 0.004376515000330983,
+      "biel_speedup": 6.137604920468299,
+      "case": "dense",
+      "python_median_s": 0.02686132000053476,
+      "samples_s": {
+        "biel-build-and-apply-three": [
+          0.003772507001485792,
+          0.004075828999702935,
+          0.0048492010009795194,
+          0.004597155000737985,
+          0.004376515000330983,
+          0.0041460319989710115,
+          0.00457647900111624
+        ],
+        "python-build-and-apply-three": [
+          0.026551269000265165,
+          0.028337116000329843,
+          0.02787041100054921,
+          0.028701221001028898,
+          0.02686132000053476,
+          0.02542007299962279,
+          0.026491955999517813
+        ]
+      },
+      "sequence_count": 3,
+      "size": 100000
+    },
+    {
+      "biel_median_s": 0.005724898001062684,
+      "biel_speedup": 5.174140918415566,
+      "case": "int32",
+      "python_median_s": 0.02962142900105391,
+      "samples_s": {
+        "biel-build-and-apply-three": [
+          0.006268047000048682,
+          0.005784031000075629,
+          0.006249588999708067,
+          0.005651729999954114,
+          0.0051040770013059955,
+          0.005724898001062684,
+          0.005321643000570475
+        ],
+        "python-build-and-apply-three": [
+          0.02907226099887339,
+          0.03270794499985641,
+          0.033426547999624745,
+          0.02962142900105391,
+          0.029058236999844667,
+          0.028349821999654523,
+          0.030380170999706024
+        ]
+      },
+      "sequence_count": 3,
+      "size": 100000
+    },
+    {
+      "biel_median_s": 0.008495418998791138,
+      "biel_speedup": 3.865568255761481,
+      "case": "int64",
+      "python_median_s": 0.032839622001120006,
+      "samples_s": {
+        "biel-build-and-apply-three": [
+          0.008495418998791138,
+          0.008805659999779891,
+          0.007419501998811029,
+          0.00737112200113188,
+          0.009995571999752428,
+          0.009843617999649723,
+          0.008371767000426189
+        ],
+        "python-build-and-apply-three": [
+          0.032839622001120006,
+          0.03339609999966342,
+          0.031610150001142756,
+          0.03097646099922713,
+          0.03622018700116314,
+          0.03444728799877339,
+          0.030156654000165872
+        ]
+      },
+      "sequence_count": 3,
+      "size": 100000
+    },
+    {
+      "biel_median_s": 0.005141560000993195,
+      "biel_speedup": 1.2052342086955266,
+      "case": "nearly-sorted",
+      "python_median_s": 0.006196783999257605,
+      "samples_s": {
+        "biel-build-and-apply-three": [
+          0.005370308999772533,
+          0.00476112800060946,
+          0.005819423999128048,
+          0.005141560000993195,
+          0.004777323998496286,
+          0.005856957001014962,
+          0.004369787000541692
+        ],
+        "python-build-and-apply-three": [
+          0.006918962000781903,
+          0.006318931000350858,
+          0.007324824999159318,
+          0.005912524000450503,
+          0.005805507998957182,
+          0.005885118000151124,
+          0.006196783999257605
+        ]
+      },
+      "sequence_count": 3,
+      "size": 100000
+    },
+    {
+      "biel_median_s": 0.0013078379997750744,
+      "biel_speedup": 3.8642194225861437,
+      "case": "ascending",
+      "python_median_s": 0.005053773000327055,
+      "samples_s": {
+        "biel-build-and-apply-three": [
+          0.0012864239997725235,
+          0.0017148850001831306,
+          0.0013470889989548596,
+          0.0012526789996627485,
+          0.0012682570013566874,
+          0.0013078379997750744,
+          0.0013156920012988849
+        ],
+        "python-build-and-apply-three": [
+          0.006312314999377122,
+          0.005131875999722979,
+          0.0050417969996487955,
+          0.005053773000327055,
+          0.006050697000318905,
+          0.004985219000445795,
+          0.004994234999685432
+        ]
+      },
+      "sequence_count": 3,
+      "size": 100000
+    },
+    {
+      "biel_median_s": 0.07717850500011991,
+      "biel_speedup": 6.408197100981588,
+      "case": "dense",
+      "python_median_s": 0.4945750719998614,
+      "samples_s": {
+        "biel-build-and-apply-three": [
+          0.07472721900012402,
+          0.07717850500011991,
+          0.08007796200035955,
+          0.0761985499993898,
+          0.08797485799914284,
+          0.07635777299947222,
+          0.0790208510006778
+        ],
+        "python-build-and-apply-three": [
+          0.4945750719998614,
+          0.491571954000392,
+          0.4756755670005077,
+          0.5036198369998601,
+          0.507527645000664,
+          0.5032010469985835,
+          0.48844322900004045
+        ]
+      },
+      "sequence_count": 3,
+      "size": 1000000
+    },
+    {
+      "biel_median_s": 0.08753305199934402,
+      "biel_speedup": 6.354405156642198,
+      "case": "int32",
+      "python_median_s": 0.5562204770012613,
+      "samples_s": {
+        "biel-build-and-apply-three": [
+          0.08753305199934402,
+          0.08685889800108271,
+          0.0874577140002657,
+          0.09095066400004725,
+          0.08600092199958453,
+          0.11666190500000084,
+          0.09139730300012161
+        ],
+        "python-build-and-apply-three": [
+          0.5233304659996065,
+          0.5601889339995978,
+          0.552026299001227,
+          0.5230321409999306,
+          0.5786809119999816,
+          0.5562204770012613,
+          0.5663378930003091
+        ]
+      },
+      "sequence_count": 3,
+      "size": 1000000
+    },
+    {
+      "biel_median_s": 0.11189121099960175,
+      "biel_speedup": 4.926756070246953,
+      "case": "int64",
+      "python_median_s": 0.5512607029995706,
+      "samples_s": {
+        "biel-build-and-apply-three": [
+          0.10891695099962817,
+          0.1163471310010209,
+          0.10881965800035687,
+          0.12223868299952301,
+          0.11689592200127663,
+          0.11150756400093087,
+          0.11189121099960175
+        ],
+        "python-build-and-apply-three": [
+          0.5512607029995706,
+          0.550201592999656,
+          0.557647753999845,
+          0.5520524120001937,
+          0.5416447970001173,
+          0.5638313389990799,
+          0.5456813370001328
+        ]
+      },
+      "sequence_count": 3,
+      "size": 1000000
+    },
+    {
+      "biel_median_s": 0.08182027800103242,
+      "biel_speedup": 1.03756694640394,
+      "case": "nearly-sorted",
+      "python_median_s": 0.08489401599945268,
+      "samples_s": {
+        "biel-build-and-apply-three": [
+          0.07771589100048004,
+          0.08182027800103242,
+          0.07973961899915594,
+          0.09034855900063121,
+          0.08377733499946771,
+          0.08139526000013575,
+          0.08340038000096683
+        ],
+        "python-build-and-apply-three": [
+          0.09049117100039439,
+          0.09119162999922992,
+          0.08489401599945268,
+          0.08686132399998314,
+          0.08171023400063859,
+          0.08336680499996874,
+          0.08301494899933459
+        ]
+      },
+      "sequence_count": 3,
+      "size": 1000000
+    },
+    {
+      "biel_median_s": 0.026388443999167066,
+      "biel_speedup": 2.6163777220883504,
+      "case": "ascending",
+      "python_median_s": 0.06904213699999673,
+      "samples_s": {
+        "biel-build-and-apply-three": [
+          0.02532346900079574,
+          0.025502620001134346,
+          0.02876910699887958,
+          0.030408501999772852,
+          0.026388443999167066,
+          0.027505489999384736,
+          0.022060248000343563
+        ],
+        "python-build-and-apply-three": [
+          0.06904213699999673,
+          0.06605068200042297,
+          0.07265259599989804,
+          0.0719161350007198,
+          0.06811771899992891,
+          0.07006236899906071,
+          0.06693551399985154
+        ]
+      },
+      "sequence_count": 3,
+      "size": 1000000
+    }
+  ],
+  "schema_version": 1
+}
