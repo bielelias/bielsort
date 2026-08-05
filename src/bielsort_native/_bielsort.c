@@ -2148,6 +2148,14 @@ PyDoc_STRVAR(
     "Retorna os índices compactos do top-k e a estratégia privada."
 );
 
+PyDoc_STRVAR(
+    topk_by_int64_key_prototype_doc,
+    "_topk_by_int64_key_prototype(iterable, k, key, "
+    "largest=False, /)\n"
+    "--\n\n"
+    "Protótipo privado: retorna os registros do top-k estável por key int64."
+);
+
 static PyMethodDef metodos[] = {
     {"sort", py_sort, METH_O, sort_doc},
     {"sort_with_strategy", py_sort_with_strategy, METH_O, strategy_doc},
@@ -2254,6 +2262,12 @@ static PyMethodDef metodos[] = {
         bielsort_py_topk_int64_prototype_with_strategy,
         METH_VARARGS,
         topk_int64_prototype_strategy_doc
+    },
+    {
+        "_topk_by_int64_key_prototype",
+        bielsort_py_topk_by_int64_key_prototype,
+        METH_VARARGS,
+        topk_by_int64_key_prototype_doc
     },
     {NULL, NULL, 0, NULL}
 };

@@ -1108,6 +1108,130 @@ topk_int64_impl(
     return finalize_argsort(result, strategy, diagnostic);
 }
 
+static PyObject *
+topk_by_int64_key_impl(
+    PyObject *iterable,
+    Py_ssize_t k,
+    PyObject *key_function,
+    int largest
+)
+{
+    if (k < 0) {
+        PyErr_SetString(PyExc_ValueError, "k must be non-negative");
+        return NULL;
+    }
+    if (k == 0) {
+        return PyList_New(0);
+    }
+    if (!PyCallable_Check(key_function)) {
+        PyErr_SetString(PyExc_TypeError, "key must be callable");
+        return NULL;
+    }
+
+    PyObject *records = PySequence_Fast(
+        iterable,
+        "_topk_by_int64_key_prototype requires an iterable"
+    );
+    if (records == NULL) {
+        return NULL;
+    }
+    const Py_ssize_t source_length = PySequence_Fast_GET_SIZE(records);
+    if (k > source_length) {
+        k = source_length;
+    }
+    if (k == 0) {
+        Py_DECREF(records);
+        return PyList_New(0);
+    }
+    if ((size_t)k > SIZE_MAX / sizeof(TopKEntry)) {
+        Py_DECREF(records);
+        return PyErr_NoMemory();
+    }
+    TopKEntry *heap = PyMem_Malloc((size_t)k * sizeof(*heap));
+    if (heap == NULL) {
+        Py_DECREF(records);
+        return PyErr_NoMemory();
+    }
+
+    for (Py_ssize_t index = 0; index < source_length; index++) {
+        PyObject *record = PySequence_Fast_GET_ITEM(records, index);
+        PyObject *key_object = PyObject_CallOneArg(key_function, record);
+        if (key_object == NULL) {
+            PyMem_Free(heap);
+            Py_DECREF(records);
+            return NULL;
+        }
+        if (!PyLong_CheckExact(key_object)) {
+            PyErr_Format(
+                PyExc_TypeError,
+                "key must return an exact int in int64; item %zd returned "
+                "%.200s",
+                index,
+                Py_TYPE(key_object)->tp_name
+            );
+            Py_DECREF(key_object);
+            PyMem_Free(heap);
+            Py_DECREF(records);
+            return NULL;
+        }
+        const long long signed_value = PyLong_AsLongLong(key_object);
+        Py_DECREF(key_object);
+        if (signed_value == -1 && PyErr_Occurred()) {
+            PyMem_Free(heap);
+            Py_DECREF(records);
+            return NULL;
+        }
+        uint64_t key = (
+            (uint64_t)(int64_t)signed_value
+        ) ^ (UINT64_C(1) << 63);
+        if (largest) {
+            key = ~key;
+        }
+        const TopKEntry candidate = {key, (uint64_t)index};
+        if (index < k) {
+            heap[index] = candidate;
+            if (index == k - 1) {
+                for (Py_ssize_t parent = k / 2; parent > 0; parent--) {
+                    topk_sift_down(heap, k, parent - 1);
+                }
+            }
+        } else if (topk_entry_is_better(candidate, heap[0])) {
+            heap[0] = candidate;
+            topk_sift_down(heap, k, 0);
+        }
+    }
+
+    qsort(heap, (size_t)k, sizeof(*heap), topk_compare_best_first);
+    PyObject *result = PyList_New(k);
+    if (result == NULL) {
+        PyMem_Free(heap);
+        Py_DECREF(records);
+        return NULL;
+    }
+    for (Py_ssize_t position = 0; position < k; position++) {
+        const uint64_t index = heap[position].index;
+        if (index >= (uint64_t)source_length) {
+            Py_DECREF(result);
+            PyMem_Free(heap);
+            Py_DECREF(records);
+            PyErr_SetString(
+                PyExc_SystemError,
+                "top-k heap contains an invalid internal index"
+            );
+            return NULL;
+        }
+        PyObject *record = PySequence_Fast_GET_ITEM(
+            records,
+            (Py_ssize_t)index
+        );
+        Py_INCREF(record);
+        PyList_SET_ITEM(result, position, record);
+    }
+    PyMem_Free(heap);
+    Py_DECREF(records);
+    return result;
+}
+
 static int
 parse_argsort_arguments(PyObject *args, PyObject **sequence, int *reverse)
 {
@@ -1192,6 +1316,36 @@ bielsort_py_topk_int64_prototype_with_strategy(
         return NULL;
     }
     return topk_int64_impl(sequence, k, largest, 1);
+}
+
+PyObject *
+bielsort_py_topk_by_int64_key_prototype(
+    PyObject *Py_UNUSED(module),
+    PyObject *args
+)
+{
+    PyObject *iterable;
+    PyObject *key_function;
+    Py_ssize_t k;
+    int largest = 0;
+    if (
+        !PyArg_ParseTuple(
+            args,
+            "OnO|p:_topk_by_int64_key_prototype",
+            &iterable,
+            &k,
+            &key_function,
+            &largest
+        )
+    ) {
+        return NULL;
+    }
+    return topk_by_int64_key_impl(
+        iterable,
+        k,
+        key_function,
+        largest
+    );
 }
 
 int

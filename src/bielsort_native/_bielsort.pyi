@@ -60,6 +60,14 @@ def _topk_int64_prototype_with_strategy(
     /,
 ) -> Tuple[_Permutation, str]: ...
 
+def _topk_by_int64_key_prototype(
+    iterable: Iterable[_T],
+    k: int,
+    key: Callable[[_T], Any],
+    largest: bool = ...,
+    /,
+) -> List[_T]: ...
+
 def _sort_by_int64_key_prototype(
     iterable: Iterable[_T],
     key: Callable[[_T], Any],

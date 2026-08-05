@@ -255,8 +255,19 @@ scope, key-call semantics, canonical 24 cases, and unchanged continuation
 gates are fixed before implementation in the
 [direct keyed top-k proposal](../docs/keyed-topk-research.md).
 
-No canonical benchmark command exists yet. Adding one before implementing the
-native prototype is the next engineering milestone.
+Run the benchmark with:
+
+```bash
+python benchmarks/keyed_topk_prototype.py \
+  -n 100000 1000000 \
+  -k 10 100 1000 \
+  -r 7 \
+  --json-output keyed-topk.json
+```
+
+The record list is built outside the timed region, algorithm order rotates,
+and all raw samples and environment metadata are retained. The fixed gate is
+evaluated only when the complete one-million-record shape is present.
 
 ## Research: adaptive generic keys
 

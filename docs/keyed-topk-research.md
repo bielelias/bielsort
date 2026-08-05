@@ -99,6 +99,16 @@ authorize work on a compatible fallback, memory guard, diagnostics, and API
 review. It would not approve a public symbol, version bump, or release. A
 failed gate will be recorded without changing thresholds after measurement.
 
+## Reproduction
+
+```bash
+python benchmarks/keyed_topk_prototype.py \
+  -n 100000 1000000 \
+  -k 10 100 1000 \
+  -r 7 \
+  --json-output keyed-topk.json
+```
+
 ## Promotion questions after a passing core
 
 Before a public proposal, BielSort would still need to answer:
