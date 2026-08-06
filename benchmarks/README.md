@@ -394,8 +394,37 @@ The unchanged canonical gate passed: all 50 results and routing assertions
 matched, no paired median fell below `0.85x`, and 47 cases reached `0.95x` or
 better. See the
 [versioned unified façade report](results/2026-08-05-unified-topk-facade.md)
-and its linked raw samples. Hosted portability and build-only wheel checks are
-still required before a public API proposal.
+and its linked raw samples. Hosted source, sanitizer, documentation, and the
+[non-publishing wheel matrix](https://github.com/bielelias/bielsort/actions/runs/31062939080)
+subsequently passed; a public API proposal remains a separate decision.
+
+## Research: bounded-memory streaming top-k
+
+The next private experiment consumes one-shot Python iterables without first
+copying every record into a list. It compares stable native retained state
+proportional to `k` with `heapq`, and measures the current materializing façade
+as an explicit memory control. The complete contract and unchanged gates were
+committed before this harness and before implementation in the
+[streaming top-k protocol](../docs/streaming-topk-research.md).
+
+After the private implementation is committed, run the canonical shape once:
+
+```bash
+python -m benchmarks.streaming_topk \
+  --size 1000000 \
+  --blocks 9 \
+  --memory-samples 5 \
+  --implementation-commit COMMIT_SHA \
+  --output-json streaming-topk.json \
+  --output-report streaming-topk.md
+```
+
+The timing matrix contains 24 generator cases and retains every rotated paired
+sample. Fresh child processes measure incremental peak RSS for the candidate,
+`heapq`, and the materializing façade. Semantic probes cover stable identity,
+one key call, one-shot consumption, early release, pre-consumption memory
+guards, immutable diagnostics, and public-API isolation. A pass authorizes only
+a separate private API review, not a version, merge, tag, or publication.
 
 ## Research: adaptive generic keys
 
