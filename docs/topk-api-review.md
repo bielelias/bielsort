@@ -195,7 +195,7 @@ Public exposure remains blocked until the unchecked items below pass:
   and construct the proposed `TopKInfo` without exporting it;
 - [x] preserve the passing callback-safety performance and isolated-memory
   revalidation as the reviewed implementation baseline;
-- [ ] re-pass the supported source-build CI, hosted ASan/UBSan, strict docs,
+- [x] re-pass the supported source-build CI, hosted ASan/UBSan, strict docs,
   and a non-publishing wheel matrix on the unified-façade commit;
 - [ ] add the complete public runtime, type-stub, documentation, and
   compatibility tests only in a later, explicitly approved API branch.
@@ -208,6 +208,15 @@ and the
 [non-publishing wheel matrix](https://github.com/bielelias/bielsort/actions/runs/31060438846).
 The wheel run built and tested commit `f7565bd` on Linux, Windows, macOS Intel,
 and macOS Apple Silicon; all publication jobs were skipped.
+
+The unified façade at commit `04127ee` subsequently passed fresh
+[source-build CI](https://github.com/bielelias/bielsort/actions/runs/31062370200),
+[ASan/UBSan](https://github.com/bielelias/bielsort/actions/runs/31062370239),
+[strict hosted documentation](https://github.com/bielelias/bielsort/actions/runs/31062370208),
+and a
+[non-publishing wheel matrix](https://github.com/bielelias/bielsort/actions/runs/31062939080).
+The matrix built and tested Linux, Windows, macOS Intel, and macOS Apple
+Silicon wheels; its PyPI and TestPyPI publication jobs were skipped.
 
 Passing the build-only matrix validates portability of the private candidate.
 It does not by itself authorize `top_k`, version `0.3.0`, a tag, TestPyPI, or

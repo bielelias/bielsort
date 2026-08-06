@@ -123,7 +123,7 @@ published on 2026-08-05.
   commit before any merge or release proposal.
 - [x] Pre-register a private unified-facade experiment covering natural-order
   `key=None`, structured diagnostics, and a large-`k` full-sort crossover.
-- [ ] Implement and validate that private façade before proposing any public
+- [x] Implement and validate that private façade before proposing any public
   `top_k` or `TopKInfo` symbol.
 - [ ] Prototype native inverse and composition operations only after external
   demand justifies expanding the private permutation toolkit.
