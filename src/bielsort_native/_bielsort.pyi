@@ -7,6 +7,10 @@ class _Permutation:
     def __len__(self) -> int: ...
     def __getitem__(self, index: int, /) -> int: ...
     def apply(self, sequence: Sequence[_T], /) -> List[_T]: ...
+    def apply_many(
+        self,
+        *sequences: Sequence[Any],
+    ) -> Tuple[List[Any], ...]: ...
 
 def sort(iterable: Iterable[_T], /) -> List[_T]: ...
 
@@ -41,6 +45,59 @@ def _argsort_int64_prototype_with_strategy(
     reverse: bool = ...,
     /,
 ) -> Tuple[_Permutation, str]: ...
+
+def _topk_int64_prototype(
+    sequence: Sequence[Any],
+    k: int,
+    largest: bool = ...,
+    /,
+) -> _Permutation: ...
+
+def _topk_int64_prototype_with_strategy(
+    sequence: Sequence[Any],
+    k: int,
+    largest: bool = ...,
+    /,
+) -> Tuple[_Permutation, str]: ...
+
+def _topk_by_int64_key_prototype(
+    iterable: Iterable[_T],
+    k: int,
+    key: Callable[[_T], Any],
+    largest: bool = ...,
+    /,
+) -> List[_T]: ...
+
+def _topk_by_key_prototype(
+    iterable: Iterable[_T],
+    k: int,
+    key: Callable[[_T], Any],
+    largest: bool = ...,
+    /,
+) -> List[_T]: ...
+
+def _topk_by_key_prototype_with_strategy(
+    iterable: Iterable[_T],
+    k: int,
+    key: Callable[[_T], Any],
+    largest: bool = ...,
+    /,
+) -> Tuple[List[_T], str]: ...
+
+def _topk_by_key_prototype_with_info(
+    iterable: Iterable[_T],
+    k: int,
+    key: Callable[[_T], Any],
+    largest: bool = ...,
+    /,
+) -> Tuple[List[_T], Any]: ...
+
+def _topk_by_key_worst_auxiliary_bytes(k: int, /) -> int: ...
+
+def _is_exact_int64_sequence_prototype(
+    sequence: Sequence[Any],
+    /,
+) -> bool: ...
 
 def _sort_by_int64_key_prototype(
     iterable: Iterable[_T],

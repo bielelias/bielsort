@@ -20,6 +20,67 @@ release.
 - Added private native compact-permutation application research, including
   exact-object and sequence-contract tests plus versioned time and peak-memory
   evidence for reusing one order across three parallel Python lists.
+- Added an unreleased private stable compact top-k prototype and benchmark
+  contract for selecting reusable smallest/largest indices without fully
+  sorting eligible signed-int64 Python sequences.
+- Added a private fused compact-permutation application experiment. It passed
+  correctness, cross-platform CI, and the no-regression threshold but missed
+  its pre-registered complete-permutation performance gate, so it is not
+  proposed for public promotion.
+- Pre-registered the contract and fixed benchmark gates for a private direct
+  stable keyed top-k experiment over Python records. No public `top_k` symbol
+  is added by the proposal.
+- Added that private exact-int64 keyed top-k core with stable direct record
+  results, one key call per record, iterable support, differential tests, and
+  versioned raw timing evidence. Its first canonical gate passed, but generic
+  fallback and public API review remain future work.
+- Pre-registered the semantic, memory, exact-int64 regression, and generic-key
+  gates for a private adaptive top-k continuation. No public API is added by
+  this stage-two design.
+- Implemented the private adaptive `O(k)` keyed heap, exception-aware stable
+  generic merge, and pre-key `heapq`/`raise` native-memory guard. Canonical
+  stage-two semantics and memory checks passed, but the unchanged performance
+  gate failed in four cases, so the candidate is not approved for promotion.
+- Pre-registered an unchanged-code, block-timed confirmation of those four
+  failures plus two controls; it cannot replace the failed canonical result.
+- Recorded that all four failures and both controls passed the confirmation
+  bound without code changes, consistent with host timing variability. The
+  original stage-two gate remains failed.
+- Added and pre-registered a complete paired-block stage-two protocol before
+  execution. Its separate 48-case gate passed without changing selection
+  code, while preserving the first failed result; only further private
+  callable and isolated-memory experiments are authorized.
+- Added a pre-registered common-callable and isolated-memory protocol. Both
+  gates passed: 22 of 24 `itemgetter`/`attrgetter`/`lambda` cases reached
+  `1.10x` over `heapq`, and the adaptive core used 0.28x–0.43x its traced peak
+  memory across the fixed cases. Public API promotion remains unapproved.
+- Completed the private direct top-k promotion review, selecting a provisional
+  `top_k`/`top_k_with_info` contract and explicit remaining gates without
+  adding either name to the public package.
+- Pre-registered a private unified stable top-k façade covering natural
+  ordering, explicit keys, immutable structured diagnostics, conservative
+  memory limits, and a fixed partial-selection/full-sort crossover. No public
+  symbol or release is added by the protocol.
+- Implemented that private façade with natural signed-int64 detection,
+  adaptive large-`k` routing, normalized immutable diagnostics, and
+  differential, callback-safety, iterable, exception, and memory-guard tests.
+- Recorded a passing 50-case canonical façade gate: every result and route
+  matched, no paired median fell below `0.85x`, and 47 cases reached at least
+  `0.95x`. The three retained below-parity cases are natural-string fallbacks;
+  public API and release decisions remain unapproved.
+
+### Fixed
+
+- Hardened the private keyed top-k native loops against input-list resizing
+  from `key` or generic comparison callbacks. The current record is retained
+  across Python calls and size changes now raise `RuntimeError` instead of
+  risking invalid borrowed-reference access.
+- Repeated the fixed practical callable and isolated-memory protocol after the
+  safety change. Both gates passed again without weakening their thresholds;
+  the separate result preserves every raw sample.
+- Passed the hardened commit through hosted Linux/Windows/macOS source builds,
+  ASan/UBSan, strict documentation, and a four-platform non-publishing wheel
+  matrix. No package index or release was modified.
 
 ## [0.2.0] - 2026-08-05
 

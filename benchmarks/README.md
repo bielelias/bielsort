@@ -202,6 +202,201 @@ It measures both application in isolation and the complete build-once,
 apply-three-lists operation. Both implementations receive reusable sequences;
 one-shot generators are outside the prototype contract.
 
+## Research: stable compact top-k
+
+The private top-k prototype compares stable reusable index selection against
+both full Python sorting and the standard library's partial `heapq` selection.
+It also measures constructing one order and applying it to three parallel
+Python sequences:
+
+```bash
+python benchmarks/topk_prototype.py \
+  -n 100000 1000000 \
+  -k 10 100 1000 \
+  -r 7 \
+  --json-output stable-topk.json
+```
+
+The eligible path targets exact signed-int64 values and small `k`, uses a
+native stable heap, and returns the existing private compact permutation.
+Algorithm order is rotated, every index/result is checked against stable full
+sorting, and all timing samples are retained. See the
+[top-k proposal](../docs/topk-research.md) for the fixed gates and limitations.
+The first canonical run passed all fixed gates; its medians, limitations, and
+raw-sample link are in the
+[versioned stable top-k report](results/2026-08-05-stable-topk.md).
+
+The private continuation compares applying the same compact order through
+repeated native `apply()` calls with one fused `apply_many()` call:
+
+```bash
+python benchmarks/permutation_apply_many.py \
+  -n 100000 1000000 \
+  -r 9 \
+  --json-output apply-many.json
+```
+
+Both operations produce identical tuples of new Python lists; permutation
+construction stays outside the timed region. Small results are batched and
+normalized per call. The fixed gate is documented in the
+[top-k research proposal](../docs/topk-research.md).
+
+The canonical run did not pass the unchanged continuation gate: 12 of 15
+target cases reached `1.05x`, but only 2 of 6 complete-permutation cases
+reached the required `1.10x`. The method remains private. See the
+[versioned fused-application report](results/2026-08-05-permutation-apply-many.md)
+and its linked raw samples.
+
+## Research: direct stable keyed top-k
+
+The next experiment will compare a private direct record-returning path with
+`heapq.nsmallest()`/`nlargest()` and stable full sorting. Its exact-int64
+scope, key-call semantics, canonical 24 cases, and unchanged continuation
+gates are fixed before implementation in the
+[direct keyed top-k proposal](../docs/keyed-topk-research.md).
+
+Run the benchmark with:
+
+```bash
+python benchmarks/keyed_topk_prototype.py \
+  -n 100000 1000000 \
+  -k 10 100 1000 \
+  -r 7 \
+  --json-output keyed-topk.json
+```
+
+The record list is built outside the timed region, algorithm order rotates,
+and all raw samples and environment metadata are retained. The fixed gate is
+evaluated only when the complete one-million-record shape is present.
+
+The first canonical run passed the unchanged gate: 18 of 24 target cases
+reached `1.25x` over `heapq`, none regressed by more than 10%, and every result
+matched stable full sorting by identity. See the
+[versioned direct keyed top-k report](results/2026-08-05-keyed-topk.md) and its
+linked raw samples.
+
+The stage-two continuation was pre-registered in the same proposal. It
+measures an adaptive `O(k)` heap over generic comparable keys, guard behavior,
+exact-int64 regression against the frozen private core, and generic fallback
+against `heapq`. Its thresholds were fixed before implementation.
+
+The implemented benchmark command is:
+
+```bash
+python benchmarks/keyed_topk_fallback.py \
+  --exact-size 1000000 \
+  --generic-size 100000 \
+  -k 10 100 1000 \
+  -r 7 \
+  --json-output adaptive-keyed-topk.json
+```
+
+The gate is evaluated only with both complete canonical shapes. Exact cases
+compare the adaptive and frozen strict cores with `heapq`; generic cases use
+arbitrary-size integers, strings, integer tuples, and finite floats.
+
+The first canonical run did not pass: three exact cases exceeded the strict-
+core regression limit and one generic case exceeded the `heapq` regression
+limit. Semantic and memory gates passed. See the
+[versioned adaptive keyed top-k report](results/2026-08-05-adaptive-keyed-topk.md)
+and its linked raw samples.
+
+A separately pre-registered confirmation rechecks the four failures and two
+controls with warm-ups, three calls per block, and 15 rotated blocks. It does
+not alter the failed gate or authorize promotion; its purpose is to separate
+repeatable overhead from host timing shifts.
+
+```bash
+python -m benchmarks.keyed_topk_confirmation \
+  --exact-size 1000000 \
+  --generic-size 100000 \
+  --blocks 15 \
+  --calls-per-block 3 \
+  --json-output adaptive-keyed-topk-confirmation.json
+```
+
+All four failures and both controls passed the confirmation bound, consistent
+with host timing variability. This does not replace the failed canonical
+gate. See the
+[versioned confirmation report](results/2026-08-05-adaptive-keyed-topk-confirmation.md)
+and its linked raw samples.
+
+A new complete protocol was then pre-registered and its implementation
+committed before execution. It repeats all 48 cases with 11 rotated blocks of
+three calls and uses median paired speedup ratios for the decision:
+
+```bash
+python -m benchmarks.keyed_topk_block_canonical \
+  --exact-size 1000000 \
+  --generic-size 100000 \
+  -k 10 100 1000 \
+  --blocks 11 \
+  --calls-per-block 3 \
+  --implementation-commit COMMIT_SHA \
+  --json-output adaptive-keyed-topk-block-canonical.json
+```
+
+The complete gate passed, authorizing only further private callable and
+isolated-memory experiments. The first failed result is still part of the
+record. See the
+[complete block-timed report](results/2026-08-05-adaptive-keyed-topk-block-canonical.md)
+and its linked raw samples.
+
+The next fixed protocol tests four common key-call shapes and incremental
+traced/RSS peak memory in isolated processes:
+
+```bash
+python -m benchmarks.keyed_topk_practical \
+  --time-size 1000000 \
+  --memory-size 1000000 \
+  -k 10 100 1000 \
+  --time-blocks 9 \
+  --calls-per-block 3 \
+  --memory-k 1000 100000 \
+  --memory-repetitions 3 \
+  --implementation-commit COMMIT_SHA \
+  --json-output adaptive-keyed-topk-practical.json
+```
+
+Both gates passed. Twenty-two of 24 callable cases reached `1.10x` over
+`heapq`, with no case below `0.90x`; the adaptive core used `0.28x–0.43x` the
+traced peak memory of `heapq` in the eight isolated cases. See the
+[practical callables and memory report](results/2026-08-05-adaptive-keyed-topk-practical.md).
+
+## Research: unified stable top-k façade
+
+The next private experiment combines natural ordering and explicit keys,
+normalizes structured diagnostics, and uses a fixed full-sort crossover for
+large `k`. Its contract, 50-case matrix, and unchanged decision gates were
+committed before this harness and before implementation in the
+[unified façade protocol](../docs/topk-facade-research.md).
+
+After the private implementation is committed, run the canonical shape once:
+
+```bash
+python -m benchmarks.topk_facade_crossover \
+  --size 200000 \
+  --denominators 64 16 8 4 2 \
+  --blocks 7 \
+  --calls-per-block 1 \
+  --implementation-commit COMMIT_SHA \
+  --json-output unified-topk-facade.json
+```
+
+The two smaller ratios compare with `heapq`; the three larger ratios compare
+with stable full sorting. Every timed result is checked by exact object
+identity, all raw block samples are retained, and semantic probes cover key
+calls, one-shot iteration, exceptions, memory limits, diagnostics, callback
+safety, and public-API isolation. A pass authorizes only a separate public API
+proposal, not a version, merge, tag, or publication.
+
+The unchanged canonical gate passed: all 50 results and routing assertions
+matched, no paired median fell below `0.85x`, and 47 cases reached `0.95x` or
+better. See the
+[versioned unified façade report](results/2026-08-05-unified-topk-facade.md)
+and its linked raw samples. Hosted portability and build-only wheel checks are
+still required before a public API proposal.
+
 ## Research: adaptive generic keys
 
 The follow-up selector keeps `key` generic, calls user code exactly once, and
@@ -278,6 +473,9 @@ samples are retained.
 
 ## Versioned results
 
+- [Unified stable top-k façade — 2026-08-05](results/2026-08-05-unified-topk-facade.md)
+- [Adaptive keyed top-k practical callables and memory — 2026-08-05](results/2026-08-05-adaptive-keyed-topk-practical.md)
+- [Adaptive keyed top-k complete block protocol — 2026-08-05](results/2026-08-05-adaptive-keyed-topk-block-canonical.md)
 - [Keyless stable reverse prototype — 2026-08-05](results/2026-08-05-keyless-reverse.md)
 - [Keyed nearly ordered release gate — 2026-08-04](results/2026-08-04-keyed-nearly-ordered-release-gate.md)
 - [Candidate public `sort(key=...)` API — 2026-08-04](results/2026-08-04-keyed-public-api-candidate.md)

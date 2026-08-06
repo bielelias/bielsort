@@ -81,9 +81,58 @@ published on 2026-08-05.
   permutation creation and application costs.
 - [x] Add and validate a private native application path for reusing one
   compact permutation across parallel Python sequences.
-- Structured strategy analysis for diagnostics and evaluator reports.
-- Unsigned 64-bit fast path.
-- Safe float fast path with explicit NaN semantics.
-- Reduced-memory radix buffers.
-- Hardware-specific optimizations with portable fallbacks.
-- Optional C API for embedding and other language bindings.
+- [x] Define a practical innovation roadmap from Python, NumPy, Arrow, Polars,
+  pandas, and database selection patterns.
+- [x] Implement the first private stable compact top-k prototype.
+- [x] Validate stable compact top-k construction, three-sequence reuse, and
+  compact storage against the fixed canonical gates.
+- [x] Validate private fused `apply_many()` against repeated native
+  application. The fixed performance gate did not pass, so no public
+  promotion is planned from this result.
+- [x] Design and pre-register a direct stable keyed top-k experiment for
+  Python records before implementing or exposing a public function.
+- [x] Implement and validate the private exact-int64 keyed top-k core without
+  adding a public symbol.
+- [x] Design a one-call-compatible generic-key fallback and memory guard for
+  direct keyed top-k before any public API proposal.
+- [x] Implement and validate the private adaptive generic-key heap and
+  pre-key memory guard. Semantic and memory gates passed, but the fixed
+  performance gate did not; no promotion is approved.
+- [x] Pre-register a focused profiling and confirmation experiment for the
+  four stage-two regression cases without replacing the failed result.
+- [x] Run the unchanged-code confirmation. All failures and controls passed
+  the fixed bound, consistent with host timing variability; the original
+  failed gate remains recorded.
+- [x] Pre-register a complete block-timed canonical protocol before any new
+  adaptive keyed top-k promotion decision.
+- [x] Implement and version the complete block-timed benchmark before its
+  single canonical execution; preserve the earlier failed gate independently.
+- [x] Run the single complete block-timed canonical execution and record its
+  raw samples and decision without replacing the earlier failed result.
+- [x] Pre-register common `lambda`/`attrgetter` timing and isolated-memory
+  gates before deciding whether direct keyed top-k deserves promotion review.
+- [x] Implement and version the practical-callable and isolated-memory
+  benchmark before its single canonical execution.
+- [x] Run the practical-callable and isolated-memory gates and preserve all
+  raw child-process and paired-block samples.
+- [x] Complete a private keyed top-k promotion review covering the API name,
+  signature, diagnostics, guard, fallbacks, and compatibility contract.
+- [x] Revalidate the practical callable/memory gates and native sanitizers
+  after hardening keyed top-k against input resizing inside callbacks.
+- [x] Run a fresh non-publishing build-only wheel matrix on the exact reviewed
+  commit before any merge or release proposal.
+- [x] Pre-register a private unified-facade experiment covering natural-order
+  `key=None`, structured diagnostics, and a large-`k` full-sort crossover.
+- [x] Implement and validate that private façade before proposing any public
+  `top_k` or `TopKInfo` symbol.
+- [ ] Prototype native inverse and composition operations only after external
+  demand justifies expanding the private permutation toolkit.
+- [ ] Evaluate fused sorted-group boundaries and counts for telemetry/event
+  workloads.
+- [ ] Add an unsigned 64-bit fast path after a dedicated semantic and
+  performance proposal.
+- [ ] Define explicit NaN and signed-zero semantics before a float fast path.
+- [ ] Evaluate reduced-memory radix buffers.
+- [ ] Evaluate hardware-specific optimizations with portable fallbacks.
+- [ ] Consider an optional C API and other language bindings only after the
+  Python API demonstrates sustained adoption.
