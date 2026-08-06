@@ -203,7 +203,12 @@ stream_topk_exact_sift_down(
     Py_ssize_t root
 )
 {
-    /* Move the hole down and write the displaced pair only once. */
+    /*
+     * Move the worse child to a leaf, then bubble the displaced pair back
+     * to its final position.  This is Floyd's bottom-up heap repair: it
+     * avoids comparing the displaced entry at every level on the hot path.
+     */
+    const Py_ssize_t start = root;
     const StreamingTopKEntry entry = heap[root];
     PyObject *record = PyList_GET_ITEM(records, root);
     while (length >= 2 && root <= (length - 2) / 2) {
@@ -214,12 +219,18 @@ stream_topk_exact_sift_down(
         ) {
             child++;
         }
-        if (!stream_topk_exact_is_worse(heap[child], entry)) {
-            break;
-        }
         heap[root] = heap[child];
         PyList_SET_ITEM(records, root, PyList_GET_ITEM(records, child));
         root = child;
+    }
+    while (root > start) {
+        const Py_ssize_t parent = (root - 1) / 2;
+        if (!stream_topk_exact_is_worse(entry, heap[parent])) {
+            break;
+        }
+        heap[root] = heap[parent];
+        PyList_SET_ITEM(records, root, PyList_GET_ITEM(records, parent));
+        root = parent;
     }
     heap[root] = entry;
     PyList_SET_ITEM(records, root, record);
