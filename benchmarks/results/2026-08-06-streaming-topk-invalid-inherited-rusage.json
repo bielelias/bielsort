@@ -1,0 +1,2615 @@
+{
+  "configuration": {
+    "blocks": 9,
+    "directions": [
+      "smallest",
+      "largest"
+    ],
+    "domains": [
+      "natural-int64",
+      "keyed-int64",
+      "keyed-huge-int",
+      "keyed-string"
+    ],
+    "k_values": [
+      100,
+      10000,
+      100000
+    ],
+    "memory_samples": 5,
+    "size": 1000000
+  },
+  "decision": {
+    "canonical_configuration": true,
+    "checks": {
+      "exact_target_passed": false,
+      "generic_target_passed": true,
+      "heapq_memory_passed": false,
+      "materializing_facade_memory_passed": false,
+      "minimum_speedup_passed": true,
+      "semantic_probes_passed": true
+    },
+    "exact_case_count": 12,
+    "exact_target_count": 7,
+    "generic_case_count": 12,
+    "generic_target_count": 12,
+    "minimum_speedup": 1.0065221567348837,
+    "passed": false
+  },
+  "environment": {
+    "executable": "/home/gabriel/Programas em Python Linux/bielsort_native/../.venv/bin/python",
+    "implementation": "CPython",
+    "machine": "x86_64",
+    "platform": "Linux-6.7.0-keepos-x86_64-with-glibc2.36",
+    "processor": "",
+    "python": "3.11.2 (main, Apr  8 2026, 01:58:00) [GCC 12.2.0]"
+  },
+  "implementation_commit": "73d43c2",
+  "memory": [
+    {
+      "candidate_to_heapq_ratio": null,
+      "candidate_to_materializing_facade_ratio": null,
+      "domain": "keyed-int64",
+      "k": 100,
+      "median_incremental_peak_rss_bytes": {
+        "candidate": 0,
+        "heapq": 0,
+        "materializing-facade": 0
+      },
+      "samples": {
+        "candidate": [
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          }
+        ],
+        "heapq": [
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          }
+        ],
+        "materializing-facade": [
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          }
+        ]
+      }
+    },
+    {
+      "candidate_to_heapq_ratio": null,
+      "candidate_to_materializing_facade_ratio": null,
+      "domain": "keyed-int64",
+      "k": 10000,
+      "median_incremental_peak_rss_bytes": {
+        "candidate": 0,
+        "heapq": 0,
+        "materializing-facade": 0
+      },
+      "samples": {
+        "candidate": [
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          }
+        ],
+        "heapq": [
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          }
+        ],
+        "materializing-facade": [
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          }
+        ]
+      }
+    },
+    {
+      "candidate_to_heapq_ratio": null,
+      "candidate_to_materializing_facade_ratio": null,
+      "domain": "keyed-int64",
+      "k": 100000,
+      "median_incremental_peak_rss_bytes": {
+        "candidate": 0,
+        "heapq": 0,
+        "materializing-facade": 0
+      },
+      "samples": {
+        "candidate": [
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          }
+        ],
+        "heapq": [
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          }
+        ],
+        "materializing-facade": [
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-int64",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          }
+        ]
+      }
+    },
+    {
+      "candidate_to_heapq_ratio": null,
+      "candidate_to_materializing_facade_ratio": null,
+      "domain": "keyed-string",
+      "k": 100,
+      "median_incremental_peak_rss_bytes": {
+        "candidate": 0,
+        "heapq": 0,
+        "materializing-facade": 0
+      },
+      "samples": {
+        "candidate": [
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          }
+        ],
+        "heapq": [
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          }
+        ],
+        "materializing-facade": [
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100,
+            "peak_rss_bytes": 200245248,
+            "selected": 100,
+            "size": 1000000
+          }
+        ]
+      }
+    },
+    {
+      "candidate_to_heapq_ratio": null,
+      "candidate_to_materializing_facade_ratio": null,
+      "domain": "keyed-string",
+      "k": 10000,
+      "median_incremental_peak_rss_bytes": {
+        "candidate": 0,
+        "heapq": 0,
+        "materializing-facade": 0
+      },
+      "samples": {
+        "candidate": [
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          }
+        ],
+        "heapq": [
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          }
+        ],
+        "materializing-facade": [
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 10000,
+            "peak_rss_bytes": 200245248,
+            "selected": 10000,
+            "size": 1000000
+          }
+        ]
+      }
+    },
+    {
+      "candidate_to_heapq_ratio": null,
+      "candidate_to_materializing_facade_ratio": null,
+      "domain": "keyed-string",
+      "k": 100000,
+      "median_incremental_peak_rss_bytes": {
+        "candidate": 0,
+        "heapq": 0,
+        "materializing-facade": 0
+      },
+      "samples": {
+        "candidate": [
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "candidate",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          }
+        ],
+        "heapq": [
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "heapq",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          }
+        ],
+        "materializing-facade": [
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          },
+          {
+            "algorithm": "materializing-facade",
+            "baseline_peak_rss_bytes": 200245248,
+            "domain": "keyed-string",
+            "incremental_peak_rss_bytes": 0,
+            "k": 100000,
+            "peak_rss_bytes": 200245248,
+            "selected": 100000,
+            "size": 1000000
+          }
+        ]
+      }
+    }
+  ],
+  "protocol_commit": "91e851f",
+  "schema_version": 1,
+  "semantic_probes": {
+    "early_release": true,
+    "immutable_diagnostics": true,
+    "less_only_keys": true,
+    "one_key_call_per_record": true,
+    "one_shot": true,
+    "preconsumption_memory_guard": true,
+    "public_api_unchanged": true,
+    "stable_identity": true,
+    "zero_k_no_consumption": true
+  },
+  "timing": [
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-int64",
+        "estimated_native_auxiliary_bytes": 3200,
+        "key_domain": "signed-int64",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "exact signed-int64 keys used native comparisons",
+        "requested_k": 100,
+        "selected": 100,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 6400
+      },
+      "direction": "smallest",
+      "domain": "natural-int64",
+      "k": 100,
+      "median_absolute_deviations_s": {
+        "candidate": 0.0034178930000052787,
+        "heapq": 0.004501677998632658
+      },
+      "median_paired_speedup": 1.0201034273888396,
+      "medians_s": {
+        "candidate": 0.1550243120000232,
+        "heapq": 0.15913735199865187
+      },
+      "paired_speedups": [
+        0.9007625893918622,
+        1.0902072920605055,
+        1.0201034273888396,
+        0.9088796274870763,
+        1.0175369483436714,
+        1.161578646587251,
+        0.915779880722795,
+        1.022842838864856,
+        1.0850999486885882
+      ],
+      "ratio_of_medians": 1.0265315804054531,
+      "samples_s": {
+        "candidate": [
+          0.17767450700193876,
+          0.15233372699731262,
+          0.1515882310050074,
+          0.167321320004703,
+          0.15630005599814467,
+          0.1527526409990969,
+          0.17377249200217193,
+          0.15160641900001792,
+          0.1550243120000232
+        ],
+        "heapq": [
+          0.1600425489959889,
+          0.16607533999922452,
+          0.1546356740000192,
+          0.15207493899652036,
+          0.15904108200629707,
+          0.17743420599435922,
+          0.15913735199865187,
+          0.1550695400001132,
+          0.16821687299670884
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-int64",
+        "estimated_native_auxiliary_bytes": 3200,
+        "key_domain": "signed-int64",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "exact signed-int64 keys used native comparisons",
+        "requested_k": 100,
+        "selected": 100,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 6400
+      },
+      "direction": "largest",
+      "domain": "natural-int64",
+      "k": 100,
+      "median_absolute_deviations_s": {
+        "candidate": 0.0011384949903003871,
+        "heapq": 0.00404065699694911
+      },
+      "median_paired_speedup": 1.0065221567348837,
+      "medians_s": {
+        "candidate": 0.1608610520052025,
+        "heapq": 0.16191021299891872
+      },
+      "paired_speedups": [
+        0.9235028366711054,
+        1.0785174377044393,
+        1.0222479290504352,
+        0.9217651887571253,
+        1.0532581264597074,
+        1.0272811857852482,
+        0.932483778964426,
+        0.9927059117264605,
+        1.0065221567348837
+      ],
+      "ratio_of_medians": 1.0065221567348837,
+      "samples_s": {
+        "candidate": [
+          0.16815887599659618,
+          0.1577218050006195,
+          0.1607891679959721,
+          0.17126873300003354,
+          0.16067089799616951,
+          0.16085107300023083,
+          0.16782704700017348,
+          0.1619995469955029,
+          0.1608610520052025
+        ],
+        "heapq": [
+          0.15529519899428124,
+          0.17010571699938737,
+          0.16436639399762498,
+          0.1578695560019696,
+          0.16922792900004424,
+          0.16523928100650664,
+          0.1564959989991621,
+          0.1608179079994443,
+          0.16191021299891872
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-int64",
+        "estimated_native_auxiliary_bytes": 320000,
+        "key_domain": "signed-int64",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "exact signed-int64 keys used native comparisons",
+        "requested_k": 10000,
+        "selected": 10000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 640000
+      },
+      "direction": "smallest",
+      "domain": "natural-int64",
+      "k": 10000,
+      "median_absolute_deviations_s": {
+        "candidate": 0.01101651100179879,
+        "heapq": 0.010636763006914407
+      },
+      "median_paired_speedup": 1.0930955567412675,
+      "medians_s": {
+        "candidate": 0.1884064940022654,
+        "heapq": 0.20580141700338572
+      },
+      "paired_speedups": [
+        1.314594233711797,
+        0.9864568356899512,
+        1.184803284602093,
+        0.9922322794082966,
+        1.136310825406704,
+        1.0930955567412675,
+        1.0099037530860777,
+        1.13870950903575,
+        1.0734997085860158
+      ],
+      "ratio_of_medians": 1.0923265574960022,
+      "samples_s": {
+        "candidate": [
+          0.18311829599406337,
+          0.19784408900159178,
+          0.1737009170028614,
+          0.1884064940022654,
+          0.1773899830004666,
+          0.18472624900459778,
+          0.2133529560014722,
+          0.22197385899926303,
+          0.22994817700237036
+        ],
+        "heapq": [
+          0.2407262560009258,
+          0.19516465399647132,
+          0.20580141700338572,
+          0.18694300499919336,
+          0.2015701580021414,
+          0.2019234420004068,
+          0.21546595099789556,
+          0.2527637439998216,
+          0.24684930100193014
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-int64",
+        "estimated_native_auxiliary_bytes": 320000,
+        "key_domain": "signed-int64",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "exact signed-int64 keys used native comparisons",
+        "requested_k": 10000,
+        "selected": 10000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 640000
+      },
+      "direction": "largest",
+      "domain": "natural-int64",
+      "k": 10000,
+      "median_absolute_deviations_s": {
+        "candidate": 0.022996627005340997,
+        "heapq": 0.05664429199532606
+      },
+      "median_paired_speedup": 1.1261725147762798,
+      "medians_s": {
+        "candidate": 0.23312799600535072,
+        "heapq": 0.3107900350005366
+      },
+      "paired_speedups": [
+        1.3089892101184226,
+        1.208005634603641,
+        1.106439265499369,
+        1.2246399910493682,
+        1.4096808648460974,
+        1.0817669812764055,
+        1.0172608955700333,
+        1.1154990048166833,
+        1.1261725147762798
+      ],
+      "ratio_of_medians": 1.3331304704965738,
+      "samples_s": {
+        "candidate": [
+          0.24473532900447026,
+          0.25727531900338363,
+          0.2873642810009187,
+          0.3000345649998053,
+          0.23296284300158732,
+          0.21909474600397516,
+          0.23312799600535072,
+          0.21013136900000973,
+          0.20505541199963773
+        ],
+        "heapq": [
+          0.3203559050016338,
+          0.3107900350005366,
+          0.3179511240014108,
+          0.36743432699586265,
+          0.3284032619994832,
+          0.23700946199824102,
+          0.23715199399885023,
+          0.2344013330002781,
+          0.23092776900011813
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-int64",
+        "estimated_native_auxiliary_bytes": 3200000,
+        "key_domain": "signed-int64",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "exact signed-int64 keys used native comparisons",
+        "requested_k": 100000,
+        "selected": 100000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 6400000
+      },
+      "direction": "smallest",
+      "domain": "natural-int64",
+      "k": 100000,
+      "median_absolute_deviations_s": {
+        "candidate": 0.012821670999983326,
+        "heapq": 0.03352869900118094
+      },
+      "median_paired_speedup": 1.6796951505380715,
+      "medians_s": {
+        "candidate": 0.28306091600097716,
+        "heapq": 0.4845761289980146
+      },
+      "paired_speedups": [
+        1.5607753709422114,
+        2.5536854759812977,
+        1.91939778751075,
+        1.6269569399393837,
+        1.7119146501890843,
+        1.7594998079111606,
+        1.4854706765615104,
+        1.6230657260616876,
+        1.6796951505380715
+      ],
+      "ratio_of_medians": 1.7119146501890843,
+      "samples_s": {
+        "candidate": [
+          0.25869348499691114,
+          0.27023924500099383,
+          0.3679147019938682,
+          0.31845024000358535,
+          0.28306091600097716,
+          0.293167428993911,
+          0.31358841500332346,
+          0.27286976300092647,
+          0.27033892599865794
+        ],
+        "heapq": [
+          0.4037624200063874,
+          0.6901060349991894,
+          0.7061746649997076,
+          0.5181048279991955,
+          0.4845761289980146,
+          0.5158280350005953,
+          0.46582639499683864,
+          0.4428855600053794,
+          0.4540869830016163
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-int64",
+        "estimated_native_auxiliary_bytes": 3200000,
+        "key_domain": "signed-int64",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "exact signed-int64 keys used native comparisons",
+        "requested_k": 100000,
+        "selected": 100000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 6400000
+      },
+      "direction": "largest",
+      "domain": "natural-int64",
+      "k": 100000,
+      "median_absolute_deviations_s": {
+        "candidate": 0.00516029500431614,
+        "heapq": 0.007737941006780602
+      },
+      "median_paired_speedup": 1.7584414540526914,
+      "medians_s": {
+        "candidate": 0.2656078410000191,
+        "heapq": 0.46110918899648823
+      },
+      "paired_speedups": [
+        1.8418455074190083,
+        1.7608733485137138,
+        1.7530155458195653,
+        1.8143928574670363,
+        1.7584414540526914,
+        1.7825209288241946,
+        1.7370421643366651,
+        1.6354912997850641,
+        1.717513113927294
+      ],
+      "ratio_of_medians": 1.7360526227704816,
+      "samples_s": {
+        "candidate": [
+          0.2545529080016422,
+          0.252917994002928,
+          0.26044754599570297,
+          0.2519295019956189,
+          0.2702880900033051,
+          0.2659190039994428,
+          0.2656078410000191,
+          0.27489305999915814,
+          0.26847491600346984
+        ],
+        "heapq": [
+          0.46884713000326883,
+          0.44535655499930726,
+          0.4565685970010236,
+          0.45709908900607843,
+          0.47528578199853655,
+          0.47400619000109145,
+          0.461372018995462,
+          0.44958520799991675,
+          0.46110918899648823
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-int64",
+        "estimated_native_auxiliary_bytes": 3200,
+        "key_domain": "signed-int64",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "exact signed-int64 keys used native comparisons",
+        "requested_k": 100,
+        "selected": 100,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 6400
+      },
+      "direction": "smallest",
+      "domain": "keyed-int64",
+      "k": 100,
+      "median_absolute_deviations_s": {
+        "candidate": 0.0073072100058197975,
+        "heapq": 0.004481341995415278
+      },
+      "median_paired_speedup": 1.0568111821437525,
+      "medians_s": {
+        "candidate": 0.1998941330020898,
+        "heapq": 0.211250355001539
+      },
+      "paired_speedups": [
+        1.0657486101563243,
+        1.045897376416771,
+        1.0395236618386932,
+        1.1156234683615875,
+        1.0613316520447056,
+        1.0568111821437525,
+        0.8666949670292354,
+        1.075958774303892,
+        0.9983413933118174
+      ],
+      "ratio_of_medians": 1.0568111821437525,
+      "samples_s": {
+        "candidate": [
+          0.19767534200218506,
+          0.19891008400009014,
+          0.19546070999786025,
+          0.19258692299627,
+          0.20806799700221745,
+          0.1998941330020898,
+          0.2385718400037149,
+          0.23388134100241587,
+          0.2696359570036293
+        ],
+        "heapq": [
+          0.2106722210010048,
+          0.20803953499853378,
+          0.20318603300256655,
+          0.21485449099418474,
+          0.22082915099599632,
+          0.211250355001539,
+          0.20676901300612371,
+          0.25164668099751,
+          0.26918873700196855
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-int64",
+        "estimated_native_auxiliary_bytes": 3200,
+        "key_domain": "signed-int64",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "exact signed-int64 keys used native comparisons",
+        "requested_k": 100,
+        "selected": 100,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 6400
+      },
+      "direction": "largest",
+      "domain": "keyed-int64",
+      "k": 100,
+      "median_absolute_deviations_s": {
+        "candidate": 0.006771140004275367,
+        "heapq": 0.004572374004055746
+      },
+      "median_paired_speedup": 1.0769185930740568,
+      "medians_s": {
+        "candidate": 0.21013782799855107,
+        "heapq": 0.21977075500035426
+      },
+      "paired_speedups": [
+        1.1341749142328785,
+        1.0420212599090817,
+        1.0769185930740568,
+        1.1172894660275952,
+        1.113121777045308,
+        1.016089250866484,
+        1.034554273575115,
+        1.0244336693148082,
+        1.0992838368213946
+      ],
+      "ratio_of_medians": 1.0458409944251903,
+      "samples_s": {
+        "candidate": [
+          0.2313273250038037,
+          0.21529611499863677,
+          0.19835291300114477,
+          0.19579992799845058,
+          0.21556523100298364,
+          0.21011021700542187,
+          0.21013782799855107,
+          0.21690896800282644,
+          0.19992175600054907
+        ],
+        "heapq": [
+          0.2623656489959103,
+          0.22434312900441,
+          0.2136099400013336,
+          0.21876519700163044,
+          0.23995035300322343,
+          0.2134907329964335,
+          0.21739898799569346,
+          0.22220884999842383,
+          0.21977075500035426
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-int64",
+        "estimated_native_auxiliary_bytes": 320000,
+        "key_domain": "signed-int64",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "exact signed-int64 keys used native comparisons",
+        "requested_k": 10000,
+        "selected": 10000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 640000
+      },
+      "direction": "smallest",
+      "domain": "keyed-int64",
+      "k": 10000,
+      "median_absolute_deviations_s": {
+        "candidate": 0.004201525000098627,
+        "heapq": 0.008456593997834716
+      },
+      "median_paired_speedup": 1.1369814318543972,
+      "medians_s": {
+        "candidate": 0.22392030300397892,
+        "heapq": 0.25788610800373135
+      },
+      "paired_speedups": [
+        1.2173573564840576,
+        1.1369814318543972,
+        1.1398271625140126,
+        1.118415663557531,
+        1.161605600343996,
+        1.0954792849094388,
+        1.1803609568264586,
+        1.116216708899775,
+        1.122242313402894
+      ],
+      "ratio_of_medians": 1.151687026786262,
+      "samples_s": {
+        "candidate": [
+          0.21939150700200116,
+          0.22681646399723832,
+          0.21758504899480613,
+          0.21840200200676918,
+          0.22392030300397892,
+          0.24312892600573832,
+          0.22547301099984907,
+          0.22331647700048052,
+          0.22812182800407754
+        ],
+        "heapq": [
+          0.26707786499900976,
+          0.25788610800373135,
+          0.2480093490012223,
+          0.244264219996694,
+          0.26010707800014643,
+          0.26634270200156607,
+          0.26613953900232445,
+          0.24926958300056867,
+          0.2560079679969931
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-int64",
+        "estimated_native_auxiliary_bytes": 320000,
+        "key_domain": "signed-int64",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "exact signed-int64 keys used native comparisons",
+        "requested_k": 10000,
+        "selected": 10000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 640000
+      },
+      "direction": "largest",
+      "domain": "keyed-int64",
+      "k": 10000,
+      "median_absolute_deviations_s": {
+        "candidate": 0.0015157960006035864,
+        "heapq": 0.000834553997265175
+      },
+      "median_paired_speedup": 1.1328187399048648,
+      "medians_s": {
+        "candidate": 0.22411515199928544,
+        "heapq": 0.25408918199536856
+      },
+      "paired_speedups": [
+        1.1251046084016314,
+        1.114187733750799,
+        1.14336046868326,
+        1.127540725293521,
+        1.1328187399048648,
+        1.1430503053008934,
+        1.1328222246973498,
+        1.1337438800040556,
+        1.125929633138341
+      ],
+      "ratio_of_medians": 1.1337438800040556,
+      "samples_s": {
+        "candidate": [
+          0.23141432099509984,
+          0.22627723799814703,
+          0.22259935599868186,
+          0.223695968001266,
+          0.22320431600383017,
+          0.22156035200168844,
+          0.22497447299974738,
+          0.22411515199928544,
+          0.22619096300331876
+        ],
+        "heapq": [
+          0.2603653190017212,
+          0.25211532300454564,
+          0.25451130400324473,
+          0.25222631400538376,
+          0.25285003199678613,
+          0.2532546279981034,
+          0.2548560830036877,
+          0.25408918199536856,
+          0.25467510799353477
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-int64",
+        "estimated_native_auxiliary_bytes": 3200000,
+        "key_domain": "signed-int64",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "exact signed-int64 keys used native comparisons",
+        "requested_k": 100000,
+        "selected": 100000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 6400000
+      },
+      "direction": "smallest",
+      "domain": "keyed-int64",
+      "k": 100000,
+      "median_absolute_deviations_s": {
+        "candidate": 0.0021139720047358423,
+        "heapq": 0.00855289500032086
+      },
+      "median_paired_speedup": 1.7294668538838769,
+      "medians_s": {
+        "candidate": 0.2857375929961563,
+        "heapq": 0.49282769999990705
+      },
+      "paired_speedups": [
+        1.7523588415941316,
+        2.459821191161137,
+        1.9661147325931723,
+        1.7285609426027613,
+        1.7294668538838769,
+        1.5782915646686633,
+        1.729389538030864,
+        1.6613671258259928,
+        1.7320299603075555
+      ],
+      "ratio_of_medians": 1.7247562521692288,
+      "samples_s": {
+        "candidate": [
+          0.28785156500089215,
+          0.29041917500580894,
+          0.2981046269997023,
+          0.2838111020028009,
+          0.2857375929961563,
+          0.306834818002244,
+          0.2847646630034433,
+          0.2786027530019055,
+          0.28453763000288745
+        ],
+        "heapq": [
+          0.5044192349960213,
+          0.7143792409988237,
+          0.5861078989983071,
+          0.49058478599908995,
+          0.49417369599541416,
+          0.4842748049995862,
+          0.49246902899903944,
+          0.4628614550019847,
+          0.49282769999990705
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-int64",
+        "estimated_native_auxiliary_bytes": 3200000,
+        "key_domain": "signed-int64",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "exact signed-int64 keys used native comparisons",
+        "requested_k": 100000,
+        "selected": 100000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 6400000
+      },
+      "direction": "largest",
+      "domain": "keyed-int64",
+      "k": 100000,
+      "median_absolute_deviations_s": {
+        "candidate": 0.0017854589968919754,
+        "heapq": 0.006278070002736058
+      },
+      "median_paired_speedup": 1.7259431842433726,
+      "medians_s": {
+        "candidate": 0.27887294399988605,
+        "heapq": 0.48397849399771076
+      },
+      "paired_speedups": [
+        1.7259431842433726,
+        1.6621530811106486,
+        1.7390380955427274,
+        1.6981356478574103,
+        1.7433593387717503,
+        1.7008195212736623,
+        1.740464773571563,
+        1.710466810273104,
+        1.7997381203932505
+      ],
+      "ratio_of_medians": 1.7354802766305952,
+      "samples_s": {
+        "candidate": [
+          0.2840513920018566,
+          0.29638003899890464,
+          0.278418932997738,
+          0.280658402996778,
+          0.27529069499723846,
+          0.2836880579998251,
+          0.27807428300002357,
+          0.27887294399988605,
+          0.27743430299597094
+        ],
+        "heapq": [
+          0.4902565640004468,
+          0.4926289950017235,
+          0.4841811310034245,
+          0.4765960389995598,
+          0.4799306040004012,
+          0.4825021869983175,
+          0.48397849399771076,
+          0.47700291499495506,
+          0.4993090910065803
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-generic",
+        "estimated_native_auxiliary_bytes": 6400,
+        "key_domain": "generic-python",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "comparable Python keys used the generic native heap",
+        "requested_k": 100,
+        "selected": 100,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 6400
+      },
+      "direction": "smallest",
+      "domain": "keyed-huge-int",
+      "k": 100,
+      "median_absolute_deviations_s": {
+        "candidate": 0.0029333889979170635,
+        "heapq": 0.005808714005979709
+      },
+      "median_paired_speedup": 1.0342647892102284,
+      "medians_s": {
+        "candidate": 0.2750566600007005,
+        "heapq": 0.2806796739969286
+      },
+      "paired_speedups": [
+        1.0050495988691606,
+        1.0622761703485013,
+        1.0305706590394286,
+        1.0375664469551151,
+        1.0141401279934743,
+        1.0923719638277183,
+        1.0662520569193377,
+        1.0342647892102284,
+        1.0023520608458327
+      ],
+      "ratio_of_medians": 1.0204431115982204,
+      "samples_s": {
+        "candidate": [
+          0.2659393420035485,
+          0.27506325300055323,
+          0.27799004899861757,
+          0.2769776449931669,
+          0.27676616499957163,
+          0.2571838360017864,
+          0.2626612940002815,
+          0.26474404799955664,
+          0.2750566600007005
+        ],
+        "heapq": [
+          0.26728222900419496,
+          0.2921931390010286,
+          0.2864883880029083,
+          0.28738271100155544,
+          0.2806796739969286,
+          0.2809404119980172,
+          0.280063145000895,
+          0.273815446998924,
+          0.2757036100010737
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-generic",
+        "estimated_native_auxiliary_bytes": 6400,
+        "key_domain": "generic-python",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "comparable Python keys used the generic native heap",
+        "requested_k": 100,
+        "selected": 100,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 6400
+      },
+      "direction": "largest",
+      "domain": "keyed-huge-int",
+      "k": 100,
+      "median_absolute_deviations_s": {
+        "candidate": 0.0015919230063445866,
+        "heapq": 0.0009018330019898713
+      },
+      "median_paired_speedup": 1.0460794862467735,
+      "medians_s": {
+        "candidate": 0.27082001399685396,
+        "heapq": 0.2840211040020222
+      },
+      "paired_speedups": [
+        1.051990361393832,
+        1.0466639577276091,
+        1.0251649993543086,
+        1.0694520316390335,
+        1.0616250399129334,
+        1.0399231946166236,
+        1.0460794862467735,
+        1.0427678103729314,
+        1.043134416678539
+      ],
+      "ratio_of_medians": 1.0487448834018656,
+      "samples_s": {
+        "candidate": [
+          0.27518027600308415,
+          0.2713584449957125,
+          0.2774386719975155,
+          0.2655882710023434,
+          0.26668480900116265,
+          0.270412302998011,
+          0.27021913699718425,
+          0.27082001399685396,
+          0.27241193700319855
+        ],
+        "heapq": [
+          0.2894869980009389,
+          0.2840211040020222,
+          0.2844204159991932,
+          0.28403391600295436,
+          0.2831192710000323,
+          0.28120802599732997,
+          0.28267069600406103,
+          0.28240239300066605,
+          0.28416226700210245
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-generic",
+        "estimated_native_auxiliary_bytes": 640000,
+        "key_domain": "generic-python",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "comparable Python keys used the generic native heap",
+        "requested_k": 10000,
+        "selected": 10000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 640000
+      },
+      "direction": "smallest",
+      "domain": "keyed-huge-int",
+      "k": 10000,
+      "median_absolute_deviations_s": {
+        "candidate": 0.001671268000791315,
+        "heapq": 0.005882705001567956
+      },
+      "median_paired_speedup": 1.0787080727392904,
+      "medians_s": {
+        "candidate": 0.292677259996708,
+        "heapq": 0.3178609629976563
+      },
+      "paired_speedups": [
+        1.0884570085645189,
+        1.0922033535420967,
+        1.0676935820901057,
+        1.0703209240350957,
+        1.0732882968117672,
+        1.0920173058713942,
+        1.0619685178195521,
+        1.10076573081918,
+        1.0787080727392904
+      ],
+      "ratio_of_medians": 1.0860459845812127,
+      "samples_s": {
+        "candidate": [
+          0.2974335830003838,
+          0.29288969399931375,
+          0.2910059919959167,
+          0.2926503210037481,
+          0.29075698200176703,
+          0.29107685499911895,
+          0.292677259996708,
+          0.29697315499652177,
+          0.3065909399956581
+        ],
+        "heapq": [
+          0.32374366799922427,
+          0.319895106003969,
+          0.3107052300038049,
+          0.313229761995899,
+          0.31206606599880615,
+          0.3178609629976563,
+          0.3108140359981917,
+          0.3268978719934239,
+          0.33072212200204376
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-generic",
+        "estimated_native_auxiliary_bytes": 640000,
+        "key_domain": "generic-python",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "comparable Python keys used the generic native heap",
+        "requested_k": 10000,
+        "selected": 10000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 640000
+      },
+      "direction": "largest",
+      "domain": "keyed-huge-int",
+      "k": 10000,
+      "median_absolute_deviations_s": {
+        "candidate": 0.007237436999275815,
+        "heapq": 0.008380482002394274
+      },
+      "median_paired_speedup": 1.0680541862326267,
+      "medians_s": {
+        "candidate": 0.31610875399928773,
+        "heapq": 0.34498484899813775
+      },
+      "paired_speedups": [
+        1.0585338230091401,
+        1.0680541862326267,
+        1.0673069971273255,
+        1.1669554366850419,
+        1.1267508699526398,
+        1.053990011748403,
+        1.06404733223163,
+        1.0965302245471116,
+        1.0899706120126587
+      ],
+      "ratio_of_medians": 1.0913486090895006,
+      "samples_s": {
+        "candidate": [
+          0.3088713170000119,
+          0.3050732240008074,
+          0.31610875399928773,
+          0.3160473300013109,
+          0.33426789900113363,
+          0.335264401997847,
+          0.330448829998204,
+          0.31203788399579935,
+          0.3165083949934342
+        ],
+        "heapq": [
+          0.3269507360018906,
+          0.32583473400154617,
+          0.3373850849966402,
+          0.3688131499948213,
+          0.3766366459967685,
+          0.353365331000532,
+          0.3516131959986524,
+          0.3421589710051194,
+          0.34498484899813775
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-generic",
+        "estimated_native_auxiliary_bytes": 6400000,
+        "key_domain": "generic-python",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "comparable Python keys used the generic native heap",
+        "requested_k": 100000,
+        "selected": 100000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 6400000
+      },
+      "direction": "smallest",
+      "domain": "keyed-huge-int",
+      "k": 100000,
+      "median_absolute_deviations_s": {
+        "candidate": 0.005356988993298728,
+        "heapq": 0.009120936992985662
+      },
+      "median_paired_speedup": 1.2426925797580188,
+      "medians_s": {
+        "candidate": 0.48258672700467287,
+        "heapq": 0.5943066549953073
+      },
+      "paired_speedups": [
+        1.2335684305844128,
+        1.2230393252500547,
+        1.2426925797580188,
+        1.258395905788202,
+        1.2092323841043258,
+        1.2625233039118702,
+        1.1712857494438418,
+        1.2436605675332548,
+        1.3303998324162054
+      ],
+      "ratio_of_medians": 1.23150228081087,
+      "samples_s": {
+        "candidate": [
+          0.4827871759989648,
+          0.4784684399928665,
+          0.466163247001532,
+          0.4722731949950685,
+          0.4879437159979716,
+          0.48258672700467287,
+          0.49046548399928724,
+          0.48477001099672634,
+          0.4722341590022552
+        ],
+        "heapq": [
+          0.5955510190033237,
+          0.5851857180023217,
+          0.5792976080047083,
+          0.5943066549953073,
+          0.5900373430049513,
+          0.6092769890019554,
+          0.5744752320024418,
+          0.6028893469992909,
+          0.6282602459978079
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-generic",
+        "estimated_native_auxiliary_bytes": 6400000,
+        "key_domain": "generic-python",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "comparable Python keys used the generic native heap",
+        "requested_k": 100000,
+        "selected": 100000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 6400000
+      },
+      "direction": "largest",
+      "domain": "keyed-huge-int",
+      "k": 100000,
+      "median_absolute_deviations_s": {
+        "candidate": 0.010009652993176132,
+        "heapq": 0.004973298004188109
+      },
+      "median_paired_speedup": 1.175229688401242,
+      "medians_s": {
+        "candidate": 0.5041139199965983,
+        "heapq": 0.5978201850011828
+      },
+      "paired_speedups": [
+        1.053937579252263,
+        0.9288158346019111,
+        1.212438305041425,
+        1.1529732287509464,
+        1.2849673936974337,
+        1.1684223156755276,
+        1.175229688401242,
+        1.1901301674281817,
+        1.2228850517940537
+      ],
+      "ratio_of_medians": 1.185883113493904,
+      "samples_s": {
+        "candidate": [
+          0.6801392370034591,
+          0.7100234120007372,
+          0.49410426700342214,
+          0.5041139199965983,
+          0.4855674229984288,
+          0.5116473529997165,
+          0.5068798889988102,
+          0.5001326790006715,
+          0.48479363299702527
+        ],
+        "heapq": [
+          0.7168243010019069,
+          0.6594809880043613,
+          0.5990709399993648,
+          0.5812298539967742,
+          0.6239383059946704,
+          0.5978201850011828,
+          0.5957002940049279,
+          0.5952229889953742,
+          0.5928468869969947
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-generic",
+        "estimated_native_auxiliary_bytes": 6400,
+        "key_domain": "generic-python",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "comparable Python keys used the generic native heap",
+        "requested_k": 100,
+        "selected": 100,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 6400
+      },
+      "direction": "smallest",
+      "domain": "keyed-string",
+      "k": 100,
+      "median_absolute_deviations_s": {
+        "candidate": 0.012210643995786086,
+        "heapq": 0.012794944006600417
+      },
+      "median_paired_speedup": 1.038735787498541,
+      "medians_s": {
+        "candidate": 0.4560497349957586,
+        "heapq": 0.4707103660039138
+      },
+      "paired_speedups": [
+        1.0441974678650006,
+        0.9512056382727749,
+        1.076001009948569,
+        1.0609251790095913,
+        1.0321470003886561,
+        1.03352727336214,
+        1.048644516535525,
+        1.0312989611410746,
+        1.038735787498541
+      ],
+      "ratio_of_medians": 1.0321470003886561,
+      "samples_s": {
+        "candidate": [
+          0.43853335799940396,
+          0.4807279809974716,
+          0.44399128400254995,
+          0.4583802370034391,
+          0.4560497349957586,
+          0.44229651000205195,
+          0.44383909099997254,
+          0.4930224339987035,
+          0.46436737600015476
+        ],
+        "heapq": [
+          0.4579154219973134,
+          0.4572711660002824,
+          0.47773506999510573,
+          0.48630713499733247,
+          0.4707103660039138,
+          0.45712550600001123,
+          0.4654294290012331,
+          0.5084535240021069,
+          0.4823550119981519
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-generic",
+        "estimated_native_auxiliary_bytes": 6400,
+        "key_domain": "generic-python",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "comparable Python keys used the generic native heap",
+        "requested_k": 100,
+        "selected": 100,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 6400
+      },
+      "direction": "largest",
+      "domain": "keyed-string",
+      "k": 100,
+      "median_absolute_deviations_s": {
+        "candidate": 0.004779359005624428,
+        "heapq": 0.0024106160053634085
+      },
+      "median_paired_speedup": 1.0246156810487246,
+      "medians_s": {
+        "candidate": 0.4489715520030586,
+        "heapq": 0.46146517200395465
+      },
+      "paired_speedups": [
+        1.0486717897952318,
+        1.0111171824243235,
+        1.0387388572172906,
+        1.0246156810487246,
+        1.009532889292413,
+        1.03436340363282,
+        0.9629877535850897,
+        1.0166434142685368,
+        1.062387253502662
+      ],
+      "ratio_of_medians": 1.0278271973918092,
+      "samples_s": {
+        "candidate": [
+          0.4489715520030586,
+          0.45533938400330953,
+          0.4442552320033428,
+          0.4547732389983139,
+          0.4441921929974342,
+          0.4438039420056157,
+          0.48072072700597346,
+          0.4536084290011786,
+          0.44543619799515
+        ],
+        "heapq": [
+          0.4708238010061905,
+          0.4604014750002534,
+          0.46146517200395465,
+          0.46596779199899174,
+          0.44842662799783284,
+          0.45905455599859124,
+          0.46292817300127354,
+          0.4611580220007454,
+          0.4732257389987353
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-generic",
+        "estimated_native_auxiliary_bytes": 640000,
+        "key_domain": "generic-python",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "comparable Python keys used the generic native heap",
+        "requested_k": 10000,
+        "selected": 10000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 640000
+      },
+      "direction": "smallest",
+      "domain": "keyed-string",
+      "k": 10000,
+      "median_absolute_deviations_s": {
+        "candidate": 0.024270492009236477,
+        "heapq": 0.004791700004716404
+      },
+      "median_paired_speedup": 1.0147584071370728,
+      "medians_s": {
+        "candidate": 0.5217155910067959,
+        "heapq": 0.5241065400041407
+      },
+      "paired_speedups": [
+        1.0147584071370728,
+        0.96952042579087,
+        0.8096016163524421,
+        0.9448406137612947,
+        1.0439641300033637,
+        1.0547602786004615,
+        0.9075586181978851,
+        1.0980922630500267,
+        1.0514072198316358
+      ],
+      "ratio_of_medians": 1.004582859010847,
+      "samples_s": {
+        "candidate": [
+          0.516484057996422,
+          0.5275609460004489,
+          0.6449733850022312,
+          0.5582038180000382,
+          0.4974450989975594,
+          0.5033713250013534,
+          0.5939016479969723,
+          0.5217155910067959,
+          0.49591917400539387
+        ],
+        "heapq": [
+          0.5241065400041407,
+          0.5114811129969894,
+          0.5221714950021124,
+          0.5274136380030541,
+          0.5193148399994243,
+          0.530936078997911,
+          0.539000559001579,
+          0.5728918539971346,
+          0.5214130000022124
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-generic",
+        "estimated_native_auxiliary_bytes": 640000,
+        "key_domain": "generic-python",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "comparable Python keys used the generic native heap",
+        "requested_k": 10000,
+        "selected": 10000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 640000
+      },
+      "direction": "largest",
+      "domain": "keyed-string",
+      "k": 10000,
+      "median_absolute_deviations_s": {
+        "candidate": 0.006197742994118016,
+        "heapq": 0.007224700995720923
+      },
+      "median_paired_speedup": 1.0475636791377938,
+      "medians_s": {
+        "candidate": 0.4969236430042656,
+        "heapq": 0.522926956997253
+      },
+      "paired_speedups": [
+        1.039840874391028,
+        1.0778151678869181,
+        1.0710662611090223,
+        1.045698513268504,
+        1.051270865680147,
+        1.0125525446912982,
+        1.1722518262448347,
+        1.0377897354284373,
+        1.0475636791377938
+      ],
+      "ratio_of_medians": 1.0523285908389837,
+      "samples_s": {
+        "candidate": [
+          0.5111360959999729,
+          0.49659966100443853,
+          0.48823025800083997,
+          0.4929327759964508,
+          0.5031213859983836,
+          0.5155434340049396,
+          0.5070058350029285,
+          0.4969236430042656,
+          0.4969029400017462
+        ],
+        "heapq": [
+          0.5315002049974282,
+          0.5352426469980855,
+          0.522926956997253,
+          0.5154590710008051,
+          0.5289168550007162,
+          0.522014816000592,
+          0.5943385159989703,
+          0.5157022560015321,
+          0.5205374720026157
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-generic",
+        "estimated_native_auxiliary_bytes": 6400000,
+        "key_domain": "generic-python",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "comparable Python keys used the generic native heap",
+        "requested_k": 100000,
+        "selected": 100000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 6400000
+      },
+      "direction": "smallest",
+      "domain": "keyed-string",
+      "k": 100000,
+      "median_absolute_deviations_s": {
+        "candidate": 0.02152242600277532,
+        "heapq": 0.014856132002023514
+      },
+      "median_paired_speedup": 1.2168628217732538,
+      "medians_s": {
+        "candidate": 0.8897886970007676,
+        "heapq": 1.0734772719952161
+      },
+      "paired_speedups": [
+        1.1477319305653826,
+        1.1696503484100373,
+        1.229701885485048,
+        1.1198018281452538,
+        1.2168628217732538,
+        1.243656450382842,
+        1.2315983801026245,
+        1.1875821267521993,
+        1.2363457016029802
+      ],
+      "ratio_of_medians": 1.2064406702553225,
+      "samples_s": {
+        "candidate": [
+          0.8897886970007676,
+          0.9025649839968537,
+          0.9225237509963335,
+          0.9306036370035145,
+          0.8830157490010606,
+          0.8738137679974898,
+          0.8677686169976369,
+          0.9164279079996049,
+          0.8682662709979923
+        ],
+        "heapq": [
+          1.0212388990039472,
+          1.0556854479946196,
+          1.1344291960049304,
+          1.0420916539951577,
+          1.0745090359996539,
+          1.0867241290034144,
+          1.0687424229981843,
+          1.0883334039972397,
+          1.0734772719952161
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "algorithm": "native-stream-generic",
+        "estimated_native_auxiliary_bytes": 6400000,
+        "key_domain": "generic-python",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "processed": 1000000,
+        "reason": "comparable Python keys used the generic native heap",
+        "requested_k": 100000,
+        "selected": 100000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 6400000
+      },
+      "direction": "largest",
+      "domain": "keyed-string",
+      "k": 100000,
+      "median_absolute_deviations_s": {
+        "candidate": 0.004862656998739112,
+        "heapq": 0.01509099700342631
+      },
+      "median_paired_speedup": 1.2186163605379816,
+      "medians_s": {
+        "candidate": 0.8957224860059796,
+        "heapq": 1.0893753970012767
+      },
+      "paired_speedups": [
+        1.2839197544140266,
+        1.2186163605379816,
+        1.2050371930067403,
+        1.220047773127598,
+        1.2885720630343676,
+        1.1928737758360084,
+        1.1991527941481441,
+        1.1761654447908865,
+        1.2188527485410008
+      ],
+      "ratio_of_medians": 1.2161974428696036,
+      "samples_s": {
+        "candidate": [
+          0.882386230994598,
+          0.8936184580015833,
+          0.92797385299491,
+          0.8928956890013069,
+          0.8761220450032852,
+          0.9005851430047187,
+          0.9042876539970166,
+          0.8992044789993088,
+          0.8957224860059796
+        ],
+        "heapq": [
+          1.1329131129969028,
+          1.0889780729994527,
+          1.1182430069966358,
+          1.0893753970012767,
+          1.1289463909997721,
+          1.0742843999978504,
+          1.0843790670041926,
+          1.0576132360001793,
+          1.0917538139983662
+        ]
+      }
+    }
+  ]
+}

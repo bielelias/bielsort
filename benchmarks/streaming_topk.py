@@ -392,34 +392,39 @@ def run_semantic_probes():
     }
 
 
-def peak_rss_bytes():
+def current_linux_rss_bytes(process_id):
+    """Read current resident memory without an inherited high-water mark."""
+    if not sys.platform.startswith("linux"):
+        raise RuntimeError("sampled RSS measurement currently requires Linux")
     try:
-        import resource
-    except ImportError as error:
-        raise RuntimeError("isolated RSS measurement requires POSIX") from error
-    value = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-    return int(value if sys.platform == "darwin" else value * 1_024)
+        statm = Path(f"/proc/{process_id}/statm").read_text(
+            encoding="ascii"
+        )
+    except FileNotFoundError:
+        return None
+    resident_pages = int(statm.split()[1])
+    return resident_pages * os.sysconf("SC_PAGE_SIZE")
 
 
 def memory_worker(algorithm, size, domain, k):
     gc.collect()
-    before = peak_rss_bytes()
+    print(json.dumps({"event": "ready"}), flush=True)
+    if not sys.stdin.readline():
+        raise RuntimeError("memory controller closed before the start signal")
     result = run_algorithm(algorithm, size, domain, k, False)
-    after = peak_rss_bytes()
     payload = {
         "algorithm": algorithm,
         "size": size,
         "domain": domain,
         "k": k,
         "selected": len(result),
-        "baseline_peak_rss_bytes": before,
-        "peak_rss_bytes": after,
-        "incremental_peak_rss_bytes": max(0, after - before),
     }
-    print(json.dumps(payload, sort_keys=True))
+    print(json.dumps(payload, sort_keys=True), flush=True)
 
 
 def run_memory_child(script, algorithm, size, domain, k):
+    if not sys.platform.startswith("linux"):
+        raise RuntimeError("sampled RSS measurement currently requires Linux")
     command = [
         sys.executable,
         str(script),
@@ -430,14 +435,64 @@ def run_memory_child(script, algorithm, size, domain, k):
         "--size",
         str(size),
     ]
-    completed = subprocess.run(
+    process = subprocess.Popen(
         command,
-        check=True,
-        capture_output=True,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         text=True,
+        bufsize=1,
         env={**os.environ, "PYTHONHASHSEED": "0"},
     )
-    return json.loads(completed.stdout.strip().splitlines()[-1])
+    ready_line = process.stdout.readline()
+    try:
+        ready = json.loads(ready_line)
+    except json.JSONDecodeError:
+        process.terminate()
+        stdout, stderr = process.communicate()
+        raise RuntimeError(
+            "memory worker did not provide its ready signal: "
+            f"{ready_line}{stdout}{stderr}"
+        )
+    if ready != {"event": "ready"}:
+        process.terminate()
+        process.communicate()
+        raise RuntimeError(f"unexpected memory-worker signal: {ready}")
+
+    baseline = current_linux_rss_bytes(process.pid)
+    if baseline is None:
+        process.terminate()
+        process.communicate()
+        raise RuntimeError("memory worker exited before sampling began")
+    sampled_peak = baseline
+    process.stdin.write("start\n")
+    process.stdin.flush()
+    process.stdin.close()
+    process.stdin = None
+    while process.poll() is None:
+        current = current_linux_rss_bytes(process.pid)
+        if current is not None and current > sampled_peak:
+            sampled_peak = current
+        time.sleep(0.0005)
+    stdout, stderr = process.communicate()
+    if process.returncode:
+        raise subprocess.CalledProcessError(
+            process.returncode,
+            command,
+            output=stdout,
+            stderr=stderr,
+        )
+    payload = json.loads(stdout.strip().splitlines()[-1])
+    payload.update(
+        {
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "baseline_current_rss_bytes": baseline,
+            "sampled_peak_rss_bytes": sampled_peak,
+            "incremental_peak_rss_bytes": max(0, sampled_peak - baseline),
+        }
+    )
+    return payload
 
 
 def run_memory_matrix(script, size, samples, domains, k_values):
@@ -602,22 +657,33 @@ def render_report(payload):
             "",
             "## Isolated incremental peak RSS",
             "",
+            "Linux RSS was sampled by the parent process every 0.5 ms after "
+            "a worker-ready checkpoint.",
+            "",
             "| Domain | k | BielSort | heapq | Materializing façade | BielSort/heapq | BielSort/façade |",
             "|---|---:|---:|---:|---:|---:|---:|",
         ]
     )
     for row in payload["memory"]:
         medians = row["median_incremental_peak_rss_bytes"]
+        heapq_ratio = row["candidate_to_heapq_ratio"]
+        facade_ratio = row["candidate_to_materializing_facade_ratio"]
         lines.append(
             "| {domain} | {k} | {candidate:.2f} MiB | {heapq:.2f} MiB | "
-            "{facade:.2f} MiB | {heapq_ratio:.2f}x | {facade_ratio:.2f}x |".format(
+            "{facade:.2f} MiB | {heapq_ratio} | {facade_ratio} |".format(
                 domain=row["domain"],
                 k=row["k"],
                 candidate=medians[CANDIDATE] / (1024 ** 2),
                 heapq=medians[HEAPQ] / (1024 ** 2),
                 facade=medians[MATERIALIZING_FACADE] / (1024 ** 2),
-                heapq_ratio=row["candidate_to_heapq_ratio"],
-                facade_ratio=row["candidate_to_materializing_facade_ratio"],
+                heapq_ratio=(
+                    "n/a" if heapq_ratio is None else f"{heapq_ratio:.2f}x"
+                ),
+                facade_ratio=(
+                    "n/a"
+                    if facade_ratio is None
+                    else f"{facade_ratio:.2f}x"
+                ),
             )
         )
     lines.extend(
