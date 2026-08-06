@@ -277,6 +277,14 @@ python benchmarks/reorder_plan_memory_continuation.py --canonical \
   --markdown-output benchmarks/results/2026-08-06-reorder-plan-memory-continuation.md
 ```
 
+The single
+[memory-continuation result](results/2026-08-06-reorder-plan-memory-continuation.md)
+passed every unchanged original gate and every focused gate. Nearly ordered
+median RSS measured `0.9928x` direct Python, with all three paired samples at
+or below `1.10x`; its large time ratios also cleared the new `0.90x` floor.
+This pass preserves the earlier failed record and authorizes only hosted
+portability and final API review—not a public symbol or release.
+
 ## Research: stable compact top-k
 
 The private top-k prototype compares stable reusable index selection against

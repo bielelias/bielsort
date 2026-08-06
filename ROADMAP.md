@@ -83,9 +83,15 @@ published on 2026-08-05.
 - [x] Before modifying the reorder-plan candidate, pre-register a narrow
   nearly ordered peak-memory hypothesis that preserves the failed canonical
   record and every original performance threshold.
-- [ ] Replace only the eager exact-list/tuple snapshot, validate the frozen
+- [x] Replace only the eager exact-list/tuple snapshot, validate the frozen
   safety gates, and execute the single pre-registered memory-continuation run
-  without weakening the original decision criteria.
+  without weakening the original decision criteria. Every original and
+  focused local gate passed; the earlier failed result remains preserved.
+- [ ] Run hosted source-build, sanitizer, strict-documentation, and build-only
+  wheel matrices for the exact passing reorder-plan continuation commit.
+- [ ] Complete a final adversarial API promotion review only after those
+  hosted portability gates pass; do not expose or release the candidate
+  automatically.
 - [x] Prototype stable native keyless `reverse=True` for both public operation
   shapes and record the first local benchmark gate.
 - [x] Validate the keyless reverse candidate in the supported cross-platform

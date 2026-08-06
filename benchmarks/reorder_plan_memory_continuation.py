@@ -144,7 +144,8 @@ def render_markdown(payload, json_name, markdown_name):
             f"(maximum `{memory['median_maximum']:.2f}x`).",
             f"- Same-seed RSS ratios: `{ratios}`; "
             f"{memory['paired_pass_count']} of "
-            f"{memory['paired_required']} required pairs passed.",
+            f"{len(memory['paired_ratios'])} pairs passed; at least "
+            f"{memory['paired_required']} were required.",
             "- Nearly ordered time ratios at 100,000 and 1,000,000: "
             + ", ".join(
                 f"`{size}: {ratio:.2f}x`"

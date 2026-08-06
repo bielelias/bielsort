@@ -111,6 +111,13 @@ Python against a fixed `1.10x` maximum. This strengthens the evidence for the
 intended niche without converting it into a general-purpose or market-demand
 claim.
 
+A separately pre-registered snapshot-removal continuation later resolved that
+specific local memory control without weakening it: nearly ordered RSS reached
+`0.9928x` direct Python, while all original complete-flow gates passed again.
+This improves implementation readiness, but it still does not establish
+external demand or justify presenting the candidate as a general replacement
+for existing sorting and columnar tools.
+
 ## Recommended 0.3 discovery candidate
 
 The API and usability review is now pre-registered in the

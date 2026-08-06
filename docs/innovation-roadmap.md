@@ -16,8 +16,10 @@ protocol is now frozen in the
 implementation completed the unchanged canonical run: every time gate and the
 disordered-memory targets passed, but the overall decision failed because the
 nearly ordered memory control reached `1.1205x` direct Python against a
-`1.10x` ceiling. The next permissible step is a separately pre-registered,
-narrow memory hypothesis—not public API or release work.
+`1.10x` ceiling. A separately pre-registered snapshot-removal continuation
+then passed every original and focused local gate, reducing that control to
+`0.9928x` while preserving the failed record. The next step is hosted
+portability and final API review—not automatic public API or release work.
 
 ## Priority 1: stable compact top-k
 

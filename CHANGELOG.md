@@ -135,6 +135,12 @@ release.
   sequences, and added safety, route, evaluator, and gate tests. A dedicated
   harness is ready for its single complete decision run; no result is claimed
   before that clean committed execution.
+- Recorded a passing single-run memory continuation without weakening any
+  gate. Nearly ordered median RSS fell to `0.9928x` direct Python, all three
+  paired samples passed the `1.10x` bound, and the 100,000/one-million time
+  ratios passed at `1.29x`/`0.97x`. All original time, memory, and compact-
+  payload gates also passed; the prior failed result remains versioned and no
+  public API or release is approved.
 
 ### Fixed
 

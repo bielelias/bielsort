@@ -130,3 +130,26 @@ PyPI operation.
 A failure is preserved beside the original failed result. Thresholds cannot
 be changed after execution, and an unchanged implementation cannot receive a
 second decision run merely because of unfavorable measurements.
+
+## Canonical continuation result
+
+The single continuation run started from clean implementation commit
+`9cf2804` and passed every original and focused local gate. The complete
+[versioned report](https://github.com/bielelias/bielsort/blob/research/reorder-plan-0.3/benchmarks/results/2026-08-06-reorder-plan-memory-continuation.md)
+retains all samples and environment metadata.
+
+At one million nearly ordered records, median candidate/direct-Python
+incremental peak RSS fell from the earlier failed `1.1205x` to `0.9928x`,
+below the new `1.05x` ceiling. All three same-seed ratios passed the `1.10x`
+bound (`0.8799x`, `0.9928x`, and `0.9958x`). Candidate/direct-Python time was
+`1.29x` at 100,000 and `0.97x` at one million, clearing the `0.90x` floor.
+
+Every original time gate passed again. At one million records, the three
+disordered workflows were `5.56x–6.79x` faster than direct Python and used
+`0.39x–0.50x` its incremental peak RSS. The compact result remained a
+read-only four-byte buffer with exactly 4,000,000 payload bytes.
+
+This pass supports the allocation hypothesis and authorizes only hosted
+portability validation followed by a final API review. The original failed
+canonical result remains valid evidence. No public export, version, merge,
+tag, TestPyPI upload, PyPI upload, or release is approved by this result.

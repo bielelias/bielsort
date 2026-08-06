@@ -427,7 +427,18 @@ materialized reusable sequences, source resizing during generic comparison,
 and the frozen focused-gate calculation. The dedicated continuation harness
 is implemented. All 212 optimized and locally sanitized tests pass, along with
 warning-clean compilation, strict typing/stub comparison, and strict
-documentation. Its single clean-tree decision run remains pending.
+documentation.
+
+The single clean-tree
+[memory-continuation result](https://github.com/bielelias/bielsort/blob/research/reorder-plan-0.3/benchmarks/results/2026-08-06-reorder-plan-memory-continuation.md)
+passed without changing a gate. Nearly ordered median RSS reached `0.9928x`
+direct Python, all three paired ratios stayed below `1.10x`, and its time
+ratios were `1.29x` at 100,000 and `0.97x` at one million. All original gates
+also passed: the three disordered one-million-record flows measured
+`5.56x–6.79x` direct Python and `0.39x–0.50x` its incremental peak RSS. The
+earlier failed canonical result remains preserved. Hosted source-build,
+sanitizer, documentation, and build-only wheel matrices plus a final API
+review are still required before any promotion decision.
 
 ## Resume checklist
 

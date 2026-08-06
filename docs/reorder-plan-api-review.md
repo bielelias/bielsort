@@ -369,7 +369,11 @@ fallback—and must retain this failed canonical record.
 That separate hypothesis is now frozen in the
 [nearly ordered memory continuation](reorder-plan-memory-continuation.md). It
 targets only the eager exact-list/tuple snapshot, retains all original gates,
-and adds a stricter `1.05x` focused memory ceiling before implementation.
+and adds a stricter `1.05x` focused memory ceiling. Its single clean-tree run
+passed every original and focused local gate: nearly ordered memory reached
+`0.9928x` direct Python and all three paired samples remained below `1.10x`.
+This later pass preserves the failed original record and authorizes only
+hosted portability validation and final API review.
 
 ## Why this is a credible differential, not an exclusivity claim
 
