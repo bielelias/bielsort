@@ -234,6 +234,13 @@ Seven rotated timing samples and three isolated peak-RSS workers are retained
 for every case. Passing the local gate authorizes only portability and final
 API review, not a public symbol or release.
 
+The first canonical attempt is retained as invalid because subtracting a
+post-input `ru_maxrss` high-water mark produced zero for every algorithm. The
+[invalid record](results/2026-08-06-reorder-plan-canonical-invalid-ru-maxrss.md)
+freezes the diagnosis and replacement measurement before a corrected run.
+The replacement uses a worker-ready checkpoint and parent-sampled Linux RSS;
+all workloads, repetitions, baselines, and gates remain unchanged.
+
 ## Research: stable compact top-k
 
 The private top-k prototype compares stable reusable index selection against

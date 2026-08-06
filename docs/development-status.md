@@ -380,6 +380,15 @@ sizes, workloads, repetition counts, optional baselines, output artifacts, and
 a clean committed tree are present. Only smoke validation has run so far; the
 single canonical decision remains the next action.
 
+The first attempt completed the unchanged timing grid but cannot be a decision
+run: every memory worker produced `0 / 0` because it subtracted a post-input
+`ru_maxrss` high-water mark, and Markdown generation then rejected the
+undefined ratio. Its JSON and diagnosis are retained in the
+[invalid-attempt record](https://github.com/bielelias/bielsort/blob/research/reorder-plan-0.3/benchmarks/results/2026-08-06-reorder-plan-canonical-invalid-ru-maxrss.md).
+The corrected, pre-registered memory method waits at a child-ready checkpoint
+and is sampled by the Linux parent every 0.5 ms. No workload, threshold, or
+algorithm changed; one corrected canonical run remains pending.
+
 ## Resume checklist
 
 Start from the repository root and inspect the current evidence:

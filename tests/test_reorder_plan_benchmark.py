@@ -1,3 +1,4 @@
+import sys
 import unittest
 
 from benchmarks import reorder_plan_candidate as benchmark
@@ -92,6 +93,30 @@ class ReorderPlanBenchmarkTests(unittest.TestCase):
             "readonly"
         ] = False
         self.assertFalse(benchmark.evaluate_memory_gates(rows)["passed"])
+
+    @unittest.skipUnless(
+        sys.platform.startswith("linux"),
+        "parent-sampled RSS is a Linux benchmark probe",
+    )
+    def test_parent_samples_after_worker_ready_checkpoint(self):
+        sample = benchmark.run_memory_child(
+            benchmark.CANDIDATE,
+            benchmark.EVENT,
+            10_000,
+            benchmark.workload_seed(benchmark.EVENT, 10_000),
+        )
+
+        self.assertEqual(sample["measurement"], "parent-sampled-linux-rss")
+        self.assertGreater(sample["baseline_current_rss_bytes"], 0)
+        self.assertGreaterEqual(
+            sample["sampled_peak_rss_bytes"],
+            sample["baseline_current_rss_bytes"],
+        )
+        self.assertGreaterEqual(sample["incremental_peak_bytes"], 0)
+
+    def test_markdown_ratio_handles_zero_denominator(self):
+        self.assertEqual(benchmark.format_ratio(None), "n/a")
+        self.assertEqual(benchmark.format_ratio(0.5), "0.50x")
 
 
 if __name__ == "__main__":

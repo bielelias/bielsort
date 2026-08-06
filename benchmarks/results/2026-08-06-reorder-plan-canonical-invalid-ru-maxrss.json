@@ -1,0 +1,2187 @@
+{
+  "schema_version": 1,
+  "benchmark": "compact-reusable-reorder-plan-candidate",
+  "canonical": true,
+  "git": {
+    "commit": "b545851c65b1bfbe8585f87eb7a2c0cc3a4e7633",
+    "dirty": false
+  },
+  "environment": {
+    "python": "3.11.2 (main, Apr  8 2026, 01:58:00) [GCC 12.2.0]",
+    "python_compiler": "GCC 12.2.0",
+    "python_cflags": "-Wsign-compare -DNDEBUG -g -fwrapv -O2 -Wall -g   -fstack-protector-strong -Wformat -Werror=format-security  -g -fwrapv -O2   ",
+    "project_optimized_compile_flags": [
+      "-O3"
+    ],
+    "platform": "Linux-6.7.0-keepos-x86_64-with-glibc2.36",
+    "machine": "x86_64",
+    "cpu": "13th Gen Intel(R) Core(TM) i5-1334U",
+    "numpy": "2.4.6",
+    "more_itertools": "11.1.0"
+  },
+  "configuration": {
+    "sizes": [
+      10000,
+      100000,
+      1000000
+    ],
+    "workloads": [
+      "event-batch",
+      "event-batch-nearly-ordered",
+      "ranking-export",
+      "simulation-columns"
+    ],
+    "repetitions": 7,
+    "memory_repetitions": 3,
+    "algorithms": [
+      "python-indices",
+      "biel-reorder-plan",
+      "more-itertools-sort-together",
+      "numpy-python-e2e",
+      "numpy-resident"
+    ],
+    "seeds": {
+      "event-batch-10000": 90600,
+      "event-batch-100000": 180600,
+      "event-batch-1000000": 1080600,
+      "event-batch-nearly-ordered-10000": 10090600,
+      "event-batch-nearly-ordered-100000": 10180600,
+      "event-batch-nearly-ordered-1000000": 11080600,
+      "ranking-export-10000": 20090600,
+      "ranking-export-100000": 20180600,
+      "ranking-export-1000000": 21080600,
+      "simulation-columns-10000": 30090600,
+      "simulation-columns-100000": 30180600,
+      "simulation-columns-1000000": 31080600
+    }
+  },
+  "time_rows": [
+    {
+      "workload": "event-batch",
+      "size": 10000,
+      "seed": 90600,
+      "sequence_count": 2,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.007540519996837247,
+          0.002257335996546317,
+          0.0020928989979438484,
+          0.002443364995997399,
+          0.0021581239998340607,
+          0.0023430159999406897,
+          0.0021685730025637895
+        ],
+        "biel-reorder-plan": [
+          0.0005489290051627904,
+          0.0006341299958876334,
+          0.000721040996722877,
+          0.0006600150009035133,
+          0.000640010999632068,
+          0.0008550929996999912,
+          0.0007759319996694103
+        ],
+        "more-itertools-sort-together": [
+          0.0024890080021577887,
+          0.0024658050024299882,
+          0.002845552997314371,
+          0.0027293639941490255,
+          0.0026671270024962723,
+          0.002634533004311379,
+          0.0024729319993639365
+        ],
+        "numpy-python-e2e": [
+          0.0018949369987240061,
+          0.0020049860031576827,
+          0.002477486996212974,
+          0.002062255000055302,
+          0.002078753001114819,
+          0.001992596000491176,
+          0.002012484001170378
+        ],
+        "numpy-resident": [
+          0.0007303509992198087,
+          0.0007190870019258,
+          0.0008145050014718436,
+          0.0007507180052925833,
+          0.0006971839975449257,
+          0.0007222980057122186,
+          0.0006917729988344945
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.002257335996546317,
+        "biel-reorder-plan": 0.0006600150009035133,
+        "more-itertools-sort-together": 0.002634533004311379,
+        "numpy-python-e2e": 0.002012484001170378,
+        "numpy-resident": 0.0007222980057122186
+      },
+      "candidate_speedup_over": {
+        "python-indices": 3.420128320502088,
+        "more-itertools-sort-together": 3.9916259489631174,
+        "numpy-python-e2e": 3.049148880579126,
+        "numpy-resident": 1.0943660442920908
+      },
+      "execution_order": [
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ]
+      ]
+    },
+    {
+      "workload": "event-batch-nearly-ordered",
+      "size": 10000,
+      "seed": 10090600,
+      "sequence_count": 2,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.0004722180019598454,
+          0.00047039699711604044,
+          0.0007223389984574169,
+          0.0004861730049015023,
+          0.00046379400009755045,
+          0.000504490002640523,
+          0.0006079770028009079
+        ],
+        "biel-reorder-plan": [
+          0.0004829889949178323,
+          0.0005105200034449808,
+          0.0005297699972288683,
+          0.0003987419986515306,
+          0.00040175200410885736,
+          0.0003898630020557903,
+          0.0004929540009470657
+        ],
+        "more-itertools-sort-together": [
+          0.000998610004899092,
+          0.0009643930025049485,
+          0.0009257379933842458,
+          0.000789014004112687,
+          0.0008518009999534115,
+          0.0009185769959003665,
+          0.0009835419987211935
+        ],
+        "numpy-python-e2e": [
+          0.001271405999432318,
+          0.0012526339996838942,
+          0.001376986998366192,
+          0.0012784940045094118,
+          0.0013580539962276816,
+          0.001334304004558362,
+          0.0013145769989932887
+        ],
+        "numpy-resident": [
+          0.00016817000141600147,
+          0.00021425100567284971,
+          0.00017410199507139623,
+          0.00015197500033536926,
+          0.00022445400099968538,
+          0.00015936600539134815,
+          0.00021655199816450477
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.0004861730049015023,
+        "biel-reorder-plan": 0.0004829889949178323,
+        "more-itertools-sort-together": 0.0009257379933842458,
+        "numpy-python-e2e": 0.0013145769989932887,
+        "numpy-resident": 0.00017410199507139623
+      },
+      "candidate_speedup_over": {
+        "python-indices": 1.0065923033799387,
+        "more-itertools-sort-together": 1.9166854796385897,
+        "numpy-python-e2e": 2.721753524046503,
+        "numpy-resident": 0.3604678303302025
+      },
+      "execution_order": [
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ]
+      ]
+    },
+    {
+      "workload": "ranking-export",
+      "size": 10000,
+      "seed": 20090600,
+      "sequence_count": 3,
+      "reverse": true,
+      "samples_s": {
+        "python-indices": [
+          0.0017294759963988326,
+          0.0017671399982646108,
+          0.0016403199988417327,
+          0.0016835280039231293,
+          0.0015525319977314211,
+          0.001598375994944945,
+          0.002617273996293079
+        ],
+        "biel-reorder-plan": [
+          0.00025596000341465697,
+          0.000256803999945987,
+          0.0002756930043688044,
+          0.0002572070006863214,
+          0.0002575249964138493,
+          0.0002769450002233498,
+          0.00026985699514625594
+        ],
+        "more-itertools-sort-together": [
+          0.002773032996628899,
+          0.0019550479992176406,
+          0.001976455001567956,
+          0.002246953001304064,
+          0.001980995002668351,
+          0.0019329630013089627,
+          0.0027628250027191825
+        ],
+        "numpy-python-e2e": [
+          0.0020621689982363023,
+          0.002007375005632639,
+          0.0019402550024096854,
+          0.0018990349999512546,
+          0.0019551220029825345,
+          0.00204544000007445,
+          0.001982565001526382
+        ],
+        "numpy-resident": [
+          0.0008802619995549321,
+          0.0007052600049064495,
+          0.0007363279946730472,
+          0.0007299790013348684,
+          0.0007172280020313337,
+          0.0006909299991093576,
+          0.0007256669996422715
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.0016835280039231293,
+        "biel-reorder-plan": 0.0002575249964138493,
+        "more-itertools-sort-together": 0.001980995002668351,
+        "numpy-python-e2e": 0.001982565001526382,
+        "numpy-resident": 0.0007256669996422715
+      },
+      "candidate_speedup_over": {
+        "python-indices": 6.537338228781708,
+        "more-itertools-sort-together": 7.692437744896969,
+        "numpy-python-e2e": 7.69853423603334,
+        "numpy-resident": 2.817850731958097
+      },
+      "execution_order": [
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ]
+      ]
+    },
+    {
+      "workload": "simulation-columns",
+      "size": 10000,
+      "seed": 30090600,
+      "sequence_count": 5,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.005671648003044538,
+          0.0036732869994011708,
+          0.002699942997423932,
+          0.002660652004124131,
+          0.002844450995326042,
+          0.002818054999806918,
+          0.002956015996460337
+        ],
+        "biel-reorder-plan": [
+          0.0013202430054661818,
+          0.0005697269953088835,
+          0.0005893130000913516,
+          0.0007325440019485541,
+          0.0007420460024150088,
+          0.000641578997601755,
+          0.0005970299971522763
+        ],
+        "more-itertools-sort-together": [
+          0.004472788001294248,
+          0.0031540019990643486,
+          0.0037697730003856122,
+          0.0030779859953327104,
+          0.003208819995052181,
+          0.00398949500231538,
+          0.004108870998607017
+        ],
+        "numpy-python-e2e": [
+          0.005478803999722004,
+          0.002904082997702062,
+          0.0026785930022015236,
+          0.00263275299948873,
+          0.002962993996334262,
+          0.0026316209987271577,
+          0.003160125001159031
+        ],
+        "numpy-resident": [
+          0.0023681380043854006,
+          0.0012485959960031323,
+          0.001089852004952263,
+          0.0012271809973753989,
+          0.0010393519987701438,
+          0.001106209005229175,
+          0.0015528090007137507
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.002844450995326042,
+        "biel-reorder-plan": 0.000641578997601755,
+        "more-itertools-sort-together": 0.0037697730003856122,
+        "numpy-python-e2e": 0.002904082997702062,
+        "numpy-resident": 0.0012271809973753989
+      },
+      "candidate_speedup_over": {
+        "python-indices": 4.433516380615171,
+        "more-itertools-sort-together": 5.87577369969584,
+        "numpy-python-e2e": 4.526462070232391,
+        "numpy-resident": 1.912751199716083
+      },
+      "execution_order": [
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ]
+      ]
+    },
+    {
+      "workload": "event-batch",
+      "size": 100000,
+      "seed": 180600,
+      "sequence_count": 2,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.029973407996294554,
+          0.030395745998248458,
+          0.03276854500290938,
+          0.03476015599881066,
+          0.030594297997595277,
+          0.03174310499889543,
+          0.029794811001920607
+        ],
+        "biel-reorder-plan": [
+          0.00866536900139181,
+          0.017090324996388517,
+          0.008565342999645509,
+          0.009619686999940313,
+          0.00846204499976011,
+          0.009702083996671718,
+          0.008799073002592195
+        ],
+        "more-itertools-sort-together": [
+          0.04360652399918763,
+          0.04581909300031839,
+          0.040136770003300626,
+          0.04148807799356291,
+          0.04123811599856708,
+          0.048842811993381474,
+          0.041066917998250574
+        ],
+        "numpy-python-e2e": [
+          0.022082401999796275,
+          0.022382312003173865,
+          0.024298432006617077,
+          0.022151081000629347,
+          0.02358165899931919,
+          0.02476142899831757,
+          0.023048467002809048
+        ],
+        "numpy-resident": [
+          0.009058714000275359,
+          0.009013930000946857,
+          0.009925107005983591,
+          0.009114241998759098,
+          0.00971028699859744,
+          0.009385990000737365,
+          0.009218956001859624
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.030594297997595277,
+        "biel-reorder-plan": 0.008799073002592195,
+        "more-itertools-sort-together": 0.04148807799356291,
+        "numpy-python-e2e": 0.023048467002809048,
+        "numpy-resident": 0.009218956001859624
+      },
+      "candidate_speedup_over": {
+        "python-indices": 3.4769910408269413,
+        "more-itertools-sort-together": 4.715051003820582,
+        "numpy-python-e2e": 2.6194199088948347,
+        "numpy-resident": 1.04771900393868
+      },
+      "execution_order": [
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ]
+      ]
+    },
+    {
+      "workload": "event-batch-nearly-ordered",
+      "size": 100000,
+      "seed": 10180600,
+      "sequence_count": 2,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.006719564997183625,
+          0.005915349000133574,
+          0.005655073997331783,
+          0.006939715000044089,
+          0.006034803998772986,
+          0.005998622000333853,
+          0.0064092540051206015
+        ],
+        "biel-reorder-plan": [
+          0.007790240000758786,
+          0.006079777005652431,
+          0.00604353300150251,
+          0.005471429998578969,
+          0.006329722004011273,
+          0.0061266030024853535,
+          0.0070684199963579886
+        ],
+        "more-itertools-sort-together": [
+          0.01730284500081325,
+          0.01660650799749419,
+          0.017051962000550702,
+          0.017056955002772156,
+          0.015995478999684565,
+          0.015306186003726907,
+          0.01649334200192243
+        ],
+        "numpy-python-e2e": [
+          0.013850711002305616,
+          0.01303842400375288,
+          0.01286575999984052,
+          0.013664669000718277,
+          0.01276425600372022,
+          0.01292232900595991,
+          0.013187228003516793
+        ],
+        "numpy-resident": [
+          0.001986149996810127,
+          0.001859440999396611,
+          0.0018165259971283376,
+          0.001969314005691558,
+          0.001846507002483122,
+          0.0019063919971813448,
+          0.002127068000845611
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.006034803998772986,
+        "biel-reorder-plan": 0.0061266030024853535,
+        "more-itertools-sort-together": 0.01660650799749419,
+        "numpy-python-e2e": 0.01303842400375288,
+        "numpy-resident": 0.0019063919971813448
+      },
+      "candidate_speedup_over": {
+        "python-indices": 0.9850163290039966,
+        "more-itertools-sort-together": 2.7105572191894103,
+        "numpy-python-e2e": 2.1281653141983634,
+        "numpy-resident": 0.3111662362336823
+      },
+      "execution_order": [
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ]
+      ]
+    },
+    {
+      "workload": "ranking-export",
+      "size": 100000,
+      "seed": 20180600,
+      "sequence_count": 3,
+      "reverse": true,
+      "samples_s": {
+        "python-indices": [
+          0.023626125002920162,
+          0.023307823001232464,
+          0.02837565200024983,
+          0.023185662998002954,
+          0.02676792100101011,
+          0.02274044800287811,
+          0.02649197800201364
+        ],
+        "biel-reorder-plan": [
+          0.006981967999308836,
+          0.004062515996338334,
+          0.005161144996236544,
+          0.003903466997144278,
+          0.005344108001736458,
+          0.004091292001248803,
+          0.004849846998695284
+        ],
+        "more-itertools-sort-together": [
+          0.03810065200377721,
+          0.037080977999721654,
+          0.03717182699620025,
+          0.04320717700466048,
+          0.03625214599742321,
+          0.03990847100067185,
+          0.036810131001402624
+        ],
+        "numpy-python-e2e": [
+          0.02316477800195571,
+          0.026371480998932384,
+          0.022609410996665247,
+          0.02849077399878297,
+          0.022666477001621388,
+          0.02629362300649518,
+          0.02413797000190243
+        ],
+        "numpy-resident": [
+          0.010898956003075,
+          0.010897116000705864,
+          0.010619307999149896,
+          0.00949972600210458,
+          0.009363121003843844,
+          0.010633842000970617,
+          0.010634990001562983
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.023626125002920162,
+        "biel-reorder-plan": 0.004849846998695284,
+        "more-itertools-sort-together": 0.03717182699620025,
+        "numpy-python-e2e": 0.02413797000190243,
+        "numpy-resident": 0.010633842000970617
+      },
+      "candidate_speedup_over": {
+        "python-indices": 4.871519660161673,
+        "more-itertools-sort-together": 7.664536016538315,
+        "numpy-python-e2e": 4.977058040881718,
+        "numpy-resident": 2.192613912115445
+      },
+      "execution_order": [
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ]
+      ]
+    },
+    {
+      "workload": "simulation-columns",
+      "size": 100000,
+      "seed": 30180600,
+      "sequence_count": 5,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.04281114699551836,
+          0.044654506993538234,
+          0.04257589099870529,
+          0.05583537899656221,
+          0.045438184002705384,
+          0.04300378100015223,
+          0.04844450899690855
+        ],
+        "biel-reorder-plan": [
+          0.010825463999935891,
+          0.011312620001262985,
+          0.00905023099767277,
+          0.011038432996429037,
+          0.009018132004712243,
+          0.01173977800499415,
+          0.01091239599918481
+        ],
+        "more-itertools-sort-together": [
+          0.07078415199794108,
+          0.06204404200252611,
+          0.06162589899759041,
+          0.061802819996955805,
+          0.06127910999930464,
+          0.05890282999462215,
+          0.0642307529997197
+        ],
+        "numpy-python-e2e": [
+          0.036206652999680955,
+          0.04040883600100642,
+          0.039257036994968075,
+          0.03450058000453282,
+          0.04116127399902325,
+          0.037168106995522976,
+          0.03963791800197214
+        ],
+        "numpy-resident": [
+          0.017094914997869637,
+          0.01746865199675085,
+          0.014367752002726775,
+          0.01741551399754826,
+          0.01772438899934059,
+          0.01726403099746676,
+          0.018175420998886693
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.044654506993538234,
+        "biel-reorder-plan": 0.01091239599918481,
+        "more-itertools-sort-together": 0.061802819996955805,
+        "numpy-python-e2e": 0.039257036994968075,
+        "numpy-resident": 0.01741551399754826
+      },
+      "candidate_speedup_over": {
+        "python-indices": 4.092090041167317,
+        "more-itertools-sort-together": 5.663542635510356,
+        "numpy-python-e2e": 3.5974718107646293,
+        "numpy-resident": 1.5959386003632248
+      },
+      "execution_order": [
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ]
+      ]
+    },
+    {
+      "workload": "event-batch",
+      "size": 1000000,
+      "seed": 1080600,
+      "sequence_count": 2,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.5318898469995474,
+          0.5170452840029611,
+          0.5258515519963112,
+          0.5259635699985665,
+          0.5213349330006167,
+          0.5252285440001287,
+          0.5586706440008129
+        ],
+        "biel-reorder-plan": [
+          0.10423279499809723,
+          0.12445069100067485,
+          0.11116178199881688,
+          0.10651867600245168,
+          0.10646232099679764,
+          0.10359592999884626,
+          0.10794624900154304
+        ],
+        "more-itertools-sort-together": [
+          0.6476130739974906,
+          0.7000935690011829,
+          0.7904161529950215,
+          0.6650789549967158,
+          0.6570066869971924,
+          0.6993714609998278,
+          0.6604564799999935
+        ],
+        "numpy-python-e2e": [
+          0.2984037529968191,
+          0.2892062190003344,
+          0.3079470860029687,
+          0.30691031699825544,
+          0.30446542999561643,
+          0.35113307999563403,
+          0.29898605500056874
+        ],
+        "numpy-resident": [
+          0.11571671400452033,
+          0.12277710699709132,
+          0.11883045799913816,
+          0.12092938900605077,
+          0.11722944299981464,
+          0.1185737589985365,
+          0.11675982900487725
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.5258515519963112,
+        "biel-reorder-plan": 0.10651867600245168,
+        "more-itertools-sort-together": 0.6650789549967158,
+        "numpy-python-e2e": 0.30446542999561643,
+        "numpy-resident": 0.1185737589985365
+      },
+      "candidate_speedup_over": {
+        "python-indices": 4.93670754961513,
+        "more-itertools-sort-together": 6.243777898454239,
+        "numpy-python-e2e": 2.858329087648524,
+        "numpy-resident": 1.1131734213050803
+      },
+      "execution_order": [
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ]
+      ]
+    },
+    {
+      "workload": "event-batch-nearly-ordered",
+      "size": 1000000,
+      "seed": 11080600,
+      "sequence_count": 2,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.07392828400043072,
+          0.07834876899869414,
+          0.0766893859981792,
+          0.07532963000267046,
+          0.08038822899834486,
+          0.07572348899702774,
+          0.07721348300401587
+        ],
+        "biel-reorder-plan": [
+          0.09265506899828324,
+          0.08515321999584557,
+          0.08306195800105343,
+          0.0794065669979318,
+          0.09805820200563176,
+          0.08344134700018913,
+          0.08938551699975505
+        ],
+        "more-itertools-sort-together": [
+          0.22341139600030147,
+          0.19329141200432787,
+          0.17896038299659267,
+          0.18285048099642154,
+          0.1821535249982844,
+          0.18580691699753515,
+          0.19453348199749598
+        ],
+        "numpy-python-e2e": [
+          0.134492915996816,
+          0.13680722899880493,
+          0.13624180299666477,
+          0.13783743800013326,
+          0.1447015290032141,
+          0.13047836500481935,
+          0.13491377099853707
+        ],
+        "numpy-resident": [
+          0.024224617001891602,
+          0.021444537000206765,
+          0.023007356001471635,
+          0.025211405001755338,
+          0.023649987997487187,
+          0.03661653400195064,
+          0.023269188997801393
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.0766893859981792,
+        "biel-reorder-plan": 0.08515321999584557,
+        "more-itertools-sort-together": 0.18580691699753515,
+        "numpy-python-e2e": 0.13624180299666477,
+        "numpy-resident": 0.023649987997487187
+      },
+      "candidate_speedup_over": {
+        "python-indices": 0.900604651261816,
+        "more-itertools-sort-together": 2.1820304271124478,
+        "numpy-python-e2e": 1.5999606709330745,
+        "numpy-resident": 0.27773451196139165
+      },
+      "execution_order": [
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ]
+      ]
+    },
+    {
+      "workload": "ranking-export",
+      "size": 1000000,
+      "seed": 21080600,
+      "sequence_count": 3,
+      "reverse": true,
+      "samples_s": {
+        "python-indices": [
+          0.6024031609995291,
+          0.5013755789987044,
+          0.808899753006699,
+          0.48754916599864373,
+          0.6270902190008201,
+          0.4921756430048845,
+          0.4897951160019147
+        ],
+        "biel-reorder-plan": [
+          0.08119448900106363,
+          0.0877099349963828,
+          0.08850514300138457,
+          0.08422331600013422,
+          0.08187983199604787,
+          0.08218327799841063,
+          0.08190644400019664
+        ],
+        "more-itertools-sort-together": [
+          0.6316579649937921,
+          0.5985892669996247,
+          0.6508299859997351,
+          0.6538578079998842,
+          0.5904972970020026,
+          0.5981292930009658,
+          0.6912834240065422
+        ],
+        "numpy-python-e2e": [
+          0.36067655400256626,
+          0.3823919360002037,
+          0.38373918599972967,
+          0.3731811789984931,
+          0.3536098629992921,
+          0.35574430500128074,
+          0.3455419210004038
+        ],
+        "numpy-resident": [
+          0.1426841489956132,
+          0.1505726220057113,
+          0.17202206799993291,
+          0.1610531539990916,
+          0.14711492400238058,
+          0.19684842000424396,
+          0.1479828660012572
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.5013755789987044,
+        "biel-reorder-plan": 0.08218327799841063,
+        "more-itertools-sort-together": 0.6316579649937921,
+        "numpy-python-e2e": 0.36067655400256626,
+        "numpy-resident": 0.1505726220057113
+      },
+      "candidate_speedup_over": {
+        "python-indices": 6.1007006681870335,
+        "more-itertools-sort-together": 7.685967028548167,
+        "numpy-python-e2e": 4.388685421011577,
+        "numpy-resident": 1.8321564395207415
+      },
+      "execution_order": [
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ]
+      ]
+    },
+    {
+      "workload": "simulation-columns",
+      "size": 1000000,
+      "seed": 31080600,
+      "sequence_count": 5,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.86489705000713,
+          0.766787401997135,
+          0.874629500998708,
+          0.7669771549990401,
+          0.8215937920031138,
+          0.77320598600636,
+          0.770209727998008
+        ],
+        "biel-reorder-plan": [
+          0.13050392999866745,
+          0.13078461200348102,
+          0.13286532799975248,
+          0.1426008010021178,
+          0.14878386499913177,
+          0.14303833700250834,
+          0.13707863300078316
+        ],
+        "more-itertools-sort-together": [
+          1.041089786995144,
+          0.8742080000010901,
+          0.8711170850001508,
+          0.8691025209991494,
+          0.8713238300042576,
+          0.9129265430019586,
+          0.8740174980048323
+        ],
+        "numpy-python-e2e": [
+          0.5065506590035511,
+          0.5066340620032861,
+          0.6269792480015894,
+          0.5313197440045769,
+          0.511407104000682,
+          0.507675458000449,
+          0.50814369499858
+        ],
+        "numpy-resident": [
+          0.2500512249971507,
+          0.21415347899892367,
+          0.2113319580021198,
+          0.211076576000778,
+          0.22242617199663073,
+          0.2242212369965273,
+          0.2231949880006141
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.77320598600636,
+        "biel-reorder-plan": 0.13707863300078316,
+        "more-itertools-sort-together": 0.8740174980048323,
+        "numpy-python-e2e": 0.50814369499858,
+        "numpy-resident": 0.22242617199663073
+      },
+      "candidate_speedup_over": {
+        "python-indices": 5.640601814302762,
+        "more-itertools-sort-together": 6.376030157813427,
+        "numpy-python-e2e": 3.7069504114158836,
+        "numpy-resident": 1.622617377540962
+      },
+      "execution_order": [
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ]
+      ]
+    }
+  ],
+  "memory_rows": [
+    {
+      "workload": "event-batch",
+      "size": 1000000,
+      "median_incremental_peak_bytes": {
+        "python-indices": 0,
+        "biel-reorder-plan": 0,
+        "more-itertools-sort-together": 0,
+        "numpy-python-e2e": 0,
+        "numpy-resident": 0
+      },
+      "candidate_memory_ratio_to": {
+        "python-indices": null,
+        "more-itertools-sort-together": null,
+        "numpy-python-e2e": null,
+        "numpy-resident": null
+      },
+      "raw": {
+        "python-indices": [
+          {
+            "algorithm": "python-indices",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080600,
+            "elapsed_s": 0.5216460350056877,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "python-indices",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080601,
+            "elapsed_s": 0.602083299003425,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "python-indices",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080602,
+            "elapsed_s": 0.5370216680021258,
+            "incremental_peak_bytes": 0
+          }
+        ],
+        "biel-reorder-plan": [
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080600,
+            "elapsed_s": 0.11029774400230963,
+            "incremental_peak_bytes": 0,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            }
+          },
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080601,
+            "elapsed_s": 0.10618080600397661,
+            "incremental_peak_bytes": 0,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            }
+          },
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080602,
+            "elapsed_s": 0.11235841699817684,
+            "incremental_peak_bytes": 0,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            }
+          }
+        ],
+        "more-itertools-sort-together": [
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080600,
+            "elapsed_s": 1.350612041002023,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080601,
+            "elapsed_s": 1.3682916479956475,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080602,
+            "elapsed_s": 1.391536618997634,
+            "incremental_peak_bytes": 0
+          }
+        ],
+        "numpy-python-e2e": [
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080600,
+            "elapsed_s": 0.3096898459989461,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080601,
+            "elapsed_s": 0.3038241489994107,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080602,
+            "elapsed_s": 0.3508178499978385,
+            "incremental_peak_bytes": 0
+          }
+        ],
+        "numpy-resident": [
+          {
+            "algorithm": "numpy-resident",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080600,
+            "elapsed_s": 0.13329323600191856,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "numpy-resident",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080601,
+            "elapsed_s": 0.14322415600327076,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "numpy-resident",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080602,
+            "elapsed_s": 0.1292093990050489,
+            "incremental_peak_bytes": 0
+          }
+        ]
+      }
+    },
+    {
+      "workload": "event-batch-nearly-ordered",
+      "size": 1000000,
+      "median_incremental_peak_bytes": {
+        "python-indices": 0,
+        "biel-reorder-plan": 0,
+        "more-itertools-sort-together": 0,
+        "numpy-python-e2e": 0,
+        "numpy-resident": 0
+      },
+      "candidate_memory_ratio_to": {
+        "python-indices": null,
+        "more-itertools-sort-together": null,
+        "numpy-python-e2e": null,
+        "numpy-resident": null
+      },
+      "raw": {
+        "python-indices": [
+          {
+            "algorithm": "python-indices",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080600,
+            "elapsed_s": 0.08034642400161829,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "python-indices",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080601,
+            "elapsed_s": 0.09577055100089638,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "python-indices",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080602,
+            "elapsed_s": 0.07690048099902924,
+            "incremental_peak_bytes": 0
+          }
+        ],
+        "biel-reorder-plan": [
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080600,
+            "elapsed_s": 0.08174911999958567,
+            "incremental_peak_bytes": 0,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            }
+          },
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080601,
+            "elapsed_s": 0.0825268269982189,
+            "incremental_peak_bytes": 0,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            }
+          },
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080602,
+            "elapsed_s": 0.08890817499923287,
+            "incremental_peak_bytes": 0,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            }
+          }
+        ],
+        "more-itertools-sort-together": [
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080600,
+            "elapsed_s": 0.5232974760001525,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080601,
+            "elapsed_s": 0.5191298919962719,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080602,
+            "elapsed_s": 0.5188575849970221,
+            "incremental_peak_bytes": 0
+          }
+        ],
+        "numpy-python-e2e": [
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080600,
+            "elapsed_s": 0.1406730829985463,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080601,
+            "elapsed_s": 0.14333338100550463,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080602,
+            "elapsed_s": 0.13848907499777852,
+            "incremental_peak_bytes": 0
+          }
+        ],
+        "numpy-resident": [
+          {
+            "algorithm": "numpy-resident",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080600,
+            "elapsed_s": 0.022357836001901887,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "numpy-resident",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080601,
+            "elapsed_s": 0.021939656005997676,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "numpy-resident",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080602,
+            "elapsed_s": 0.023941218001709785,
+            "incremental_peak_bytes": 0
+          }
+        ]
+      }
+    },
+    {
+      "workload": "ranking-export",
+      "size": 1000000,
+      "median_incremental_peak_bytes": {
+        "python-indices": 0,
+        "biel-reorder-plan": 0,
+        "more-itertools-sort-together": 0,
+        "numpy-python-e2e": 0,
+        "numpy-resident": 0
+      },
+      "candidate_memory_ratio_to": {
+        "python-indices": null,
+        "more-itertools-sort-together": null,
+        "numpy-python-e2e": null,
+        "numpy-resident": null
+      },
+      "raw": {
+        "python-indices": [
+          {
+            "algorithm": "python-indices",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080600,
+            "elapsed_s": 0.4948320789990248,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "python-indices",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080601,
+            "elapsed_s": 0.5224838600042858,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "python-indices",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080602,
+            "elapsed_s": 0.5153027330015902,
+            "incremental_peak_bytes": 0
+          }
+        ],
+        "biel-reorder-plan": [
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080600,
+            "elapsed_s": 0.08749769799760543,
+            "incremental_peak_bytes": 0,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            }
+          },
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080601,
+            "elapsed_s": 0.08629195200046524,
+            "incremental_peak_bytes": 0,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            }
+          },
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080602,
+            "elapsed_s": 0.09525382099673152,
+            "incremental_peak_bytes": 0,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            }
+          }
+        ],
+        "more-itertools-sort-together": [
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080600,
+            "elapsed_s": 1.3455795449990546,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080601,
+            "elapsed_s": 1.3768673180020414,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080602,
+            "elapsed_s": 1.3362070619987207,
+            "incremental_peak_bytes": 0
+          }
+        ],
+        "numpy-python-e2e": [
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080600,
+            "elapsed_s": 0.3537769570029923,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080601,
+            "elapsed_s": 0.34892525800387375,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080602,
+            "elapsed_s": 0.41285573299683165,
+            "incremental_peak_bytes": 0
+          }
+        ],
+        "numpy-resident": [
+          {
+            "algorithm": "numpy-resident",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080600,
+            "elapsed_s": 0.14847651700256392,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "numpy-resident",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080601,
+            "elapsed_s": 0.15526228800445097,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "numpy-resident",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080602,
+            "elapsed_s": 0.1485957939949003,
+            "incremental_peak_bytes": 0
+          }
+        ]
+      }
+    },
+    {
+      "workload": "simulation-columns",
+      "size": 1000000,
+      "median_incremental_peak_bytes": {
+        "python-indices": 0,
+        "biel-reorder-plan": 0,
+        "more-itertools-sort-together": 0,
+        "numpy-python-e2e": 0,
+        "numpy-resident": 0
+      },
+      "candidate_memory_ratio_to": {
+        "python-indices": null,
+        "more-itertools-sort-together": null,
+        "numpy-python-e2e": null,
+        "numpy-resident": null
+      },
+      "raw": {
+        "python-indices": [
+          {
+            "algorithm": "python-indices",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080600,
+            "elapsed_s": 0.7883015839979635,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "python-indices",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080601,
+            "elapsed_s": 0.8230107089984813,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "python-indices",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080602,
+            "elapsed_s": 0.7804924290030613,
+            "incremental_peak_bytes": 0
+          }
+        ],
+        "biel-reorder-plan": [
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080600,
+            "elapsed_s": 0.13569490600639256,
+            "incremental_peak_bytes": 0,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            }
+          },
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080601,
+            "elapsed_s": 0.13491681999585126,
+            "incremental_peak_bytes": 0,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            }
+          },
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080602,
+            "elapsed_s": 0.1671464660030324,
+            "incremental_peak_bytes": 0,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            }
+          }
+        ],
+        "more-itertools-sort-together": [
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080600,
+            "elapsed_s": 1.706974339998851,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080601,
+            "elapsed_s": 1.7306391040037852,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080602,
+            "elapsed_s": 1.648435306000465,
+            "incremental_peak_bytes": 0
+          }
+        ],
+        "numpy-python-e2e": [
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080600,
+            "elapsed_s": 0.5101480990051641,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080601,
+            "elapsed_s": 0.5043610199936666,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080602,
+            "elapsed_s": 0.5118237849965226,
+            "incremental_peak_bytes": 0
+          }
+        ],
+        "numpy-resident": [
+          {
+            "algorithm": "numpy-resident",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080600,
+            "elapsed_s": 0.24481204399489798,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "numpy-resident",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080601,
+            "elapsed_s": 0.21498027800407726,
+            "incremental_peak_bytes": 0
+          },
+          {
+            "algorithm": "numpy-resident",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080602,
+            "elapsed_s": 0.24229928299610037,
+            "incremental_peak_bytes": 0
+          }
+        ]
+      }
+    }
+  ],
+  "decision": {
+    "time": {
+      "passed": true,
+      "direct_python": {
+        "passed": true,
+        "target_count_at_least_1_50x": 6,
+        "target_required": 5,
+        "disordered_large_floor_passed": true,
+        "nearly_ordered_floor_passed": true,
+        "small_input_floor_passed": true
+      },
+      "sort_together": {
+        "passed": true,
+        "target_count_at_least_1_25x": 6,
+        "target_required": 5,
+        "large_floor_passed": true
+      },
+      "numpy_python_e2e": {
+        "passed": true,
+        "target_count_at_least_1_00x": 6,
+        "target_required": 4,
+        "disordered_large_floor_passed": true
+      }
+    },
+    "memory": {
+      "passed": false,
+      "direct_python": {
+        "reduction_count_at_most_0_70x": 0,
+        "required": 2,
+        "regression_floor_passed": false
+      },
+      "sort_together": {
+        "reduction_count_at_most_0_70x": 0,
+        "required": 2,
+        "regression_floor_passed": false
+      },
+      "compact_payload_passed": true
+    },
+    "local_performance_passed": false,
+    "note": "A local pass authorizes only the remaining engineering and public-API promotion review; it does not authorize release."
+  }
+}

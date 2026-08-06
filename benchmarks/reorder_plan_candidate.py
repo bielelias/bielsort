@@ -11,6 +11,7 @@ import argparse
 import gc
 import importlib.metadata
 import json
+import os
 import platform
 import random
 import statistics
@@ -19,11 +20,6 @@ import sys
 import sysconfig
 import time
 from pathlib import Path
-
-try:
-    import resource
-except ImportError:  # pragma: no cover - unavailable on Windows
-    resource = None
 
 try:
     import more_itertools
@@ -71,11 +67,18 @@ def package_version(name):
         return None
 
 
-def peak_rss_bytes():
-    if resource is None:
-        raise RuntimeError("isolated peak RSS requires Linux or macOS")
-    peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-    return peak if sys.platform == "darwin" else peak * 1024
+def current_linux_rss_bytes(process_id):
+    """Read current RSS without relying on a process high-water mark."""
+    if not sys.platform.startswith("linux"):
+        raise RuntimeError("sampled RSS measurement currently requires Linux")
+    try:
+        statm = Path(f"/proc/{process_id}/statm").read_text(
+            encoding="ascii"
+        )
+    except FileNotFoundError:
+        return None
+    resident_pages = int(statm.split()[1])
+    return resident_pages * os.sysconf("SC_PAGE_SIZE")
 
 
 def rotate(items, offset):
@@ -397,11 +400,12 @@ def memory_worker(algorithm, workload_name, size, seed):
         else None
     )
     gc.collect()
-    baseline = peak_rss_bytes()
+    print(json.dumps({"event": "ready"}), flush=True)
+    if not sys.stdin.readline():
+        raise RuntimeError("memory controller closed before the start signal")
     started = time.perf_counter()
     order, outputs = run_algorithm(algorithm, workload, resident_arrays)
     elapsed = time.perf_counter() - started
-    incremental_peak = max(0, peak_rss_bytes() - baseline)
     expected = expected_order(workload)
     validate_result(
         algorithm,
@@ -417,7 +421,6 @@ def memory_worker(algorithm, workload_name, size, seed):
         "size": size,
         "seed": seed,
         "elapsed_s": elapsed,
-        "incremental_peak_bytes": incremental_peak,
     }
     if algorithm == CANDIDATE:
         view = memoryview(order)
@@ -430,7 +433,9 @@ def memory_worker(algorithm, workload_name, size, seed):
     return result
 
 
-def invoke_memory_worker(algorithm, workload, size, seed):
+def run_memory_child(algorithm, workload, size, seed):
+    if not sys.platform.startswith("linux"):
+        raise RuntimeError("sampled RSS measurement currently requires Linux")
     command = [
         sys.executable,
         str(Path(__file__).resolve()),
@@ -440,13 +445,64 @@ def invoke_memory_worker(algorithm, workload, size, seed):
         str(size),
         str(seed),
     ]
-    completed = subprocess.run(
+    process = subprocess.Popen(
         command,
-        check=True,
-        capture_output=True,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         text=True,
+        bufsize=1,
+        env={**os.environ, "PYTHONHASHSEED": "0"},
     )
-    return json.loads(completed.stdout)
+    ready_line = process.stdout.readline()
+    try:
+        ready = json.loads(ready_line)
+    except json.JSONDecodeError:
+        process.terminate()
+        stdout, stderr = process.communicate()
+        raise RuntimeError(
+            "memory worker did not provide its ready signal: "
+            f"{ready_line}{stdout}{stderr}"
+        )
+    if ready != {"event": "ready"}:
+        process.terminate()
+        process.communicate()
+        raise RuntimeError(f"unexpected memory-worker signal: {ready}")
+
+    baseline = current_linux_rss_bytes(process.pid)
+    if baseline is None:
+        process.terminate()
+        process.communicate()
+        raise RuntimeError("memory worker exited before sampling began")
+    sampled_peak = baseline
+    process.stdin.write("start\n")
+    process.stdin.flush()
+    process.stdin.close()
+    process.stdin = None
+    while process.poll() is None:
+        current = current_linux_rss_bytes(process.pid)
+        if current is not None and current > sampled_peak:
+            sampled_peak = current
+        time.sleep(0.0005)
+    stdout, stderr = process.communicate()
+    if process.returncode:
+        raise subprocess.CalledProcessError(
+            process.returncode,
+            command,
+            output=stdout,
+            stderr=stderr,
+        )
+    payload = json.loads(stdout.strip().splitlines()[-1])
+    payload.update(
+        {
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "baseline_current_rss_bytes": baseline,
+            "sampled_peak_rss_bytes": sampled_peak,
+            "incremental_peak_bytes": max(0, sampled_peak - baseline),
+        }
+    )
+    return payload
 
 
 def run_memory_matrix(size, repetitions, workloads, algorithms):
@@ -462,7 +518,7 @@ def run_memory_matrix(size, repetitions, workloads, algorithms):
         medians = {}
         for algorithm in algorithms:
             samples = [
-                invoke_memory_worker(
+                run_memory_child(
                     algorithm,
                     workload_name,
                     size,
@@ -688,6 +744,10 @@ def environment_metadata():
     }
 
 
+def format_ratio(value):
+    return "n/a" if value is None else f"{value:.2f}x"
+
+
 def render_markdown(payload, json_name):
     time_gate = payload["decision"]["time"]
     memory_gate = payload["decision"]["memory"]
@@ -749,7 +809,8 @@ def render_markdown(payload, json_name):
             f"| {row['workload']} | {medians[PYTHON] / 2**20:.2f} MiB | "
             f"{medians[CANDIDATE] / 2**20:.2f} MiB | "
             f"{medians[SORT_TOGETHER] / 2**20:.2f} MiB | "
-            f"{ratios[PYTHON]:.2f}x | {ratios[SORT_TOGETHER]:.2f}x |"
+            f"{format_ratio(ratios[PYTHON])} | "
+            f"{format_ratio(ratios[SORT_TOGETHER])} |"
         )
     lines.extend(
         [

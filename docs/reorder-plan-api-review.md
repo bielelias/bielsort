@@ -308,8 +308,19 @@ lifetime, both buffer widths, errors, and deferred behavior.
 The versioned `benchmarks/reorder_plan_candidate.py` harness implements the
 four workload shapes and all frozen baselines, time gates, isolated-memory
 gates, raw samples, rotation order, and environment metadata. This checkpoint
-records implementation readiness only. The single canonical run has not yet
-occurred, and no existing measurement counts toward it.
+records implementation readiness only.
+
+The first canonical attempt completed its timing matrix but is invalid because
+its `ru_maxrss` subtraction returned zero for every memory worker. The
+[invalid-attempt record](https://github.com/bielelias/bielsort/blob/research/reorder-plan-0.3/benchmarks/results/2026-08-06-reorder-plan-canonical-invalid-ru-maxrss.md)
+preserves its JSON, diagnosis, and passing-but-incomplete time evidence.
+
+Before another decision run, memory instrumentation is corrected without
+changing a workload or threshold: each child constructs its inputs, emits a
+ready checkpoint, and waits while the parent records current Linux RSS from
+`/proc/<pid>/statm`; the parent then starts the operation and samples every
+0.5 ms. Undefined zero-denominator ratios render as `n/a`. The correction and
+invalid record must be committed before the one corrected canonical run.
 
 ## Why this is a credible differential, not an exclusivity claim
 

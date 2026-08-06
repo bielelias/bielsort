@@ -108,6 +108,11 @@ release.
   complete-flow timing, isolated peak RSS, raw samples, and a clean-tree guard
   for its single canonical run; that run and any public promotion remain
   separate decisions.
+- Preserved the first reorder-plan canonical attempt as invalid after every
+  `ru_maxrss` subtraction returned zero. The corrected pre-registered memory
+  method uses a child-ready checkpoint and parent-sampled Linux RSS without
+  changing workloads, algorithms, repetitions, or thresholds; undefined
+  ratios now render as `n/a`.
 
 ### Fixed
 
