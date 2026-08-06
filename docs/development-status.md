@@ -247,6 +247,18 @@ retains every timing block and child-process sample. A private API review and
 fresh build-only wheel matrix are next; no public symbol or release is
 approved.
 
+The subsequent [private promotion review](topk-api-review.md) selects a
+provisional `top_k`/`top_k_with_info` contract, structured diagnostics,
+pre-key memory-guard semantics, and adaptive heap/full-sort fallbacks. It
+promotes the experiment only to an implementation candidate; no public name
+is added. Adversarial review also reproduced a process crash when `key`
+resized an exact input list while the C core held a borrowed item. The private
+loop is now hardened to retain the current record and raise `RuntimeError` for
+size changes caused by key evaluation or generic comparison. The affected
+candidate passes a warning-clean local build, all 156 optimized tests, and
+strict documentation. The practical performance/memory gates, sanitizers,
+source matrix, and build-only wheels must pass again on the reviewed commit.
+
 ## Resume checklist
 
 Start from the repository root and inspect the current evidence:

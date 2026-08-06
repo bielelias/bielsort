@@ -449,3 +449,17 @@ the [versioned practical result](https://github.com/bielelias/bielsort/blob/rese
 
 The pass authorizes a private promotion and API-design review plus build-only
 wheel validation. The operation remains private and no release is approved.
+
+## Private promotion review
+
+The [private API review](topk-api-review.md) promotes this work to an API
+implementation candidate but deliberately keeps every symbol private. It
+selects the future `top_k`/`top_k_with_info` shape, stable compatibility rules,
+structured diagnostics, memory-guard behavior, and adaptive fallback model.
+
+The review also found a native callback-safety defect: a `key` that resized an
+exact input list could invalidate a borrowed item reference. The candidate now
+keeps the current record alive and raises `RuntimeError` if `key` or generic
+comparison changes the source length. The affected performance/memory gates,
+sanitizers, source CI, and build-only wheels must pass again before further
+promotion work.

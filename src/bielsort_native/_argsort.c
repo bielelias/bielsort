@@ -929,6 +929,22 @@ topk_full_argsort(
     return finalize_argsort(result, strategy, diagnostic);
 }
 
+static int
+keyed_topk_input_size_unchanged(
+    PyObject *records,
+    Py_ssize_t expected_length
+)
+{
+    if (PySequence_Fast_GET_SIZE(records) == expected_length) {
+        return 1;
+    }
+    PyErr_SetString(
+        PyExc_RuntimeError,
+        "input changed size during key evaluation or comparison"
+    );
+    return 0;
+}
+
 static PyObject *
 topk_int64_impl(
     PyObject *sequence,
@@ -1155,8 +1171,18 @@ topk_by_int64_key_impl(
 
     for (Py_ssize_t index = 0; index < source_length; index++) {
         PyObject *record = PySequence_Fast_GET_ITEM(records, index);
+        /* key may resize an exact list and release this borrowed reference. */
+        Py_INCREF(record);
         PyObject *key_object = PyObject_CallOneArg(key_function, record);
         if (key_object == NULL) {
+            Py_DECREF(record);
+            PyMem_Free(heap);
+            Py_DECREF(records);
+            return NULL;
+        }
+        if (!keyed_topk_input_size_unchanged(records, source_length)) {
+            Py_DECREF(key_object);
+            Py_DECREF(record);
             PyMem_Free(heap);
             Py_DECREF(records);
             return NULL;
@@ -1170,12 +1196,14 @@ topk_by_int64_key_impl(
                 Py_TYPE(key_object)->tp_name
             );
             Py_DECREF(key_object);
+            Py_DECREF(record);
             PyMem_Free(heap);
             Py_DECREF(records);
             return NULL;
         }
         const long long signed_value = PyLong_AsLongLong(key_object);
         Py_DECREF(key_object);
+        Py_DECREF(record);
         if (signed_value == -1 && PyErr_Occurred()) {
             PyMem_Free(heap);
             Py_DECREF(records);
@@ -1592,14 +1620,32 @@ topk_by_key_adaptive_impl(
     int exact_int64 = 1;
     Py_ssize_t retained = 0;
     for (Py_ssize_t index = 0; index < source_length; index++) {
-        PyObject *record = PySequence_Fast_GET_ITEM(records, index);
-        PyObject *key_object = PyObject_CallOneArg(key_function, record);
-        if (key_object == NULL) {
+        if (!keyed_topk_input_size_unchanged(records, source_length)) {
             keyed_topk_clear_entries(heap, retained);
             PyMem_Free(heap);
             Py_DECREF(records);
             return NULL;
         }
+        PyObject *record = PySequence_Fast_GET_ITEM(records, index);
+        /* key may resize an exact list and release this borrowed reference. */
+        Py_INCREF(record);
+        PyObject *key_object = PyObject_CallOneArg(key_function, record);
+        if (key_object == NULL) {
+            Py_DECREF(record);
+            keyed_topk_clear_entries(heap, retained);
+            PyMem_Free(heap);
+            Py_DECREF(records);
+            return NULL;
+        }
+        if (!keyed_topk_input_size_unchanged(records, source_length)) {
+            Py_DECREF(key_object);
+            Py_DECREF(record);
+            keyed_topk_clear_entries(heap, retained);
+            PyMem_Free(heap);
+            Py_DECREF(records);
+            return NULL;
+        }
+        Py_DECREF(record);
 
         uint64_t normalized_key = 0;
         if (exact_int64) {
@@ -1701,6 +1747,13 @@ topk_by_key_adaptive_impl(
             keyed_topk_exact_compare_best_first
         );
     } else if (keyed_topk_generic_merge_sort(heap, k, largest) < 0) {
+        keyed_topk_clear_entries(heap, retained);
+        PyMem_Free(heap);
+        Py_DECREF(records);
+        return NULL;
+    }
+
+    if (!keyed_topk_input_size_unchanged(records, source_length)) {
         keyed_topk_clear_entries(heap, retained);
         PyMem_Free(heap);
         Py_DECREF(records);

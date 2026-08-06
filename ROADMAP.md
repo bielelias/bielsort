@@ -115,8 +115,10 @@ published on 2026-08-05.
   benchmark before its single canonical execution.
 - [x] Run the practical-callable and isolated-memory gates and preserve all
   raw child-process and paired-block samples.
-- [ ] Complete a private keyed top-k promotion review covering the API name,
+- [x] Complete a private keyed top-k promotion review covering the API name,
   signature, diagnostics, guard, fallbacks, and compatibility contract.
+- [ ] Revalidate the practical callable/memory gates and native sanitizers
+  after hardening keyed top-k against input resizing inside callbacks.
 - [ ] Run a fresh non-publishing build-only wheel matrix on the exact reviewed
   commit before any merge or release proposal.
 - [ ] Prototype native inverse and composition operations only after external

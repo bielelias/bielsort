@@ -45,6 +45,16 @@ class TrackedKey:
         return self.value < other.value
 
 
+class SizeMutatingComparisonKey:
+    def __init__(self, value, records):
+        self.value = value
+        self.records = records
+
+    def __lt__(self, other):
+        self.records.clear()
+        return self.value < other.value
+
+
 class AdaptiveKeyedTopKTests(unittest.TestCase):
     """Semantics for the private adaptive generic-key top-k stage."""
 
@@ -184,6 +194,37 @@ class AdaptiveKeyedTopKTests(unittest.TestCase):
         ]
         with self.assertRaisesRegex(LookupError, "comparison sentinel"):
             topk_by_key_adaptive(exploding, 5, lambda record: record[0])
+
+    def test_size_mutation_during_key_raises_safely(self):
+        for implementation in (
+            topk_by_key_adaptive,
+            _bielsort._topk_by_int64_key_prototype,
+        ):
+            records = [(value, object()) for value in range(100)]
+
+            def key(record):
+                records.clear()
+                return record[0]
+
+            with self.subTest(implementation=implementation.__name__):
+                with self.assertRaisesRegex(
+                    RuntimeError,
+                    "input changed size during key evaluation or comparison",
+                ):
+                    implementation(records, 10, key)
+
+    def test_size_mutation_during_comparison_raises_safely(self):
+        records = [(value, object()) for value in range(100)]
+
+        with self.assertRaisesRegex(
+            RuntimeError,
+            "input changed size during key evaluation or comparison",
+        ):
+            topk_by_key_adaptive(
+                records,
+                10,
+                lambda record: SizeMutatingComparisonKey(record[0], records),
+            )
 
     def test_temporary_selected_keys_are_released(self):
         records = [(value, object()) for value in range(100)]

@@ -54,6 +54,16 @@ release.
   gates passed: 22 of 24 `itemgetter`/`attrgetter`/`lambda` cases reached
   `1.10x` over `heapq`, and the adaptive core used 0.28x–0.43x its traced peak
   memory across the fixed cases. Public API promotion remains unapproved.
+- Completed the private direct top-k promotion review, selecting a provisional
+  `top_k`/`top_k_with_info` contract and explicit remaining gates without
+  adding either name to the public package.
+
+### Fixed
+
+- Hardened the private keyed top-k native loops against input-list resizing
+  from `key` or generic comparison callbacks. The current record is retained
+  across Python calls and size changes now raise `RuntimeError` instead of
+  risking invalid borrowed-reference access.
 
 ## [0.2.0] - 2026-08-05
 
