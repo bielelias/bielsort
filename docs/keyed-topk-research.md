@@ -470,4 +470,8 @@ reached `1.10x`, none fell below `0.90x`, and adaptive traced peak memory
 remained `0.28x–0.43x` of `heapq`. The
 [separate safety revalidation](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-adaptive-keyed-topk-practical-safety.md)
 preserves every sample without replacing the earlier result. Hosted
-sanitizers, source CI, and build-only wheels remain pending.
+sanitizers and source CI then passed on the hardened branch. The
+[fresh build-only wheel matrix](https://github.com/bielelias/bielsort/actions/runs/31060438846)
+also passed for exact commit `f7565bd` on Linux, Windows, macOS Intel, and
+macOS Apple Silicon; the TestPyPI and PyPI jobs were skipped. This completes
+the private review/portability milestone but still exposes no public symbol.

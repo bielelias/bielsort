@@ -67,6 +67,9 @@ release.
 - Repeated the fixed practical callable and isolated-memory protocol after the
   safety change. Both gates passed again without weakening their thresholds;
   the separate result preserves every raw sample.
+- Passed the hardened commit through hosted Linux/Windows/macOS source builds,
+  ASan/UBSan, strict documentation, and a four-platform non-publishing wheel
+  matrix. No package index or release was modified.
 
 ## [0.2.0] - 2026-08-05
 

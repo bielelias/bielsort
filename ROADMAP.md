@@ -117,10 +117,14 @@ published on 2026-08-05.
   raw child-process and paired-block samples.
 - [x] Complete a private keyed top-k promotion review covering the API name,
   signature, diagnostics, guard, fallbacks, and compatibility contract.
-- [ ] Revalidate the practical callable/memory gates and native sanitizers
+- [x] Revalidate the practical callable/memory gates and native sanitizers
   after hardening keyed top-k against input resizing inside callbacks.
-- [ ] Run a fresh non-publishing build-only wheel matrix on the exact reviewed
+- [x] Run a fresh non-publishing build-only wheel matrix on the exact reviewed
   commit before any merge or release proposal.
+- [ ] Pre-register a private unified-facade experiment covering natural-order
+  `key=None`, structured diagnostics, and a large-`k` full-sort crossover.
+- [ ] Implement and validate that private façade before proposing any public
+  `top_k` or `TopKInfo` symbol.
 - [ ] Prototype native inverse and composition operations only after external
   demand justifies expanding the private permutation toolkit.
 - [ ] Evaluate fused sorted-group boundaries and counts for telemetry/event

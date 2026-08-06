@@ -261,8 +261,22 @@ then repeated on hardened commit `e0d6107` and passed: 19 of 24 callable cases
 reached `1.10x`, none fell below `0.90x`, and adaptive traced peak memory
 remained `0.28x–0.43x` of `heapq`. The
 [separate safety revalidation](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-adaptive-keyed-topk-practical-safety.md)
-preserves all samples. Hosted sanitizers, source CI, and build-only wheels must
-still pass on the reviewed branch.
+preserves all samples. The hardened branch then passed
+[source-build CI](https://github.com/bielelias/bielsort/actions/runs/31060360543)
+for Linux CPython 3.9–3.14, Windows 3.11/3.14, and macOS 3.11/3.14; public
+stubs and strict documentation also passed. Hosted
+[ASan/UBSan](https://github.com/bielelias/bielsort/actions/runs/31060360542)
+passed the complete suite. Finally, the non-publishing
+[wheel matrix](https://github.com/bielelias/bielsort/actions/runs/31060438846)
+built, tested, inspected, and uploaded wheels for Linux, Windows, macOS Intel,
+and macOS Apple Silicon from exact commit `f7565bd`, plus its source
+distribution. Every publication job was skipped.
+
+The next private gate is a pre-registered unified-facade experiment: natural
+ordering through `key=None`, normalized structured diagnostics, and an
+evidence-based crossover from the `O(n log k)` heap to a full stable sort when
+`k` is large. Those items must remain private until their own correctness,
+time, memory, and compatibility evidence passes.
 
 ## Resume checklist
 

@@ -186,19 +186,28 @@ Sanitizer and cross-platform validation are mandatory for this native change.
 
 ## Remaining promotion gates
 
-Public exposure remains blocked until all items below pass on one reviewed
-commit:
+Public exposure remains blocked until the unchecked items below pass:
 
-1. implement one private façade supporting both `key=None` and explicit keys;
-2. benchmark and select a safe large-`k` full-sort crossover;
-3. replace private strategy strings with structured internal diagnostics and
-   construct the proposed `TopKInfo` without exporting it;
-4. preserve the passing callback-safety performance and isolated-memory
-   revalidation as the reviewed implementation baseline;
-5. pass the complete local suite, warning-clean build, ASan/UBSan, supported
-   source-build CI, strict docs, and a non-publishing wheel matrix;
-6. add the complete public runtime, type-stub, documentation, and compatibility
-   tests only in a later, explicitly approved API branch.
+- [ ] implement one private façade supporting both `key=None` and explicit
+  keys;
+- [ ] benchmark and select a safe large-`k` full-sort crossover;
+- [ ] replace private strategy strings with structured internal diagnostics
+  and construct the proposed `TopKInfo` without exporting it;
+- [x] preserve the passing callback-safety performance and isolated-memory
+  revalidation as the reviewed implementation baseline;
+- [x] pass the complete local suite, warning-clean build, ASan/UBSan, supported
+  source-build CI, strict docs, and a non-publishing wheel matrix;
+- [ ] add the complete public runtime, type-stub, documentation, and
+  compatibility tests only in a later, explicitly approved API branch.
+
+The hardened source and performance record passed
+[source-build CI](https://github.com/bielelias/bielsort/actions/runs/31060360543),
+[ASan/UBSan](https://github.com/bielelias/bielsort/actions/runs/31060360542),
+[strict hosted documentation](https://github.com/bielelias/bielsort/actions/runs/31060360581),
+and the
+[non-publishing wheel matrix](https://github.com/bielelias/bielsort/actions/runs/31060438846).
+The wheel run built and tested commit `f7565bd` on Linux, Windows, macOS Intel,
+and macOS Apple Silicon; all publication jobs were skipped.
 
 Passing the build-only matrix validates portability of the private candidate.
 It does not by itself authorize `top_k`, version `0.3.0`, a tag, TestPyPI, or
