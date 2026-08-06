@@ -107,6 +107,7 @@ class ReorderPlanBenchmarkTests(unittest.TestCase):
         )
 
         self.assertEqual(sample["measurement"], "parent-sampled-linux-rss")
+        self.assertTrue(sample["validation_excluded_from_sampling"])
         self.assertGreater(sample["baseline_current_rss_bytes"], 0)
         self.assertGreaterEqual(
             sample["sampled_peak_rss_bytes"],

@@ -389,6 +389,14 @@ The corrected, pre-registered memory method waits at a child-ready checkpoint
 and is sampled by the Linux parent every 0.5 ms. No workload, threshold, or
 algorithm changed; one corrected canonical run remains pending.
 
+The first correction produced valid nonzero sampling but still included the
+post-operation reference order used only for validation. Its
+[validation-overlap record](https://github.com/bielelias/bielsort/blob/research/reorder-plan-0.3/benchmarks/results/2026-08-06-reorder-plan-canonical-invalid-validation-rss.md)
+preserves the passing time grid and void RSS values. A final pre-registered
+`operation-complete` handshake now stops parent sampling before validation.
+Both invalid attempts remain versioned and all original gates remain binding;
+the corrected decision run is still pending.
+
 ## Resume checklist
 
 Start from the repository root and inspect the current evidence:

@@ -14,6 +14,7 @@ import json
 import os
 import platform
 import random
+import select
 import statistics
 import subprocess
 import sys
@@ -406,6 +407,14 @@ def memory_worker(algorithm, workload_name, size, seed):
     started = time.perf_counter()
     order, outputs = run_algorithm(algorithm, workload, resident_arrays)
     elapsed = time.perf_counter() - started
+    print(
+        json.dumps({"event": "operation-complete"}),
+        flush=True,
+    )
+    if not sys.stdin.readline():
+        raise RuntimeError(
+            "memory controller closed before the validation signal"
+        )
     expected = expected_order(workload)
     validate_result(
         algorithm,
@@ -477,13 +486,48 @@ def run_memory_child(algorithm, workload, size, seed):
     sampled_peak = baseline
     process.stdin.write("start\n")
     process.stdin.flush()
-    process.stdin.close()
-    process.stdin = None
-    while process.poll() is None:
+    operation_complete = False
+    while not operation_complete:
         current = current_linux_rss_bytes(process.pid)
         if current is not None and current > sampled_peak:
             sampled_peak = current
-        time.sleep(0.0005)
+        readable, _, _ = select.select(
+            [process.stdout],
+            [],
+            [],
+            0.0005,
+        )
+        if readable:
+            completed_line = process.stdout.readline()
+            try:
+                completed = json.loads(completed_line)
+            except json.JSONDecodeError:
+                process.terminate()
+                stdout, stderr = process.communicate()
+                raise RuntimeError(
+                    "memory worker did not provide its operation checkpoint: "
+                    f"{completed_line}{stdout}{stderr}"
+                )
+            if completed != {"event": "operation-complete"}:
+                process.terminate()
+                process.communicate()
+                raise RuntimeError(
+                    f"unexpected operation checkpoint: {completed}"
+                )
+            operation_complete = True
+        elif process.poll() is not None:
+            stdout, stderr = process.communicate()
+            raise RuntimeError(
+                "memory worker exited before its operation checkpoint: "
+                f"{stdout}{stderr}"
+            )
+    current = current_linux_rss_bytes(process.pid)
+    if current is not None and current > sampled_peak:
+        sampled_peak = current
+    process.stdin.write("validate\n")
+    process.stdin.flush()
+    process.stdin.close()
+    process.stdin = None
     stdout, stderr = process.communicate()
     if process.returncode:
         raise subprocess.CalledProcessError(
@@ -497,6 +541,7 @@ def run_memory_child(algorithm, workload, size, seed):
         {
             "measurement": "parent-sampled-linux-rss",
             "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": True,
             "baseline_current_rss_bytes": baseline,
             "sampled_peak_rss_bytes": sampled_peak,
             "incremental_peak_bytes": max(0, sampled_peak - baseline),

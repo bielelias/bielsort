@@ -241,6 +241,14 @@ freezes the diagnosis and replacement measurement before a corrected run.
 The replacement uses a worker-ready checkpoint and parent-sampled Linux RSS;
 all workloads, repetitions, baselines, and gates remain unchanged.
 
+That correction revealed a second invalid boundary: correctness validation
+allocated a full Python reference order while the parent was still sampling.
+The separate
+[validation-overlap record](results/2026-08-06-reorder-plan-canonical-invalid-validation-rss.md)
+preserves its passing time grid and void memory result. The final worker now
+holds the measured outputs at an `operation-complete` checkpoint; the parent
+stops sampling before authorizing validation. No performance criterion changed.
+
 ## Research: stable compact top-k
 
 The private top-k prototype compares stable reusable index selection against

@@ -322,6 +322,21 @@ ready checkpoint, and waits while the parent records current Linux RSS from
 0.5 ms. Undefined zero-denominator ratios render as `n/a`. The correction and
 invalid record must be committed before the one corrected canonical run.
 
+That first correction exposed a second instrumentation boundary: parent
+sampling continued while the child constructed its correctness reference
+after the measured operation. The resulting
+[validation-overlap record](https://github.com/bielelias/bielsort/blob/research/reorder-plan-0.3/benchmarks/results/2026-08-06-reorder-plan-canonical-invalid-validation-rss.md)
+retains a passing time matrix, but its memory values and combined decision are
+invalid.
+
+The final frozen correction adds an `operation-complete` checkpoint. The child
+holds the measured result and waits; the parent takes its final sample, stops
+memory measurement, then authorizes validation. A regression test requires
+the output metadata to state that validation was excluded. Workloads,
+algorithms, seeds, repetitions, and every threshold are still unchanged. This
+correction and both invalid attempts must be committed before the corrected
+decision run.
+
 ## Why this is a credible differential, not an exclusivity claim
 
 NumPy, Arrow, Polars, pandas, and more-itertools already solve related forms

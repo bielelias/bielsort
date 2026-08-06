@@ -113,6 +113,11 @@ release.
   method uses a child-ready checkpoint and parent-sampled Linux RSS without
   changing workloads, algorithms, repetitions, or thresholds; undefined
   ratios now render as `n/a`.
+- Preserved a second invalid attempt after discovering that parent RSS
+  sampling included post-operation correctness validation. A new
+  `operation-complete` handshake stops sampling while measured outputs remain
+  alive and authorizes validation only afterward; the unchanged timing gates
+  passed, but no combined decision is claimed from the invalid run.
 
 ### Fixed
 
