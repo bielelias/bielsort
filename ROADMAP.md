@@ -113,8 +113,12 @@ published on 2026-08-05.
   gates before deciding whether direct keyed top-k deserves promotion review.
 - [x] Implement and version the practical-callable and isolated-memory
   benchmark before its single canonical execution.
-- [ ] Run the practical-callable and isolated-memory gates and preserve all
+- [x] Run the practical-callable and isolated-memory gates and preserve all
   raw child-process and paired-block samples.
+- [ ] Complete a private keyed top-k promotion review covering the API name,
+  signature, diagnostics, guard, fallbacks, and compatibility contract.
+- [ ] Run a fresh non-publishing build-only wheel matrix on the exact reviewed
+  commit before any merge or release proposal.
 - [ ] Prototype native inverse and composition operations only after external
   demand justifies expanding the private permutation toolkit.
 - [ ] Evaluate fused sorted-group boundaries and counts for telemetry/event

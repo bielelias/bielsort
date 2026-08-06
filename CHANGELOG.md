@@ -50,6 +50,10 @@ release.
   execution. Its separate 48-case gate passed without changing selection
   code, while preserving the first failed result; only further private
   callable and isolated-memory experiments are authorized.
+- Added a pre-registered common-callable and isolated-memory protocol. Both
+  gates passed: 22 of 24 `itemgetter`/`attrgetter`/`lambda` cases reached
+  `1.10x` over `heapq`, and the adaptive core used 0.28x–0.43x its traced peak
+  memory across the fixed cases. Public API promotion remains unapproved.
 
 ## [0.2.0] - 2026-08-05
 

@@ -433,3 +433,19 @@ python -m benchmarks.keyed_topk_practical \
   --implementation-commit COMMIT_SHA \
   --json-output adaptive-keyed-topk-practical.json
 ```
+
+### Stage-three result
+
+The 2026-08-05 canonical execution passed both fixed gates. Twenty-two of 24
+callable cases reached `1.10x` over `heapq`, no case fell below `0.90x`, and
+all one-call/zero-call semantic probes passed. C-level `itemgetter` and
+`attrgetter` shapes measured `1.41x–1.69x`; Python `lambda` shapes measured
+`1.08x–1.22x`.
+
+All eight isolated-memory cases passed. The adaptive core used 0.28x–0.29x
+the traced peak of `heapq` for exact int64 keys and 0.42x–0.43x for
+arbitrary-size integers, while retaining the structural `O(k)` contract. See
+the [versioned practical result](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-adaptive-keyed-topk-practical.md).
+
+The pass authorizes a private promotion and API-design review plus build-only
+wheel validation. The operation remains private and no release is approved.

@@ -342,6 +342,27 @@ record. See the
 [complete block-timed report](results/2026-08-05-adaptive-keyed-topk-block-canonical.md)
 and its linked raw samples.
 
+The next fixed protocol tests four common key-call shapes and incremental
+traced/RSS peak memory in isolated processes:
+
+```bash
+python -m benchmarks.keyed_topk_practical \
+  --time-size 1000000 \
+  --memory-size 1000000 \
+  -k 10 100 1000 \
+  --time-blocks 9 \
+  --calls-per-block 3 \
+  --memory-k 1000 100000 \
+  --memory-repetitions 3 \
+  --implementation-commit COMMIT_SHA \
+  --json-output adaptive-keyed-topk-practical.json
+```
+
+Both gates passed. Twenty-two of 24 callable cases reached `1.10x` over
+`heapq`, with no case below `0.90x`; the adaptive core used `0.28x–0.43x` the
+traced peak memory of `heapq` in the eight isolated cases. See the
+[practical callables and memory report](results/2026-08-05-adaptive-keyed-topk-practical.md).
+
 ## Research: adaptive generic keys
 
 The follow-up selector keeps `key` generic, calls user code exactly once, and
@@ -418,6 +439,7 @@ samples are retained.
 
 ## Versioned results
 
+- [Adaptive keyed top-k practical callables and memory — 2026-08-05](results/2026-08-05-adaptive-keyed-topk-practical.md)
 - [Adaptive keyed top-k complete block protocol — 2026-08-05](results/2026-08-05-adaptive-keyed-topk-block-canonical.md)
 - [Keyless stable reverse prototype — 2026-08-05](results/2026-08-05-keyless-reverse.md)
 - [Keyed nearly ordered release gate — 2026-08-04](results/2026-08-04-keyed-nearly-ordered-release-gate.md)

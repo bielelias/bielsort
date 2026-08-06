@@ -236,6 +236,17 @@ ranged from `0.94x–1.02x`, and all generic comparisons beat `heapq` by
 preserves the earlier failure separately. The pass authorizes only the
 remaining private callable and isolated-memory experiments.
 
+Those stage-three experiments are now complete under a separately
+pre-registered protocol. Twenty-two of 24 common `itemgetter`, `attrgetter`,
+and `lambda` cases reached `1.10x` over `heapq`, none fell below `0.90x`, and
+all exact key-call probes passed. Across eight isolated memory cases, the
+adaptive core used `0.28x–0.43x` the traced peak of `heapq`; all four
+`k=100,000` cases passed the fixed 20% reduction target. The
+[practical-callable and memory record](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-adaptive-keyed-topk-practical.md)
+retains every timing block and child-process sample. A private API review and
+fresh build-only wheel matrix are next; no public symbol or release is
+approved.
+
 ## Resume checklist
 
 Start from the repository root and inspect the current evidence:
