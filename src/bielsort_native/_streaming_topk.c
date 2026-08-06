@@ -2,8 +2,15 @@
 #include <Python.h>
 #include <limits.h>
 #include <stdint.h>
+#include <string.h>
 
 #include "_streaming_topk.h"
+
+#define STREAM_TOPK_RADIX_BITS 11
+#define STREAM_TOPK_RADIX_BASE (1U << STREAM_TOPK_RADIX_BITS)
+#define STREAM_TOPK_RADIX_MASK (STREAM_TOPK_RADIX_BASE - 1U)
+#define STREAM_TOPK_BUFFERED_EXACT_MIN 2048
+#define STREAM_TOPK_BUFFERED_EXACT_MAX 32768
 
 typedef union {
     uint64_t normalized;
@@ -14,6 +21,42 @@ typedef struct {
     StreamingTopKKey key;
     uint64_t encounter_index;
 } StreamingTopKEntry;
+
+typedef struct {
+    StreamingTopKEntry entry;
+    PyObject *record;
+} StreamingTopKBufferedEntry;
+
+static int
+stream_topk_uses_buffered_exact_sort(Py_ssize_t k)
+{
+    return k >= STREAM_TOPK_BUFFERED_EXACT_MIN
+        && k <= STREAM_TOPK_BUFFERED_EXACT_MAX;
+}
+
+static size_t
+stream_topk_worst_bytes_per_item(Py_ssize_t k)
+{
+    if (stream_topk_uses_buffered_exact_sort(k)) {
+        return sizeof(StreamingTopKEntry)
+            + sizeof(StreamingTopKBufferedEntry);
+    }
+    return sizeof(StreamingTopKEntry) + sizeof(PyObject *);
+}
+
+static size_t
+stream_topk_estimated_bytes_per_item(Py_ssize_t k, int exact_int64)
+{
+    if (exact_int64) {
+        return sizeof(StreamingTopKEntry)
+            + (
+                stream_topk_uses_buffered_exact_sort(k)
+                    ? sizeof(StreamingTopKBufferedEntry)
+                    : 0
+            );
+    }
+    return sizeof(StreamingTopKEntry) + sizeof(PyObject *);
+}
 
 static void
 stream_topk_clear_generic_keys(
@@ -176,17 +219,142 @@ stream_topk_exact_sift_down(
     }
 }
 
-static void
-stream_topk_exact_sort(
-    StreamingTopKEntry *heap,
+static int
+stream_topk_exact_radix_sort(
+    StreamingTopKEntry *entries,
     PyObject *records,
     Py_ssize_t length
 )
 {
+    if ((size_t)length > SIZE_MAX / sizeof(StreamingTopKBufferedEntry)) {
+        return PyErr_NoMemory(), -1;
+    }
+    StreamingTopKBufferedEntry *buffer = PyMem_Malloc(
+        (size_t)length * sizeof(*buffer)
+    );
+    if (buffer == NULL) {
+        return PyErr_NoMemory(), -1;
+    }
+
+    size_t positions[STREAM_TOPK_RADIX_BASE];
+    int source_is_entries = 1;
+    for (int field = 0; field < 2; field++) {
+        for (
+            int shift = 0;
+            shift < 64;
+            shift += STREAM_TOPK_RADIX_BITS
+        ) {
+            memset(positions, 0, sizeof(positions));
+            uint64_t first_digit = 0;
+            int digit_varies = 0;
+            for (Py_ssize_t position = 0; position < length; position++) {
+                const StreamingTopKEntry entry = source_is_entries
+                    ? entries[position]
+                    : buffer[position].entry;
+                const uint64_t value = field == 0
+                    ? entry.encounter_index
+                    : entry.key.normalized;
+                const uint64_t digit = (
+                    value >> shift
+                ) & STREAM_TOPK_RADIX_MASK;
+                if (position == 0) {
+                    first_digit = digit;
+                } else if (digit != first_digit) {
+                    digit_varies = 1;
+                }
+                positions[digit]++;
+            }
+            if (!digit_varies) {
+                continue;
+            }
+
+            size_t offset = 0;
+            for (size_t digit = 0; digit < STREAM_TOPK_RADIX_BASE; digit++) {
+                const size_t count = positions[digit];
+                positions[digit] = offset;
+                offset += count;
+            }
+            if (source_is_entries) {
+                for (
+                    Py_ssize_t position = 0;
+                    position < length;
+                    position++
+                ) {
+                    const StreamingTopKEntry entry = entries[position];
+                    const uint64_t value = field == 0
+                        ? entry.encounter_index
+                        : entry.key.normalized;
+                    const size_t digit = (size_t)(
+                        (value >> shift) & STREAM_TOPK_RADIX_MASK
+                    );
+                    const size_t output = positions[digit]++;
+                    buffer[output].entry = entry;
+                    buffer[output].record = PyList_GET_ITEM(
+                        records,
+                        position
+                    );
+                }
+            } else {
+                for (
+                    Py_ssize_t position = 0;
+                    position < length;
+                    position++
+                ) {
+                    const StreamingTopKBufferedEntry item = buffer[position];
+                    const uint64_t value = field == 0
+                        ? item.entry.encounter_index
+                        : item.entry.key.normalized;
+                    const size_t digit = (size_t)(
+                        (value >> shift) & STREAM_TOPK_RADIX_MASK
+                    );
+                    const size_t output = positions[digit]++;
+                    entries[output] = item.entry;
+                    PyList_SET_ITEM(records, output, item.record);
+                }
+            }
+            source_is_entries = !source_is_entries;
+        }
+    }
+    if (!source_is_entries) {
+        for (Py_ssize_t position = 0; position < length; position++) {
+            entries[position] = buffer[position].entry;
+            PyList_SET_ITEM(records, position, buffer[position].record);
+        }
+    }
+    PyMem_Free(buffer);
+    return 0;
+}
+
+static int
+stream_topk_exact_sort(
+    StreamingTopKEntry *heap,
+    PyObject *records,
+    Py_ssize_t length,
+    int heap_ready,
+    int buffered
+)
+{
+    if (length < 2) {
+        return 0;
+    }
+    if (buffered) {
+        return stream_topk_exact_radix_sort(heap, records, length);
+    }
+    if (!heap_ready) {
+        for (Py_ssize_t parent = length / 2; parent > 0; parent--) {
+            stream_topk_exact_sift_down(
+                heap,
+                records,
+                length,
+                parent - 1
+            );
+        }
+    }
     for (Py_ssize_t end = length - 1; end > 0; end--) {
         stream_topk_swap(heap, records, 0, end);
         stream_topk_exact_sift_down(heap, records, end, 0);
     }
+    return 0;
 }
 
 static int
@@ -355,9 +523,10 @@ stream_topk_finish(
     }
     PyObject *processed_object = PyLong_FromSsize_t(processed);
     PyObject *exact_object = PyBool_FromLong(exact_int64);
-    const size_t bytes_per_item = exact_int64
-        ? sizeof(StreamingTopKEntry)
-        : sizeof(StreamingTopKEntry) + sizeof(PyObject *);
+    const size_t bytes_per_item = stream_topk_estimated_bytes_per_item(
+        k,
+        exact_int64
+    );
     PyObject *estimated_object = NULL;
     if ((size_t)k <= SIZE_MAX / bytes_per_item) {
         estimated_object = PyLong_FromSize_t(
@@ -419,7 +588,10 @@ stream_topk_impl(
         PyErr_SetString(PyExc_TypeError, "key must be callable or None");
         return NULL;
     }
-    if ((size_t)k > SIZE_MAX / sizeof(StreamingTopKEntry)) {
+    const size_t worst_bytes_per_item = (
+        stream_topk_worst_bytes_per_item(k)
+    );
+    if ((size_t)k > SIZE_MAX / worst_bytes_per_item) {
         return PyErr_NoMemory();
     }
     StreamingTopKEntry *heap = PyMem_Malloc(
@@ -549,10 +721,9 @@ stream_topk_impl(
 
         int candidate_is_better;
         if (exact_int64) {
-            candidate_is_better = stream_topk_exact_is_better(
-                candidate,
-                heap[0]
-            );
+            /* A later equal key cannot displace an earlier selected key. */
+            candidate_is_better = candidate.key.normalized
+                < heap[0].key.normalized;
         } else {
             /*
              * A later equal-key record can never displace an earlier one.
@@ -619,21 +790,17 @@ stream_topk_impl(
     iterator = NULL;
 
     if (exact_int64) {
-        if (retained < k) {
-            for (
-                Py_ssize_t parent = retained / 2;
-                parent > 0;
-                parent--
-            ) {
-                stream_topk_exact_sift_down(
-                    heap,
-                    records,
-                    retained,
-                    parent - 1
-                );
-            }
+        if (
+            stream_topk_exact_sort(
+                heap,
+                records,
+                retained,
+                retained == k,
+                stream_topk_uses_buffered_exact_sort(k)
+            ) < 0
+        ) {
+            goto error;
         }
-        stream_topk_exact_sort(heap, records, retained);
     } else if (
         stream_topk_generic_sort(
             heap,
@@ -766,9 +933,7 @@ bielsort_py_stream_topk_worst_auxiliary_bytes(
         PyErr_SetString(PyExc_ValueError, "k must be non-negative");
         return NULL;
     }
-    const size_t bytes_per_item = (
-        sizeof(StreamingTopKEntry) + sizeof(PyObject *)
-    );
+    const size_t bytes_per_item = stream_topk_worst_bytes_per_item(k);
     if ((size_t)k > SIZE_MAX / bytes_per_item) {
         return PyErr_NoMemory();
     }
