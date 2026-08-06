@@ -67,4 +67,5 @@ build = [
   "cp314-*",
 ]
 skip = ["*-musllinux_i686"]
-test-command = "python -m unittest discover -s {project}/tests -v"
+test-sources = ["tests", "benchmarks"]
+test-command = "python -m unittest discover -s tests -v"
