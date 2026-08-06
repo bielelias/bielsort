@@ -186,3 +186,24 @@ A failed gate remains part of the record and must not be weakened after the
 canonical run. Passing authorizes only a separate API and usability review;
 it does not prove external demand, justify universal claims, select a release
 version, or authorize TestPyPI or PyPI publication.
+
+## First canonical result
+
+Implementation commit `73d43c2` passed every semantic and timing requirement.
+All 24 paired medians were at least `1.00x` the corresponding `heapq` result;
+8 of 12 signed-int64 cases reached `1.10x`, all 12 generic cases reached
+`0.95x`, and the largest gains were `1.75x–1.80x`. The candidate also used
+only `0.00x–0.13x` the incremental RSS of the materializing façade.
+
+The decision is nevertheless **FAIL**. At `k = 100,000`, candidate RSS was
+`0.76x` `heapq` for signed-int64 records and `0.80x` for string-keyed records,
+missing the fixed `0.70x` limit. The full raw and rendered record is preserved
+in `benchmarks/results/2026-08-06-streaming-topk.{json,md}`.
+
+The first attempted run is separately preserved with an `invalid-inherited-rusage`
+suffix. Its workers inherited the timing parent's `ru_maxrss` high-water mark,
+reported zero increments, and could not produce ratios. The corrected harness
+does not change this protocol or its gates: it waits at a worker-ready
+checkpoint while the parent establishes current Linux RSS, then samples that
+worker every 0.5 ms. A second implementation may improve the retained layout
+and repeat the unchanged protocol, but it cannot replace this failed record.

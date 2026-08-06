@@ -292,13 +292,23 @@ and a
 on Linux, Windows, macOS Intel, and macOS Apple Silicon. No public name,
 version, merge, or publication is approved.
 
-The next private protocol targets the remaining generator limitation. The
-current façade and keyed C core materialize a general iterable before
-selection, so their end-to-end retained memory is not proportional only to
-`k`. The [streaming top-k proposal](streaming-topk-research.md) fixes a
-consume-once, stable, `O(k)` retained-state contract and canonical time,
-isolated-memory, and lifetime gates against `heapq` before implementation. No
-runtime symbol has been added by the protocol.
+The private streaming top-k protocol now has a first implementation and an
+unchanged-gate canonical record. All semantics passed, including one-shot
+consumption, stable ties, one key call per record, early release, and the
+pre-consumption memory guard. Every timing case stayed at or above `1.00x`
+`heapq`; 8 of 12 signed-int64 cases reached `1.10x`, all 12 generic cases
+reached the `0.95x` floor, and `k=100,000` reached `1.19x–1.80x`. Memory versus
+the materializing façade passed at `0.00x–0.13x`.
+
+The overall decision remains **failed** because candidate/`heapq` incremental
+RSS at `k=100,000` measured `0.76x` for signed-int64 keys and `0.80x` for
+string keys, above the fixed `0.70x` maximum. The
+[canonical record](https://github.com/bielelias/bielsort/blob/research/streaming-topk-0.3/benchmarks/results/2026-08-06-streaming-topk.md)
+preserves all samples. An earlier attempt inherited the timing parent's RSS
+high-water mark and is versioned explicitly as invalid; the corrected harness
+uses a worker-ready checkpoint and parent-sampled Linux RSS. The next private
+step may reduce the retained layout and repeat the same gate, but must not
+weaken or replace this failed result. No runtime symbol is public.
 
 ## Resume checklist
 

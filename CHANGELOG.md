@@ -72,6 +72,14 @@ release.
   one-shot Python iterables. Its contract requires stable ties, one key call,
   `O(k)` retained state, pre-consumption memory decisions, and comparison with
   `heapq`; no public symbol or release is added by the proposal.
+- Implemented the first private streaming candidate and preserved its fixed
+  canonical result. Every semantic and timing gate passed, as did the
+  materializing-façade memory gate, but incremental RSS at `k=100,000` was
+  `0.76x–0.80x` `heapq` instead of the required maximum `0.70x`; promotion is
+  therefore not approved.
+- Corrected an inherited-`ru_maxrss` benchmark defect with a worker-ready
+  checkpoint and parent-sampled Linux RSS. The malformed attempt and its raw
+  samples remain versioned separately from the canonical result.
 
 ### Fixed
 

@@ -68,6 +68,13 @@ baseline. The potential differentiation is the measured combination of native
 Python-object selection, stability, bounded retained state, and structured
 diagnostics.
 
+The first implementation passed its semantic and timing gates, reaching up to
+`1.80x` `heapq`, and used only `0.00x–0.13x` the incremental RSS of the
+materializing façade. It did not pass promotion because its `k=100,000`
+incremental RSS remained `0.76x–0.80x` `heapq`, above the pre-registered
+`0.70x` maximum. A second private layout may reduce per-selected-item native
+state; the failed result and original threshold remain binding evidence.
+
 ## Priority 4: permutation toolkit
 
 If the compact permutation becomes public, the next direct operations should

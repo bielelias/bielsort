@@ -127,8 +127,12 @@ published on 2026-08-05.
   `top_k` or `TopKInfo` symbol.
 - [x] Pre-register a true bounded-memory stable streaming top-k path for
   one-shot Python iterables without materializing all records.
-- [ ] Implement and evaluate that private streaming path against the fixed
-  correctness, performance, lifetime, and isolated-memory gates.
+- [x] Implement and evaluate the first private streaming path against the
+  fixed gates; preserve its passing time/semantics and failed `heapq` memory
+  result without weakening the `0.70x` bound.
+- [ ] Evaluate a second private streaming layout that reuses the result list
+  for retained records and reduces per-slot native state before reconsidering
+  the unchanged memory gate.
 - [ ] Prototype native inverse and composition operations only after external
   demand justifies expanding the private permutation toolkit.
 - [ ] Evaluate fused sorted-group boundaries and counts for telemetry/event
