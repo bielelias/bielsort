@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "_argsort.h"
+#include "_streaming_topk.h"
 
 #define RADIX_BITS 11
 #define RADIX_BASE (1U << RADIX_BITS)
@@ -2187,6 +2188,28 @@ PyDoc_STRVAR(
 );
 
 PyDoc_STRVAR(
+    stream_topk_prototype_doc,
+    "_stream_topk_prototype(iterable, k, key, largest=False, /)\n"
+    "--\n\n"
+    "Protótipo privado: top-k estável em uma única passagem."
+);
+
+PyDoc_STRVAR(
+    stream_topk_prototype_info_doc,
+    "_stream_topk_prototype_with_info(iterable, k, key, "
+    "largest=False, /)\n"
+    "--\n\n"
+    "Retorna o top-k streaming, a contagem consumida e o domínio da key."
+);
+
+PyDoc_STRVAR(
+    stream_topk_worst_auxiliary_bytes_doc,
+    "_stream_topk_worst_auxiliary_bytes(k, /)\n"
+    "--\n\n"
+    "Limite privado dos buffers nativos do top-k por streaming."
+);
+
+PyDoc_STRVAR(
     is_exact_int64_sequence_prototype_doc,
     "_is_exact_int64_sequence_prototype(sequence, /)\n"
     "--\n\n"
@@ -2329,6 +2352,24 @@ static PyMethodDef metodos[] = {
         bielsort_py_topk_by_key_worst_auxiliary_bytes,
         METH_O,
         topk_by_key_worst_auxiliary_bytes_doc
+    },
+    {
+        "_stream_topk_prototype",
+        bielsort_py_stream_topk_prototype,
+        METH_VARARGS,
+        stream_topk_prototype_doc
+    },
+    {
+        "_stream_topk_prototype_with_info",
+        bielsort_py_stream_topk_prototype_with_info,
+        METH_VARARGS,
+        stream_topk_prototype_info_doc
+    },
+    {
+        "_stream_topk_worst_auxiliary_bytes",
+        bielsort_py_stream_topk_worst_auxiliary_bytes,
+        METH_O,
+        stream_topk_worst_auxiliary_bytes_doc
     },
     {
         "_is_exact_int64_sequence_prototype",

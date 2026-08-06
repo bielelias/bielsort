@@ -38,6 +38,7 @@ setup(
             sources=[
                 "src/bielsort_native/_argsort.c",
                 "src/bielsort_native/_bielsort.c",
+                "src/bielsort_native/_streaming_topk.c",
             ],
             extra_compile_args=compile_args,
             extra_link_args=link_args,

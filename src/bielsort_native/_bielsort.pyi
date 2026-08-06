@@ -1,4 +1,4 @@
-from typing import Any, Callable, Iterable, List, Sequence, Tuple, TypeVar, final
+from typing import Any, Callable, Iterable, List, Optional, Sequence, Tuple, TypeVar, final
 
 _T = TypeVar("_T")
 
@@ -93,6 +93,24 @@ def _topk_by_key_prototype_with_info(
 ) -> Tuple[List[_T], Any]: ...
 
 def _topk_by_key_worst_auxiliary_bytes(k: int, /) -> int: ...
+
+def _stream_topk_prototype(
+    iterable: Iterable[_T],
+    k: int,
+    key: Optional[Callable[[_T], Any]],
+    largest: bool = ...,
+    /,
+) -> List[_T]: ...
+
+def _stream_topk_prototype_with_info(
+    iterable: Iterable[_T],
+    k: int,
+    key: Optional[Callable[[_T], Any]],
+    largest: bool = ...,
+    /,
+) -> Tuple[List[_T], int, bool]: ...
+
+def _stream_topk_worst_auxiliary_bytes(k: int, /) -> int: ...
 
 def _is_exact_int64_sequence_prototype(
     sequence: Sequence[Any],
