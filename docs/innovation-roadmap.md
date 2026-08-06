@@ -49,7 +49,26 @@ cases, with no regression beyond the allowed bound. The next gates are a
 one-call-compatible generic fallback, common callable shapes, isolated memory,
 and cross-platform validation; the symbol remains private.
 
-## Priority 3: permutation toolkit
+## Priority 3: bounded-memory streaming top-k
+
+The unified private façade currently materializes a general iterable so it can
+choose between partial selection and a full sort. That behavior is reasonable
+for an adaptive batch API but is not suitable for a generator whose complete
+contents should never reside in memory.
+
+A separate private experiment will test a strict streaming contract: consume
+once, retain only the selected records and keys, preserve stable ties, call an
+explicit key once, specialize signed-int64 keys in native code, and decide a
+native-memory limit from `k` before obtaining the iterator. Its fixed contract
+and gates are in the
+[streaming top-k research protocol](streaming-topk-research.md).
+
+The concept is not exclusive to BielSort: Python's `heapq` is the mandatory
+baseline. The potential differentiation is the measured combination of native
+Python-object selection, stability, bounded retained state, and structured
+diagnostics.
+
+## Priority 4: permutation toolkit
 
 If the compact permutation becomes public, the next direct operations should
 be evaluated together:
@@ -70,7 +89,7 @@ private ergonomics experiment, not a promoted performance feature. `inverse()`
 and `compose()` are deferred until users demonstrate a need for reusable
 parallel-list permutations.
 
-## Priority 4: sorted groups and rank boundaries
+## Priority 5: sorted groups and rank boundaries
 
 Telemetry and event workloads often need group starts, counts, ranks, or
 deduplicated integer keys immediately after sorting. A future experiment can
@@ -78,7 +97,7 @@ derive group boundaries from the ordered native keys while they are already
 in cache, avoiding a second Python pass. The useful output would be compact
 boundaries plus counts, not an attempt to become a DataFrame library.
 
-## Priority 5: wider integer domains
+## Priority 6: wider integer domains
 
 Unsigned 64-bit identifiers and timestamps are a practical extension of the
 existing signed-int64 specialization. This work should come after top-k

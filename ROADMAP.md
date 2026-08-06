@@ -125,6 +125,10 @@ published on 2026-08-05.
   `key=None`, structured diagnostics, and a large-`k` full-sort crossover.
 - [x] Implement and validate that private façade before proposing any public
   `top_k` or `TopKInfo` symbol.
+- [x] Pre-register a true bounded-memory stable streaming top-k path for
+  one-shot Python iterables without materializing all records.
+- [ ] Implement and evaluate that private streaming path against the fixed
+  correctness, performance, lifetime, and isolated-memory gates.
 - [ ] Prototype native inverse and composition operations only after external
   demand justifies expanding the private permutation toolkit.
 - [ ] Evaluate fused sorted-group boundaries and counts for telemetry/event

@@ -68,6 +68,10 @@ release.
   matched, no paired median fell below `0.85x`, and 47 cases reached at least
   `0.95x`. The three retained below-parity cases are natural-string fallbacks;
   public API and release decisions remain unapproved.
+- Pre-registered a private bounded-memory streaming top-k experiment for
+  one-shot Python iterables. Its contract requires stable ties, one key call,
+  `O(k)` retained state, pre-consumption memory decisions, and comparison with
+  `heapq`; no public symbol or release is added by the proposal.
 
 ### Fixed
 

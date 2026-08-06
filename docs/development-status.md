@@ -283,9 +283,22 @@ cases measured `1.49x–4.45x`, while the retained natural-string minimum was
 [versioned façade record](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-unified-topk-facade.md)
 links every raw sample. Both optimized and local ASan/UBSan runs pass all 174
 tests, along with warning-clean compilation, runtime/stub checks, strict Python
-3.9 typing, and strict docs. Fresh hosted source, sanitizer, and build-only
-wheel gates on the exact implementation remain pending; no public name,
+3.9 typing, and strict docs. The exact implementation also passed fresh hosted
+[source-build CI](https://github.com/bielelias/bielsort/actions/runs/31062370200),
+[ASan/UBSan](https://github.com/bielelias/bielsort/actions/runs/31062370239),
+[strict documentation](https://github.com/bielelias/bielsort/actions/runs/31062370208),
+and a
+[non-publishing wheel matrix](https://github.com/bielelias/bielsort/actions/runs/31062939080)
+on Linux, Windows, macOS Intel, and macOS Apple Silicon. No public name,
 version, merge, or publication is approved.
+
+The next private protocol targets the remaining generator limitation. The
+current façade and keyed C core materialize a general iterable before
+selection, so their end-to-end retained memory is not proportional only to
+`k`. The [streaming top-k proposal](streaming-topk-research.md) fixes a
+consume-once, stable, `O(k)` retained-state contract and canonical time,
+isolated-memory, and lifetime gates against `heapq` before implementation. No
+runtime symbol has been added by the protocol.
 
 ## Resume checklist
 
