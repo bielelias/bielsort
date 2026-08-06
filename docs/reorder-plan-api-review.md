@@ -366,6 +366,11 @@ only a separately pre-registered, memory-focused hypothesis—such as avoiding
 the duplicate snapshot/compact-buffer transition on the nearly monotonic
 fallback—and must retain this failed canonical record.
 
+That separate hypothesis is now frozen in the
+[nearly ordered memory continuation](reorder-plan-memory-continuation.md). It
+targets only the eager exact-list/tuple snapshot, retains all original gates,
+and adds a stricter `1.05x` focused memory ceiling before implementation.
+
 ## Why this is a credible differential, not an exclusivity claim
 
 NumPy, Arrow, Polars, pandas, and more-itertools already solve related forms

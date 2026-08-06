@@ -408,6 +408,16 @@ Python, above the unchanged `1.10x` ceiling. The private API is not approved
 for promotion. Any continuation must pre-register a new, narrow memory
 hypothesis and preserve this result.
 
+That continuation is now pre-registered in the
+[nearly ordered reorder-plan memory protocol](reorder-plan-memory-continuation.md).
+It attributes the likely excess to the eager `PySequence_List` pointer
+snapshot and permits only replacing it with `PySequence_Fast` plus adapting
+the internal fallback to fast sequences. All original gates remain binding;
+the focused one-million-record nearly ordered median must additionally reach
+at most `1.05x` direct Python's RSS, with at least two of three paired samples
+at or below `1.10x`. No implementation change or new measurement is claimed
+by the protocol itself.
+
 ## Resume checklist
 
 Start from the repository root and inspect the current evidence:

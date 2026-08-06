@@ -125,6 +125,11 @@ release.
   remains failed because the nearly ordered memory control measured `1.1205x`
   against its frozen `1.10x` ceiling; no public API, version, or release is
   approved.
+- Pre-registered a separate nearly ordered memory continuation before changing
+  implementation. It limits the hypothesis to avoiding the eager exact-list/
+  tuple pointer snapshot, retains every original gate, and adds a `1.05x`
+  focused median RSS ceiling plus paired-sample and time controls. The prior
+  failed result remains authoritative and no public symbol is added.
 
 ### Fixed
 

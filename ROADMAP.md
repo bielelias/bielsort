@@ -80,9 +80,12 @@ published on 2026-08-05.
   time gates passed, but the unchanged nearly ordered memory control failed at
   `1.1205x` versus its `1.10x` ceiling; portability promotion was therefore
   not started.
-- [ ] Before modifying the reorder-plan candidate, pre-register a narrow
+- [x] Before modifying the reorder-plan candidate, pre-register a narrow
   nearly ordered peak-memory hypothesis that preserves the failed canonical
   record and every original performance threshold.
+- [ ] Replace only the eager exact-list/tuple snapshot, validate the frozen
+  safety gates, and execute the single pre-registered memory-continuation run
+  without weakening the original decision criteria.
 - [x] Prototype stable native keyless `reverse=True` for both public operation
   shapes and record the first local benchmark gate.
 - [x] Validate the keyless reverse candidate in the supported cross-platform
