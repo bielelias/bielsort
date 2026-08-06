@@ -15,6 +15,11 @@ PyObject *bielsort_py_argsort_int64_prototype_with_strategy(
     PyObject *args
 );
 
+PyObject *bielsort_py_permutation_fixture(
+    PyObject *module,
+    PyObject *args
+);
+
 PyObject *bielsort_py_topk_int64_prototype(
     PyObject *module,
     PyObject *args

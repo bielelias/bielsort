@@ -296,6 +296,21 @@ must not be weakened after observing the canonical run. A materially new
 hypothesis requires a separately committed protocol and retains the failed
 result beside it.
 
+## Private implementation checkpoint
+
+The frozen contract is implemented only in the private
+`bielsort_native._reorder_plan` module. Its thin `argsort()` façade delegates
+to the existing compact C permutation and is explicitly absent from the
+public `bielsort` and `bielsort_native` exports. Dedicated tests cover the
+provisional signature, stable directions, fallbacks, identity, source
+lifetime, both buffer widths, errors, and deferred behavior.
+
+The versioned `benchmarks/reorder_plan_candidate.py` harness implements the
+four workload shapes and all frozen baselines, time gates, isolated-memory
+gates, raw samples, rotation order, and environment metadata. This checkpoint
+records implementation readiness only. The single canonical run has not yet
+occurred, and no existing measurement counts toward it.
+
 ## Why this is a credible differential, not an exclusivity claim
 
 NumPy, Arrow, Polars, pandas, and more-itertools already solve related forms

@@ -170,19 +170,6 @@ stream_topk_promote_generic_keys(
 }
 
 static int
-stream_topk_exact_is_better(
-    StreamingTopKEntry left,
-    StreamingTopKEntry right
-)
-{
-    return left.key.normalized < right.key.normalized
-        || (
-            left.key.normalized == right.key.normalized
-            && left.encounter_index < right.encounter_index
-        );
-}
-
-static int
 stream_topk_exact_is_worse(
     StreamingTopKEntry left,
     StreamingTopKEntry right

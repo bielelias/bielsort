@@ -202,6 +202,38 @@ It measures both application in isolation and the complete build-once,
 apply-three-lists operation. Both implementations receive reusable sequences;
 one-shot generators are outside the prototype contract.
 
+## Candidate: compact reusable reorder plan
+
+The successor experiment measures the complete aligned-Python-sequence
+workflow against direct Python indices, `more_itertools.sort_together()`,
+end-to-end NumPy conversion, and a separate NumPy-resident negative control.
+Its provisional façade remains private as
+`bielsort_native._reorder_plan.argsort`; neither public package exports the
+candidate names.
+
+The exact workloads and pass/fail thresholds are frozen in the
+[reorder-plan API review](../docs/reorder-plan-api-review.md). A noncanonical
+smoke run may use smaller values:
+
+```bash
+python benchmarks/reorder_plan_candidate.py \
+  -n 1000 -r 1 --memory-repetitions 1 \
+  --json-output /tmp/reorder-plan-smoke.json
+```
+
+The single decision run must start from a clean committed tree and use the
+unchanged canonical command:
+
+```bash
+python benchmarks/reorder_plan_candidate.py --canonical \
+  --json-output benchmarks/results/2026-08-06-reorder-plan-canonical.json \
+  --markdown-output benchmarks/results/2026-08-06-reorder-plan-canonical.md
+```
+
+Seven rotated timing samples and three isolated peak-RSS workers are retained
+for every case. Passing the local gate authorizes only portability and final
+API review, not a public symbol or release.
+
 ## Research: stable compact top-k
 
 The private top-k prototype compares stable reusable index selection against

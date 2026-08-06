@@ -103,9 +103,17 @@ release.
   complete Python, `sort_together()`, NumPy conversion, NumPy-resident,
   semantic, memory, and portability gates before implementation. No public
   symbol or release metadata changed.
+- Implemented the protocol as a private keyword-only façade plus contract and
+  benchmark-harness tests. The new harness fixes four aligned-sequence shapes,
+  complete-flow timing, isolated peak RSS, raw samples, and a clean-tree guard
+  for its single canonical run; that run and any public promotion remain
+  separate decisions.
 
 ### Fixed
 
+- Removed an unused private streaming comparator left by the final heap
+  experiment, restoring warning-clean `-Wall -Wextra -Werror` builds without
+  changing the selected algorithm.
 - Hardened the private keyed top-k native loops against input-list resizing
   from `key` or generic comparison callbacks. The current record is retained
   across Python calls and size changes now raise `RuntimeError` instead of

@@ -373,6 +373,13 @@ time, isolated peak RSS, typing, sanitizers, source builds, and wheels.
 Existing prototype results do not satisfy this new protocol. No public export,
 version change, merge, tag, or publication is authorized yet.
 
+The corresponding private façade, 32-/64-bit buffer fixture, contract tests,
+and complete-flow benchmark harness are now implemented on the focused
+research branch. The harness refuses canonical mode unless the exact frozen
+sizes, workloads, repetition counts, optional baselines, output artifacts, and
+a clean committed tree are present. Only smoke validation has run so far; the
+single canonical decision remains the next action.
+
 ## Resume checklist
 
 Start from the repository root and inspect the current evidence:

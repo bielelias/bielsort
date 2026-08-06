@@ -76,13 +76,13 @@ permutation_apply(BielSortPermutation *self, PyObject *sequence)
     if (!PySequence_Check(sequence)) {
         PyErr_SetString(
             PyExc_TypeError,
-            "permutation.apply requires a reusable sequence"
+            "Permutation.apply requires a reusable sequence"
         );
         return NULL;
     }
     PyObject *values = PySequence_Fast(
         sequence,
-        "permutation.apply requires a reusable sequence"
+        "Permutation.apply requires a reusable sequence"
     );
     if (values == NULL) {
         return NULL;
@@ -92,7 +92,7 @@ permutation_apply(BielSortPermutation *self, PyObject *sequence)
         Py_DECREF(values);
         PyErr_Format(
             PyExc_ValueError,
-            "permutation source length %zd does not match sequence length %zd",
+            "Permutation source length %zd does not match sequence length %zd",
             self->source_length,
             length
         );
@@ -116,7 +116,7 @@ permutation_apply(BielSortPermutation *self, PyObject *sequence)
             Py_DECREF(values);
             PyErr_SetString(
                 PyExc_SystemError,
-                "permutation contains an invalid internal index"
+                "Permutation contains an invalid internal index"
             );
             return NULL;
         }
@@ -384,6 +384,90 @@ allocate_indices(Py_ssize_t length, int itemsize)
     return indices;
 }
 
+PyObject *
+bielsort_py_permutation_fixture(
+    PyObject *Py_UNUSED(module),
+    PyObject *args
+)
+{
+    PyObject *indices_source;
+    Py_ssize_t source_length;
+    int itemsize;
+    if (
+        !PyArg_ParseTuple(
+            args,
+            "Oni:_permutation_fixture",
+            &indices_source,
+            &source_length,
+            &itemsize
+        )
+    ) {
+        return NULL;
+    }
+    if (source_length < 0) {
+        PyErr_SetString(PyExc_ValueError, "source_length must be non-negative");
+        return NULL;
+    }
+    if (itemsize != 4 && itemsize != 8) {
+        PyErr_SetString(PyExc_ValueError, "itemsize must be 4 or 8");
+        return NULL;
+    }
+
+    PyObject *values = PySequence_Fast(
+        indices_source,
+        "indices must be a reusable sequence"
+    );
+    if (values == NULL) {
+        return NULL;
+    }
+    const Py_ssize_t length = PySequence_Fast_GET_SIZE(values);
+    void *storage = allocate_indices(length, itemsize);
+    if (length != 0 && storage == NULL) {
+        Py_DECREF(values);
+        return NULL;
+    }
+
+    for (Py_ssize_t position = 0; position < length; position++) {
+        PyObject *value = PySequence_Fast_GET_ITEM(values, position);
+        if (!PyLong_CheckExact(value)) {
+            PyErr_SetString(PyExc_TypeError, "indices must be exact integers");
+            PyMem_Free(storage);
+            Py_DECREF(values);
+            return NULL;
+        }
+        const unsigned long long index = PyLong_AsUnsignedLongLong(value);
+        if (index == (unsigned long long)-1 && PyErr_Occurred()) {
+            PyMem_Free(storage);
+            Py_DECREF(values);
+            return NULL;
+        }
+        if (index >= (unsigned long long)source_length) {
+            PyErr_SetString(PyExc_ValueError, "index is outside source_length");
+            PyMem_Free(storage);
+            Py_DECREF(values);
+            return NULL;
+        }
+        if (itemsize == 4) {
+            if (index > UINT32_MAX) {
+                PyErr_SetString(PyExc_OverflowError, "index does not fit uint32");
+                PyMem_Free(storage);
+                Py_DECREF(values);
+                return NULL;
+            }
+            ((uint32_t *)storage)[position] = (uint32_t)index;
+        } else {
+            ((uint64_t *)storage)[position] = (uint64_t)index;
+        }
+    }
+    Py_DECREF(values);
+    return permutation_new_owned(
+        length,
+        source_length,
+        itemsize,
+        storage
+    );
+}
+
 static PyObject *
 identity_permutation(Py_ssize_t length)
 {
@@ -624,7 +708,7 @@ argsort_int64_impl(PyObject *sequence, int reverse, int diagnostic)
     if (!PySequence_Check(sequence)) {
         PyErr_SetString(
             PyExc_TypeError,
-            "_argsort_int64_prototype requires a reusable sequence"
+            "argsort requires a reusable sequence"
         );
         return NULL;
     }

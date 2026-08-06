@@ -2136,6 +2136,13 @@ PyDoc_STRVAR(
 );
 
 PyDoc_STRVAR(
+    permutation_fixture_doc,
+    "_permutation_fixture(indices, source_length, itemsize, /)\n"
+    "--\n\n"
+    "Construtor privado para testar os formatos compactos de 32 e 64 bits."
+);
+
+PyDoc_STRVAR(
     topk_int64_prototype_doc,
     "_topk_int64_prototype(sequence, k, largest=False, /)\n"
     "--\n\n"
@@ -2310,6 +2317,12 @@ static PyMethodDef metodos[] = {
         bielsort_py_argsort_int64_prototype_with_strategy,
         METH_VARARGS,
         argsort_int64_prototype_strategy_doc
+    },
+    {
+        "_permutation_fixture",
+        bielsort_py_permutation_fixture,
+        METH_VARARGS,
+        permutation_fixture_doc
     },
     {
         "_topk_int64_prototype",

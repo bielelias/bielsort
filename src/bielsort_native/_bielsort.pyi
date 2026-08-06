@@ -46,6 +46,13 @@ def _argsort_int64_prototype_with_strategy(
     /,
 ) -> Tuple[_Permutation, str]: ...
 
+def _permutation_fixture(
+    indices: Sequence[int],
+    source_length: int,
+    itemsize: int,
+    /,
+) -> _Permutation: ...
+
 def _topk_int64_prototype(
     sequence: Sequence[Any],
     k: int,

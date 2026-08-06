@@ -43,6 +43,7 @@ dev = [
   "cibuildwheel>=4.1",
 ]
 benchmark = [
+  "more-itertools>=10.0",
   "numpy>=1.24",
 ]
 
