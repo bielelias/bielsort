@@ -350,6 +350,18 @@ canonical run, hosted promotion matrix, public API, merge, or release is
 approved. Future streaming work should begin with a new pre-registered idea
 or external workload evidence rather than rerunning this unchanged gate.
 
+The subsequent [market opportunity review](market-opportunities.md) pauses
+new algorithm variants. NumPy, Polars, and Arrow already provide mature
+indirect sorting and indexed application in columnar storage, while
+more-itertools already addresses sorting aligned Python iterables together.
+The remaining plausible niche is a compact stable reorder plan for aligned
+Python sequences without mandatory container conversion. Existing compact
+permutation evidence makes this the strongest 0.3 discovery candidate, but
+only functional demand—not large-scale performance demand—is established.
+The next gate is a separately pre-registered API/usability and end-to-end
+baseline review; no implementation, public name, merge, or release follows
+from the market review alone.
+
 ## Resume checklist
 
 Start from the repository root and inspect the current evidence:

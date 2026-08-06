@@ -91,6 +91,12 @@ release.
   reached only 7 of 12 signed-int64 targets. A final bottom-up Floyd screening
   produced the same count, so the private candidate remains unapproved and no
   public symbol or release metadata changed.
+- Added a market-opportunity review comparing the private research with
+  CPython, NumPy, pandas, Polars, Arrow, more-itertools, and Sorted Containers.
+  It selects a compact stable reorder plan for aligned Python sequences as the
+  next discovery candidate while explicitly recording weak performance-demand
+  evidence and deferring implementation until a separate API/usability
+  protocol is pre-registered.
 
 ### Fixed
 

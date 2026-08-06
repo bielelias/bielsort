@@ -5,6 +5,14 @@ workflow and pass a reproducible correctness, time, and memory gate. A feature
 is not innovative merely because it has a new name or wins one synthetic
 benchmark.
 
+The 2026-08-06 [market opportunity review](market-opportunities.md) compares
+the current research with CPython, NumPy, pandas, Polars, Arrow,
+more-itertools, and Sorted Containers. It recommends pausing new algorithm
+variants and validating one narrower product hypothesis: a compact stable
+reorder plan for aligned Python sequences. Functional demand is visible, but
+large-scale performance demand remains unproven; the next step is an API and
+usability protocol, not implementation or release work.
+
 ## Priority 1: stable compact top-k
 
 Many programs need the best or worst few records rather than a full sort:

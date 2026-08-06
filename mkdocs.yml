@@ -96,6 +96,7 @@ nav:
       - Validação em runners: external-validation-pt.md
   - Project:
       - Development status: development-status.md
+      - Market opportunity review: market-opportunities.md
       - Practical innovation roadmap: innovation-roadmap.md
       - "Research: compact argsort": argsort-research.md
       - "Research: stable compact top-k": topk-research.md
