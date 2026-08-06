@@ -97,6 +97,12 @@ release.
   next discovery candidate while explicitly recording weak performance-demand
   evidence and deferring implementation until a separate API/usability
   protocol is pre-registered.
+- Pre-registered that compact reorder-plan API and usability protocol. It
+  selects provisional `argsort(values, *, reverse=False)` and
+  `Permutation.apply()` semantics, defers `key=` and `apply_many()`, and fixes
+  complete Python, `sort_together()`, NumPy conversion, NumPy-resident,
+  semantic, memory, and portability gates before implementation. No public
+  symbol or release metadata changed.
 
 ### Fixed
 

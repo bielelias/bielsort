@@ -155,16 +155,15 @@ for the separate Python/NumPy scenarios, reproduction commands, raw samples,
 and environment. This pass authorizes continued private engineering only; it
 does not add an API, change the package version, or establish market demand.
 
-## Open questions
+## Successor API review
 
-- Should the first public version support only natural integer values, or ship
-  with stable signed-int64 `key=` support at once?
-- Should a future public `Permutation` expose the validated native application
-  method, and what name best communicates that it returns a new list?
-- Is a stable generic fallback valuable enough to include, or should the
-  prototype reject unsupported domains explicitly?
-- Can 32-bit and 64-bit internal storage coexist without making the buffer
-  contract surprising?
+The subsequent
+[compact reusable reorder-plan review](reorder-plan-api-review.md) resolves
+the first discovery-stage questions without exposing an API. It selects the
+provisional `argsort(values, *, reverse=False)` and `Permutation.apply()`
+surface, retains a stable generic fallback, fixes the 32-/64-bit read-only
+buffer contract, and deliberately defers `key=` and `apply_many()`.
 
-These questions will be answered by further private implementation and
-benchmark work, not by committing the public API in advance.
+It also freezes three ecosystem baselines and new numerical end-to-end gates.
+The measurements on this page informed those thresholds but cannot count as
+the new canonical decision run.

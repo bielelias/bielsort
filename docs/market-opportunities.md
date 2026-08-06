@@ -104,17 +104,23 @@ gate. The proposed value is the complete workflow, not `argsort` alone:
 
 ## Recommended 0.3 discovery candidate
 
-The next work should be an API and usability review, not implementation. The
+The API and usability review is now pre-registered in the
+[compact reusable reorder-plan protocol](reorder-plan-api-review.md). The
 smallest candidate surface is:
 
-- one constructor whose final name is still open (`argsort`,
-  `stable_permutation`, or another reviewed name);
+- one provisional `argsort(values, *, reverse=False)` constructor;
 - one immutable `Permutation` result with `len`, indexing, iteration, and a
   read-only buffer;
 - one `apply(sequence)` operation returning a new list and preserving exact
   object identity;
-- stable `reverse=True` and one-call-compatible `key=` semantics;
-- an explicit fallback or rejection contract for unsupported key domains.
+- stable `reverse=True` semantics;
+- a stable generic fallback for comparable domains outside exact signed-int64.
+
+`key=` is deliberately absent from this first candidate. Its target workflow
+already has a key column, while record sorting remains available through
+`bielsort.sort(..., key=...)`. This keeps the proposal aligned with the
+measured private prototype and leaves keyed indirect sorting for a separate
+future decision.
 
 Do **not** add `apply_many`, `inverse`, `compose`, grouping, serialization, or
 streaming to the first proposal. `apply_many` missed its own performance gate,
@@ -123,14 +129,13 @@ can expand. A small surface is easier to explain, validate, and maintain.
 
 ## Pre-implementation validation gates
 
-Before changing a public module, freeze a continuation protocol that includes:
+The frozen continuation protocol includes:
 
 1. Three understandable aligned-sequence workflows with 2, 3, and 5
    sequences, covering duplicate-heavy IDs, event timestamps plus payloads,
    and ranking scores plus metadata.
-2. Complete correctness checks for stability, object identity, key call
-   count/order, immutability, mismatched lengths, exceptions, and buffer
-   format.
+2. Complete correctness checks for stability, object identity, immutability,
+   mismatched lengths, exceptions, and buffer format.
 3. End-to-end comparisons against:
    - `sorted(range(n), key=...)` plus Python list comprehensions;
    - `more_itertools.sort_together()`;
@@ -145,9 +150,9 @@ Before changing a public module, freeze a continuation protocol that includes:
 6. CPython 3.9–3.14 source, sanitizer, typing, documentation, and build-only
    wheel gates before any public proposal.
 
-The exact numerical performance thresholds must be committed before the new
-benchmark is executed. Existing measurements may inform those thresholds but
-must not count as the new decision run.
+The exact numerical thresholds are now committed in the linked protocol
+before implementation or a new benchmark. Existing measurements informed the
+thresholds but cannot count as the new decision run.
 
 ## Stop conditions
 

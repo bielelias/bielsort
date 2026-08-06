@@ -98,6 +98,7 @@ nav:
       - Development status: development-status.md
       - Market opportunity review: market-opportunities.md
       - Practical innovation roadmap: innovation-roadmap.md
+      - "Review: reusable reorder plan": reorder-plan-api-review.md
       - "Research: compact argsort": argsort-research.md
       - "Research: stable compact top-k": topk-research.md
       - "Research: direct keyed top-k": keyed-topk-research.md

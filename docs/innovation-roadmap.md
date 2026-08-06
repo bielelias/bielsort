@@ -10,8 +10,11 @@ the current research with CPython, NumPy, pandas, Polars, Arrow,
 more-itertools, and Sorted Containers. It recommends pausing new algorithm
 variants and validating one narrower product hypothesis: a compact stable
 reorder plan for aligned Python sequences. Functional demand is visible, but
-large-scale performance demand remains unproven; the next step is an API and
-usability protocol, not implementation or release work.
+large-scale performance demand remains unproven. That API and usability
+protocol is now frozen in the
+[compact reusable reorder-plan review](reorder-plan-api-review.md). The next
+step is a private implementation and one unchanged canonical end-to-end run,
+not public API or release work.
 
 ## Priority 1: stable compact top-k
 

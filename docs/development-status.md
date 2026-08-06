@@ -362,6 +362,17 @@ The next gate is a separately pre-registered API/usability and end-to-end
 baseline review; no implementation, public name, merge, or release follows
 from the market review alone.
 
+That gate is now frozen in the
+[compact reusable reorder-plan review](reorder-plan-api-review.md). It selects
+provisional `argsort(values, *, reverse=False)` and `Permutation.apply()`
+semantics for aligned reusable sequences, explicitly defers `key=` and
+`apply_many()`, and fixes complete-flow comparisons with direct Python,
+`more_itertools.sort_together()`, end-to-end NumPy conversion, and
+NumPy-resident negative controls. New thresholds cover semantics, usability,
+time, isolated peak RSS, typing, sanitizers, source builds, and wheels.
+Existing prototype results do not satisfy this new protocol. No public export,
+version change, merge, tag, or publication is authorized yet.
+
 ## Resume checklist
 
 Start from the repository root and inspect the current evidence:

@@ -72,9 +72,12 @@ published on 2026-08-05.
 - [x] Complete a market-opportunity review that distinguishes existing
   ecosystem capabilities, recurring user workflows, measured BielSort
   strengths, and missing performance-demand evidence.
-- [ ] Pre-register a minimal compact reorder-plan API and usability review,
+- [x] Pre-register a minimal compact reorder-plan API and usability review,
   including complete Python, `more_itertools.sort_together`, and NumPy
   end-to-end baselines, before exposing any public `argsort` or `Permutation`.
+- [ ] Implement the frozen reorder-plan candidate privately and run its single
+  canonical semantic, end-to-end time, peak-memory, and portability protocol
+  before considering public API promotion.
 - [x] Prototype stable native keyless `reverse=True` for both public operation
   shapes and record the first local benchmark gate.
 - [x] Validate the keyless reverse candidate in the supported cross-platform
