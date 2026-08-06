@@ -1,36 +1,47 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include <limits.h>
 #include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "_streaming_topk.h"
 
+typedef union {
+    uint64_t normalized;
+    PyObject *object;
+} StreamingTopKKey;
+
 typedef struct {
-    uint64_t normalized_key;
+    StreamingTopKKey key;
     uint64_t encounter_index;
-    PyObject *key_object;
-    PyObject *record_object;
 } StreamingTopKEntry;
 
 static void
-stream_topk_clear_entry(StreamingTopKEntry *entry)
+stream_topk_clear_generic_keys(
+    StreamingTopKEntry *entries,
+    Py_ssize_t length
+)
 {
-    Py_XDECREF(entry->key_object);
-    Py_XDECREF(entry->record_object);
-    entry->key_object = NULL;
-    entry->record_object = NULL;
+    for (Py_ssize_t position = 0; position < length; position++) {
+        Py_XDECREF(entries[position].key.object);
+        entries[position].key.object = NULL;
+    }
 }
 
 static void
-stream_topk_clear_entries(StreamingTopKEntry *entries, Py_ssize_t length)
+stream_topk_swap(
+    StreamingTopKEntry *entries,
+    PyObject *records,
+    Py_ssize_t left,
+    Py_ssize_t right
+)
 {
-    if (entries == NULL) {
-        return;
-    }
-    for (Py_ssize_t position = 0; position < length; position++) {
-        stream_topk_clear_entry(&entries[position]);
-    }
+    const StreamingTopKEntry entry = entries[left];
+    entries[left] = entries[right];
+    entries[right] = entry;
+
+    PyObject *record = PyList_GET_ITEM(records, left);
+    PyList_SET_ITEM(records, left, PyList_GET_ITEM(records, right));
+    PyList_SET_ITEM(records, right, record);
 }
 
 static int
@@ -58,15 +69,72 @@ stream_topk_try_normalize(
     return 1;
 }
 
+static PyObject *
+stream_topk_denormalize(uint64_t normalized, int largest)
+{
+    const uint64_t biased = largest ? ~normalized : normalized;
+    const uint64_t bits = biased ^ (UINT64_C(1) << 63);
+    long long signed_value;
+    if (bits <= (uint64_t)LLONG_MAX) {
+        signed_value = (long long)bits;
+    } else {
+        signed_value = -1 - (long long)(UINT64_MAX - bits);
+    }
+    return PyLong_FromLongLong(signed_value);
+}
+
+static int
+stream_topk_promote_generic_keys(
+    StreamingTopKEntry *entries,
+    Py_ssize_t length,
+    int largest
+)
+{
+    if (length == 0) {
+        return 0;
+    }
+    if ((size_t)length > SIZE_MAX / sizeof(PyObject *)) {
+        return PyErr_NoMemory(), -1;
+    }
+    PyObject **keys = PyMem_Malloc(
+        (size_t)length * sizeof(*keys)
+    );
+    if (keys == NULL) {
+        return PyErr_NoMemory(), -1;
+    }
+    Py_ssize_t created = 0;
+    for (; created < length; created++) {
+        keys[created] = stream_topk_denormalize(
+            entries[created].key.normalized,
+            largest
+        );
+        if (keys[created] == NULL) {
+            break;
+        }
+    }
+    if (created != length) {
+        for (Py_ssize_t position = 0; position < created; position++) {
+            Py_DECREF(keys[position]);
+        }
+        PyMem_Free(keys);
+        return -1;
+    }
+    for (Py_ssize_t position = 0; position < length; position++) {
+        entries[position].key.object = keys[position];
+    }
+    PyMem_Free(keys);
+    return 0;
+}
+
 static int
 stream_topk_exact_is_better(
     StreamingTopKEntry left,
     StreamingTopKEntry right
 )
 {
-    return left.normalized_key < right.normalized_key
+    return left.key.normalized < right.key.normalized
         || (
-            left.normalized_key == right.normalized_key
+            left.key.normalized == right.key.normalized
             && left.encounter_index < right.encounter_index
         );
 }
@@ -77,9 +145,9 @@ stream_topk_exact_is_worse(
     StreamingTopKEntry right
 )
 {
-    return left.normalized_key > right.normalized_key
+    return left.key.normalized > right.key.normalized
         || (
-            left.normalized_key == right.normalized_key
+            left.key.normalized == right.key.normalized
             && left.encounter_index > right.encounter_index
         );
 }
@@ -87,6 +155,7 @@ stream_topk_exact_is_worse(
 static void
 stream_topk_exact_sift_down(
     StreamingTopKEntry *heap,
+    PyObject *records,
     Py_ssize_t length,
     Py_ssize_t root
 )
@@ -102,32 +171,22 @@ stream_topk_exact_sift_down(
         if (!stream_topk_exact_is_worse(heap[child], heap[root])) {
             return;
         }
-        const StreamingTopKEntry swap = heap[root];
-        heap[root] = heap[child];
-        heap[child] = swap;
+        stream_topk_swap(heap, records, root, child);
         root = child;
     }
 }
 
-static int
-stream_topk_exact_compare_best_first(
-    const void *left_pointer,
-    const void *right_pointer
+static void
+stream_topk_exact_sort(
+    StreamingTopKEntry *heap,
+    PyObject *records,
+    Py_ssize_t length
 )
 {
-    const StreamingTopKEntry left = (
-        *(const StreamingTopKEntry *)left_pointer
-    );
-    const StreamingTopKEntry right = (
-        *(const StreamingTopKEntry *)right_pointer
-    );
-    if (stream_topk_exact_is_better(left, right)) {
-        return -1;
+    for (Py_ssize_t end = length - 1; end > 0; end--) {
+        stream_topk_swap(heap, records, 0, end);
+        stream_topk_exact_sift_down(heap, records, end, 0);
     }
-    if (stream_topk_exact_is_better(right, left)) {
-        return 1;
-    }
-    return 0;
 }
 
 static int
@@ -142,14 +201,14 @@ stream_topk_generic_compare_best(
     int right_is_better;
     if (largest) {
         left_is_better = PyObject_RichCompareBool(
-            right->key_object,
-            left->key_object,
+            right->key.object,
+            left->key.object,
             Py_LT
         );
     } else {
         left_is_better = PyObject_RichCompareBool(
-            left->key_object,
-            right->key_object,
+            left->key.object,
+            right->key.object,
             Py_LT
         );
     }
@@ -163,14 +222,14 @@ stream_topk_generic_compare_best(
 
     if (largest) {
         right_is_better = PyObject_RichCompareBool(
-            left->key_object,
-            right->key_object,
+            left->key.object,
+            right->key.object,
             Py_LT
         );
     } else {
         right_is_better = PyObject_RichCompareBool(
-            right->key_object,
-            left->key_object,
+            right->key.object,
+            left->key.object,
             Py_LT
         );
     }
@@ -195,6 +254,7 @@ stream_topk_generic_compare_best(
 static int
 stream_topk_generic_sift_down(
     StreamingTopKEntry *heap,
+    PyObject *records,
     Py_ssize_t length,
     Py_ssize_t root,
     int largest
@@ -231,82 +291,8 @@ stream_topk_generic_sift_down(
         if (comparison <= 0) {
             return 0;
         }
-        const StreamingTopKEntry swap = heap[root];
-        heap[root] = heap[child];
-        heap[child] = swap;
+        stream_topk_swap(heap, records, root, child);
         root = child;
-    }
-    return 0;
-}
-
-static int
-stream_topk_generic_merge_range(
-    StreamingTopKEntry *entries,
-    StreamingTopKEntry *temporary,
-    Py_ssize_t left,
-    Py_ssize_t right,
-    int largest
-)
-{
-    if (right - left < 2) {
-        return 0;
-    }
-    const Py_ssize_t middle = left + (right - left) / 2;
-    if (
-        stream_topk_generic_merge_range(
-            entries,
-            temporary,
-            left,
-            middle,
-            largest
-        ) < 0
-        || stream_topk_generic_merge_range(
-            entries,
-            temporary,
-            middle,
-            right,
-            largest
-        ) < 0
-    ) {
-        return -1;
-    }
-
-    memcpy(
-        &temporary[left],
-        &entries[left],
-        (size_t)(right - left) * sizeof(*entries)
-    );
-    Py_ssize_t first = left;
-    Py_ssize_t second = middle;
-    Py_ssize_t output = left;
-    while (first < middle && second < right) {
-        int comparison;
-        if (
-            stream_topk_generic_compare_best(
-                &temporary[first],
-                &temporary[second],
-                largest,
-                &comparison
-            ) < 0
-        ) {
-            memcpy(
-                &entries[left],
-                &temporary[left],
-                (size_t)(right - left) * sizeof(*entries)
-            );
-            return -1;
-        }
-        if (comparison <= 0) {
-            entries[output++] = temporary[first++];
-        } else {
-            entries[output++] = temporary[second++];
-        }
-    }
-    while (first < middle) {
-        entries[output++] = temporary[first++];
-    }
-    while (second < right) {
-        entries[output++] = temporary[second++];
     }
     return 0;
 }
@@ -314,31 +300,45 @@ stream_topk_generic_merge_range(
 static int
 stream_topk_generic_sort(
     StreamingTopKEntry *entries,
+    PyObject *records,
     Py_ssize_t length,
-    int largest
+    int largest,
+    int heap_ready
 )
 {
     if (length < 2) {
         return 0;
     }
-    if ((size_t)length > SIZE_MAX / sizeof(*entries)) {
-        return PyErr_NoMemory(), -1;
+    if (!heap_ready) {
+        for (Py_ssize_t parent = length / 2; parent > 0; parent--) {
+            if (
+                stream_topk_generic_sift_down(
+                    entries,
+                    records,
+                    length,
+                    parent - 1,
+                    largest
+                ) < 0
+            ) {
+                return -1;
+            }
+        }
     }
-    StreamingTopKEntry *temporary = PyMem_Malloc(
-        (size_t)length * sizeof(*temporary)
-    );
-    if (temporary == NULL) {
-        return PyErr_NoMemory(), -1;
+    for (Py_ssize_t end = length - 1; end > 0; end--) {
+        stream_topk_swap(entries, records, 0, end);
+        if (
+            stream_topk_generic_sift_down(
+                entries,
+                records,
+                end,
+                0,
+                largest
+            ) < 0
+        ) {
+            return -1;
+        }
     }
-    const int result = stream_topk_generic_merge_range(
-        entries,
-        temporary,
-        0,
-        length,
-        largest
-    );
-    PyMem_Free(temporary);
-    return result;
+    return 0;
 }
 
 static PyObject *
@@ -346,7 +346,8 @@ stream_topk_finish(
     PyObject *result,
     Py_ssize_t processed,
     int exact_int64,
-    int diagnostic
+    int diagnostic,
+    Py_ssize_t k
 )
 {
     if (!diagnostic || result == NULL) {
@@ -354,22 +355,40 @@ stream_topk_finish(
     }
     PyObject *processed_object = PyLong_FromSsize_t(processed);
     PyObject *exact_object = PyBool_FromLong(exact_int64);
-    if (processed_object == NULL || exact_object == NULL) {
+    const size_t bytes_per_item = exact_int64
+        ? sizeof(StreamingTopKEntry)
+        : sizeof(StreamingTopKEntry) + sizeof(PyObject *);
+    PyObject *estimated_object = NULL;
+    if ((size_t)k <= SIZE_MAX / bytes_per_item) {
+        estimated_object = PyLong_FromSize_t(
+            (size_t)k * bytes_per_item
+        );
+    } else {
+        PyErr_NoMemory();
+    }
+    if (
+        processed_object == NULL
+        || exact_object == NULL
+        || estimated_object == NULL
+    ) {
         Py_XDECREF(processed_object);
         Py_XDECREF(exact_object);
+        Py_XDECREF(estimated_object);
         Py_DECREF(result);
         return NULL;
     }
-    PyObject *output = PyTuple_New(3);
+    PyObject *output = PyTuple_New(4);
     if (output == NULL) {
         Py_DECREF(processed_object);
         Py_DECREF(exact_object);
+        Py_DECREF(estimated_object);
         Py_DECREF(result);
         return NULL;
     }
     PyTuple_SET_ITEM(output, 0, result);
     PyTuple_SET_ITEM(output, 1, processed_object);
     PyTuple_SET_ITEM(output, 2, exact_object);
+    PyTuple_SET_ITEM(output, 3, estimated_object);
     return output;
 }
 
@@ -387,7 +406,13 @@ stream_topk_impl(
         return NULL;
     }
     if (k == 0) {
-        return stream_topk_finish(PyList_New(0), 0, 1, diagnostic);
+        return stream_topk_finish(
+            PyList_New(0),
+            0,
+            1,
+            diagnostic,
+            0
+        );
     }
     const int natural_order = key_function == Py_None;
     if (!natural_order && !PyCallable_Check(key_function)) {
@@ -397,15 +422,20 @@ stream_topk_impl(
     if ((size_t)k > SIZE_MAX / sizeof(StreamingTopKEntry)) {
         return PyErr_NoMemory();
     }
-    StreamingTopKEntry *heap = PyMem_Calloc(
-        (size_t)k,
-        sizeof(*heap)
+    StreamingTopKEntry *heap = PyMem_Malloc(
+        (size_t)k * sizeof(*heap)
     );
     if (heap == NULL) {
         return PyErr_NoMemory();
     }
+    PyObject *records = PyList_New(0);
+    if (records == NULL) {
+        PyMem_Free(heap);
+        return NULL;
+    }
     PyObject *iterator = PyObject_GetIter(iterable);
     if (iterator == NULL) {
+        Py_DECREF(records);
         PyMem_Free(heap);
         return NULL;
     }
@@ -426,7 +456,6 @@ stream_topk_impl(
         PyObject *key_object;
         if (natural_order) {
             key_object = record;
-            Py_INCREF(key_object);
         } else {
             key_object = PyObject_CallOneArg(key_function, record);
             if (key_object == NULL) {
@@ -443,35 +472,69 @@ stream_topk_impl(
                 &normalized_key
             );
             if (normalization < 0) {
-                Py_DECREF(key_object);
+                if (!natural_order) {
+                    Py_DECREF(key_object);
+                }
                 Py_DECREF(record);
                 goto error;
             }
             if (normalization == 0) {
+                if (
+                    stream_topk_promote_generic_keys(
+                        heap,
+                        retained,
+                        largest
+                    ) < 0
+                ) {
+                    if (!natural_order) {
+                        Py_DECREF(key_object);
+                    }
+                    Py_DECREF(record);
+                    goto error;
+                }
                 exact_int64 = 0;
+                if (natural_order) {
+                    Py_INCREF(key_object);
+                }
+            } else if (!natural_order) {
+                Py_DECREF(key_object);
             }
+        } else if (natural_order) {
+            Py_INCREF(key_object);
         }
 
-        const StreamingTopKEntry candidate = {
-            normalized_key,
-            (uint64_t)processed,
-            key_object,
-            record,
-        };
+        StreamingTopKEntry candidate;
+        if (exact_int64) {
+            candidate.key.normalized = normalized_key;
+        } else {
+            candidate.key.object = key_object;
+        }
+        candidate.encounter_index = (uint64_t)processed;
         processed++;
         if (retained < k) {
-            heap[retained++] = candidate;
+            heap[retained] = candidate;
+            if (PyList_Append(records, record) < 0) {
+                if (!exact_int64) {
+                    Py_DECREF(candidate.key.object);
+                }
+                Py_DECREF(record);
+                goto error;
+            }
+            Py_DECREF(record);
+            retained++;
             if (retained == k) {
                 for (Py_ssize_t parent = k / 2; parent > 0; parent--) {
                     if (exact_int64) {
                         stream_topk_exact_sift_down(
                             heap,
+                            records,
                             k,
                             parent - 1
                         );
                     } else if (
                         stream_topk_generic_sift_down(
                             heap,
+                            records,
                             k,
                             parent - 1,
                             largest
@@ -500,40 +563,54 @@ stream_topk_impl(
              */
             if (largest) {
                 candidate_is_better = PyObject_RichCompareBool(
-                    heap[0].key_object,
-                    candidate.key_object,
+                    heap[0].key.object,
+                    candidate.key.object,
                     Py_LT
                 );
             } else {
                 candidate_is_better = PyObject_RichCompareBool(
-                    candidate.key_object,
-                    heap[0].key_object,
+                    candidate.key.object,
+                    heap[0].key.object,
                     Py_LT
                 );
             }
             if (candidate_is_better < 0) {
-                StreamingTopKEntry owned_candidate = candidate;
-                stream_topk_clear_entry(&owned_candidate);
+                Py_DECREF(candidate.key.object);
+                Py_DECREF(record);
                 goto error;
             }
         }
         if (!candidate_is_better) {
-            StreamingTopKEntry rejected = candidate;
-            stream_topk_clear_entry(&rejected);
+            if (!exact_int64) {
+                Py_DECREF(candidate.key.object);
+            }
+            Py_DECREF(record);
             continue;
         }
 
         StreamingTopKEntry replaced = heap[0];
+        PyObject *replaced_record = PyList_GET_ITEM(records, 0);
         heap[0] = candidate;
+        PyList_SET_ITEM(records, 0, record);
         if (exact_int64) {
-            stream_topk_exact_sift_down(heap, k, 0);
+            stream_topk_exact_sift_down(heap, records, k, 0);
         } else if (
-            stream_topk_generic_sift_down(heap, k, 0, largest) < 0
+            stream_topk_generic_sift_down(
+                heap,
+                records,
+                k,
+                0,
+                largest
+            ) < 0
         ) {
-            stream_topk_clear_entry(&replaced);
+            Py_DECREF(replaced.key.object);
+            Py_DECREF(replaced_record);
             goto error;
         }
-        stream_topk_clear_entry(&replaced);
+        if (!exact_int64) {
+            Py_DECREF(replaced.key.object);
+        }
+        Py_DECREF(replaced_record);
     }
     if (PyErr_Occurred()) {
         goto error;
@@ -542,37 +619,51 @@ stream_topk_impl(
     iterator = NULL;
 
     if (exact_int64) {
-        qsort(
+        if (retained < k) {
+            for (
+                Py_ssize_t parent = retained / 2;
+                parent > 0;
+                parent--
+            ) {
+                stream_topk_exact_sift_down(
+                    heap,
+                    records,
+                    retained,
+                    parent - 1
+                );
+            }
+        }
+        stream_topk_exact_sort(heap, records, retained);
+    } else if (
+        stream_topk_generic_sort(
             heap,
-            (size_t)retained,
-            sizeof(*heap),
-            stream_topk_exact_compare_best_first
-        );
-    } else if (stream_topk_generic_sort(heap, retained, largest) < 0) {
+            records,
+            retained,
+            largest,
+            retained == k
+        ) < 0
+    ) {
         goto error;
     }
 
-    PyObject *result = PyList_New(retained);
-    if (result == NULL) {
-        goto error;
+    if (!exact_int64) {
+        stream_topk_clear_generic_keys(heap, retained);
     }
-    for (Py_ssize_t position = 0; position < retained; position++) {
-        PyObject *selected_record = heap[position].record_object;
-        Py_INCREF(selected_record);
-        PyList_SET_ITEM(result, position, selected_record);
-    }
-    stream_topk_clear_entries(heap, retained);
     PyMem_Free(heap);
     return stream_topk_finish(
-        result,
+        records,
         processed,
         exact_int64,
-        diagnostic
+        diagnostic,
+        k
     );
 
 error:
     Py_XDECREF(iterator);
-    stream_topk_clear_entries(heap, retained);
+    if (!exact_int64) {
+        stream_topk_clear_generic_keys(heap, retained);
+    }
+    Py_DECREF(records);
     PyMem_Free(heap);
     return NULL;
 }
@@ -675,14 +766,12 @@ bielsort_py_stream_topk_worst_auxiliary_bytes(
         PyErr_SetString(PyExc_ValueError, "k must be non-negative");
         return NULL;
     }
-    if (
-        (size_t)k > SIZE_MAX / sizeof(StreamingTopKEntry)
-        || (size_t)k * sizeof(StreamingTopKEntry) > SIZE_MAX / 2
-    ) {
+    const size_t bytes_per_item = (
+        sizeof(StreamingTopKEntry) + sizeof(PyObject *)
+    );
+    if ((size_t)k > SIZE_MAX / bytes_per_item) {
         return PyErr_NoMemory();
     }
-    const size_t worst_case = (
-        (size_t)k * sizeof(StreamingTopKEntry) * 2
-    );
+    const size_t worst_case = (size_t)k * bytes_per_item;
     return PyLong_FromSize_t(worst_case);
 }

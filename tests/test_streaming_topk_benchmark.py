@@ -1,14 +1,26 @@
+import importlib.util
 import sys
 import unittest
 from pathlib import Path
 
-from benchmarks.streaming_topk import (
-    CANDIDATE,
-    HEAPQ,
-    MATERIALIZING_FACADE,
-    render_report,
-    run_memory_child,
+
+BENCHMARK_PATH = (
+    Path(__file__).resolve().parents[1] / "benchmarks" / "streaming_topk.py"
 )
+SPEC = importlib.util.spec_from_file_location(
+    "bielsort_streaming_topk_benchmark",
+    BENCHMARK_PATH,
+)
+if SPEC is None or SPEC.loader is None:
+    raise RuntimeError("could not load the streaming top-k benchmark")
+BENCHMARK = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(BENCHMARK)
+
+CANDIDATE = BENCHMARK.CANDIDATE
+HEAPQ = BENCHMARK.HEAPQ
+MATERIALIZING_FACADE = BENCHMARK.MATERIALIZING_FACADE
+render_report = BENCHMARK.render_report
+run_memory_child = BENCHMARK.run_memory_child
 
 
 class StreamingTopKBenchmarkTests(unittest.TestCase):
@@ -17,9 +29,8 @@ class StreamingTopKBenchmarkTests(unittest.TestCase):
         "parent-sampled RSS is a Linux benchmark probe",
     )
     def test_parent_samples_worker_after_ready_checkpoint(self):
-        script = Path("benchmarks/streaming_topk.py").resolve()
         sample = run_memory_child(
-            script,
+            BENCHMARK_PATH,
             CANDIDATE,
             10_000,
             "keyed-int64",

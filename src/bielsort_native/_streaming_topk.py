@@ -249,7 +249,7 @@ def stream_top_k(
             largest,
         )
 
-    result, processed, exact_int64 = (
+    result, processed, exact_int64, estimated = (
         _bielsort._stream_topk_prototype_with_info(
             values,
             requested_k,
@@ -262,17 +262,14 @@ def stream_top_k(
         algorithm = "trivial"
         reason = "the stream was empty"
         key_domain = "natural" if key is None else "python"
-        estimated = worst_case // 2
     elif exact_int64:
         algorithm = "native-stream-int64"
         reason = "exact signed-int64 keys used native comparisons"
         key_domain = "signed-int64"
-        estimated = worst_case // 2
     else:
         algorithm = "native-stream-generic"
         reason = "comparable Python keys used the generic native heap"
         key_domain = "generic-python"
-        estimated = worst_case
     info = _info(
         algorithm=algorithm,
         reason=reason,

@@ -167,6 +167,38 @@ class StreamingTopKTests(unittest.TestCase):
             )[:2]
             assert_identity(self, result, expected)
 
+    def test_late_int64_to_generic_switch_reconstructs_cached_keys(self):
+        records = [
+            (position % 31, object())
+            for position in range(300)
+        ]
+        records.extend(
+            ((1 << 100) + position % 17, object())
+            for position in range(300, 600)
+        )
+        for largest in (False, True):
+            calls = []
+
+            def key(record):
+                calls.append(record)
+                return int(record[0])
+
+            result, info = stream_top_k(
+                (record for record in records),
+                200,
+                key=key,
+                largest=largest,
+                return_info=True,
+            )
+            expected = sorted(
+                records,
+                key=operator.itemgetter(0),
+                reverse=largest,
+            )[:200]
+            assert_identity(self, result, expected)
+            assert_identity(self, calls, records)
+            self.assertEqual(info.algorithm, "native-stream-generic")
+
     def test_zero_k_does_not_consume_or_validate_key(self):
         source = OneShot([1])
         result, info = stream_top_k(
@@ -327,7 +359,7 @@ class StreamingTopKTests(unittest.TestCase):
 
     def test_native_entry_points_and_bound(self):
         values = (value for value in [8, -4, 10, 3, -4])
-        result, processed, exact = (
+        result, processed, exact, estimated = (
             _bielsort._stream_topk_prototype_with_info(
                 values,
                 3,
@@ -338,6 +370,7 @@ class StreamingTopKTests(unittest.TestCase):
         self.assertEqual(result, [-4, -4, 3])
         self.assertEqual(processed, 5)
         self.assertTrue(exact)
+        self.assertGreater(estimated, 0)
         self.assertGreater(
             _bielsort._stream_topk_worst_auxiliary_bytes(3),
             0,
