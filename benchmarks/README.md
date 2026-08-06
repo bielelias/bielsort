@@ -363,6 +363,33 @@ Both gates passed. Twenty-two of 24 callable cases reached `1.10x` over
 traced peak memory of `heapq` in the eight isolated cases. See the
 [practical callables and memory report](results/2026-08-05-adaptive-keyed-topk-practical.md).
 
+## Research: unified stable top-k façade
+
+The next private experiment combines natural ordering and explicit keys,
+normalizes structured diagnostics, and uses a fixed full-sort crossover for
+large `k`. Its contract, 50-case matrix, and unchanged decision gates were
+committed before this harness and before implementation in the
+[unified façade protocol](../docs/topk-facade-research.md).
+
+After the private implementation is committed, run the canonical shape once:
+
+```bash
+python -m benchmarks.topk_facade_crossover \
+  --size 200000 \
+  --denominators 64 16 8 4 2 \
+  --blocks 7 \
+  --calls-per-block 1 \
+  --implementation-commit COMMIT_SHA \
+  --json-output unified-topk-facade.json
+```
+
+The two smaller ratios compare with `heapq`; the three larger ratios compare
+with stable full sorting. Every timed result is checked by exact object
+identity, all raw block samples are retained, and semantic probes cover key
+calls, one-shot iteration, exceptions, memory limits, diagnostics, callback
+safety, and public-API isolation. A pass authorizes only a separate public API
+proposal, not a version, merge, tag, or publication.
+
 ## Research: adaptive generic keys
 
 The follow-up selector keeps `key` generic, calls user code exactly once, and
