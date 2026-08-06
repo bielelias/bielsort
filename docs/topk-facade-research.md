@@ -170,3 +170,21 @@ external demand, a universal speed claim, a version decision, or permission to
 publish. A failed gate remains in the project record; thresholds must not be
 relaxed after canonical execution.
 
+## First canonical result
+
+The single canonical execution on implementation commit `4f046a6` passed the
+unchanged local gate. All 50 results and route assertions matched, every
+semantic probe passed, no median paired ratio fell below `0.85x`, and 47 cases
+reached `0.95x` or better against the comparator fixed for their `k/n` ratio.
+
+Signed-int64 cases measured `1.49x–3.73x` for natural values and
+`2.35x–4.45x` for explicit keys. Generic keyed paths measured
+`0.97x–1.61x`. Natural-string fallbacks included the three below-parity cases,
+with a minimum of `0.91x`; these negative results are retained and the
+crossover was not retuned.
+
+See the
+[versioned result and limitations](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-unified-topk-facade.md)
+and its linked raw JSON. The local pass authorizes hosted source, sanitizer,
+and non-publishing wheel checks only. Public names and a release remain
+unapproved.

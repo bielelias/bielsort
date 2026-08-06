@@ -390,6 +390,13 @@ calls, one-shot iteration, exceptions, memory limits, diagnostics, callback
 safety, and public-API isolation. A pass authorizes only a separate public API
 proposal, not a version, merge, tag, or publication.
 
+The unchanged canonical gate passed: all 50 results and routing assertions
+matched, no paired median fell below `0.85x`, and 47 cases reached `0.95x` or
+better. See the
+[versioned unified façade report](results/2026-08-05-unified-topk-facade.md)
+and its linked raw samples. Hosted portability and build-only wheel checks are
+still required before a public API proposal.
+
 ## Research: adaptive generic keys
 
 The follow-up selector keeps `key` generic, calls user code exactly once, and
@@ -466,6 +473,7 @@ samples are retained.
 
 ## Versioned results
 
+- [Unified stable top-k façade — 2026-08-05](results/2026-08-05-unified-topk-facade.md)
 - [Adaptive keyed top-k practical callables and memory — 2026-08-05](results/2026-08-05-adaptive-keyed-topk-practical.md)
 - [Adaptive keyed top-k complete block protocol — 2026-08-05](results/2026-08-05-adaptive-keyed-topk-block-canonical.md)
 - [Keyless stable reverse prototype — 2026-08-05](results/2026-08-05-keyless-reverse.md)

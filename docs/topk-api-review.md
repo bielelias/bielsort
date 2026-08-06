@@ -188,15 +188,15 @@ Sanitizer and cross-platform validation are mandatory for this native change.
 
 Public exposure remains blocked until the unchecked items below pass:
 
-- [ ] implement one private façade supporting both `key=None` and explicit
+- [x] implement one private façade supporting both `key=None` and explicit
   keys;
-- [ ] benchmark and select a safe large-`k` full-sort crossover;
-- [ ] replace private strategy strings with structured internal diagnostics
+- [x] benchmark and select a safe large-`k` full-sort crossover;
+- [x] replace private strategy strings with structured internal diagnostics
   and construct the proposed `TopKInfo` without exporting it;
 - [x] preserve the passing callback-safety performance and isolated-memory
   revalidation as the reviewed implementation baseline;
-- [x] pass the complete local suite, warning-clean build, ASan/UBSan, supported
-  source-build CI, strict docs, and a non-publishing wheel matrix;
+- [ ] re-pass the supported source-build CI, hosted ASan/UBSan, strict docs,
+  and a non-publishing wheel matrix on the unified-façade commit;
 - [ ] add the complete public runtime, type-stub, documentation, and
   compatibility tests only in a later, explicitly approved API branch.
 

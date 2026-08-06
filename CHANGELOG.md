@@ -64,6 +64,10 @@ release.
 - Implemented that private façade with natural signed-int64 detection,
   adaptive large-`k` routing, normalized immutable diagnostics, and
   differential, callback-safety, iterable, exception, and memory-guard tests.
+- Recorded a passing 50-case canonical façade gate: every result and route
+  matched, no paired median fell below `0.85x`, and 47 cases reached at least
+  `0.95x`. The three retained below-parity cases are natural-string fallbacks;
+  public API and release decisions remain unapproved.
 
 ### Fixed
 

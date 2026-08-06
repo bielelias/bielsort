@@ -272,11 +272,20 @@ built, tested, inspected, and uploaded wheels for Linux, Windows, macOS Intel,
 and macOS Apple Silicon from exact commit `f7565bd`, plus its source
 distribution. Every publication job was skipped.
 
-The next private gate is a pre-registered unified-facade experiment: natural
-ordering through `key=None`, normalized structured diagnostics, and an
-evidence-based crossover from the `O(n log k)` heap to a full stable sort when
-`k` is large. Those items must remain private until their own correctness,
-time, memory, and compatibility evidence passes.
+The unified-façade experiment is now implemented privately. It combines
+natural ordering and explicit keys, uses immutable normalized diagnostics, and
+switches generic workloads from partial selection to a full stable sort at the
+pre-registered `k >= n/8` crossover. Its 50-case canonical gate passed without
+retuning: all correctness, routing, and semantic probes passed; no paired
+median fell below `0.85x`; and 47 cases reached `0.95x` or better. Signed-int64
+cases measured `1.49x–4.45x`, while the retained natural-string minimum was
+`0.91x`. The
+[versioned façade record](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-unified-topk-facade.md)
+links every raw sample. Both optimized and local ASan/UBSan runs pass all 174
+tests, along with warning-clean compilation, runtime/stub checks, strict Python
+3.9 typing, and strict docs. Fresh hosted source, sanitizer, and build-only
+wheel gates on the exact implementation remain pending; no public name,
+version, merge, or publication is approved.
 
 ## Resume checklist
 
