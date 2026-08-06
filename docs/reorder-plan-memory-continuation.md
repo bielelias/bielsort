@@ -130,4 +130,3 @@ PyPI operation.
 A failure is preserved beside the original failed result. Thresholds cannot
 be changed after execution, and an unchanged implementation cannot receive a
 second decision run merely because of unfavorable measurements.
-

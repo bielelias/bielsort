@@ -130,6 +130,11 @@ release.
   tuple pointer snapshot, retains every original gate, and adds a `1.05x`
   focused median RSS ceiling plus paired-sample and time controls. The prior
   failed result remains authoritative and no public symbol is added.
+- Implemented the private continuation with `PySequence_Fast` acquisition for
+  exact list/tuple inputs, retained materialization for other reusable
+  sequences, and added safety, route, evaluator, and gate tests. A dedicated
+  harness is ready for its single complete decision run; no result is claimed
+  before that clean committed execution.
 
 ### Fixed
 

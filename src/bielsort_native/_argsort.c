@@ -541,7 +541,7 @@ pack_python_indices(PyObject *indices)
 static PyObject *
 argsort_timsort(PyObject *values, int reverse)
 {
-    const Py_ssize_t length = PyList_GET_SIZE(values);
+    const Py_ssize_t length = PySequence_Fast_GET_SIZE(values);
     PyObject *indices = PyList_New(length);
     if (indices == NULL) {
         return NULL;
@@ -712,11 +712,14 @@ argsort_int64_impl(PyObject *sequence, int reverse, int diagnostic)
         );
         return NULL;
     }
-    PyObject *values = PySequence_List(sequence);
+    PyObject *values = PySequence_Fast(
+        sequence,
+        "argsort requires a reusable sequence"
+    );
     if (values == NULL) {
         return NULL;
     }
-    const Py_ssize_t length = PyList_GET_SIZE(values);
+    const Py_ssize_t length = PySequence_Fast_GET_SIZE(values);
     if (length < 2) {
         PyObject *result = identity_permutation(length);
         Py_DECREF(values);
@@ -748,7 +751,7 @@ argsort_int64_impl(PyObject *sequence, int reverse, int diagnostic)
     Py_ssize_t ascents = 0;
     int exact_int64 = 1;
     for (Py_ssize_t index = 0; index < length; index++) {
-        PyObject *value = PyList_GET_ITEM(values, index);
+        PyObject *value = PySequence_Fast_GET_ITEM(values, index);
         if (!PyLong_CheckExact(value)) {
             exact_int64 = 0;
             break;

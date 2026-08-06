@@ -257,6 +257,26 @@ incremental peak RSS of direct Python, above the `1.10x` maximum. This record
 does not authorize a public API or release, and it must not be replaced by a
 rerun under weaker criteria.
 
+The separately pre-registered
+[memory continuation](../docs/reorder-plan-memory-continuation.md) tests one
+narrow implementation change while retaining that failure and all original
+gates. A smoke run can use reduced sizes without producing a decision:
+
+```bash
+python benchmarks/reorder_plan_memory_continuation.py \
+  -n 1000 -r 1 --memory-repetitions 1 \
+  --without-optional --json-output /tmp/reorder-plan-memory-smoke.json
+```
+
+Its single complete decision command, only after the implementation and
+harness are committed, is:
+
+```bash
+python benchmarks/reorder_plan_memory_continuation.py --canonical \
+  --json-output benchmarks/results/2026-08-06-reorder-plan-memory-continuation.json \
+  --markdown-output benchmarks/results/2026-08-06-reorder-plan-memory-continuation.md
+```
+
 ## Research: stable compact top-k
 
 The private top-k prototype compares stable reusable index selection against

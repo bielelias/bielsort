@@ -30,6 +30,27 @@ class TrackedValue:
         return self.value < other.value
 
 
+class ReusableSequence:
+    def __init__(self, values):
+        self.values = list(values)
+
+    def __len__(self):
+        return len(self.values)
+
+    def __getitem__(self, index):
+        return self.values[index]
+
+
+class SourceClearingValue:
+    def __init__(self, value, source):
+        self.value = value
+        self.source = source
+
+    def __lt__(self, other):
+        self.source.clear()
+        return self.value < other.value
+
+
 class ReorderPlanCandidateTests(unittest.TestCase):
     """Frozen contract for the private reusable reorder-plan candidate."""
 
@@ -98,6 +119,65 @@ class ReorderPlanCandidateTests(unittest.TestCase):
                         list(argsort(values, reverse=reverse)),
                         expected_argsort(values, reverse),
                     )
+
+    def test_fast_sequence_inputs_cover_every_private_route(self):
+        rng = random.Random(90_051)
+        cases = (
+            [3],
+            list(range(4_096)),
+            [
+                rng.randint(-(1 << 63), (1 << 63) - 1)
+                for _ in range(4_096)
+            ],
+            [TrackedValue(index % 17, index) for index in range(4_096)],
+            [(1 << 200) + index % 29 for index in range(4_096)],
+        )
+        for original in cases:
+            for container in (list, tuple):
+                values = container(original)
+                for reverse in (False, True):
+                    with self.subTest(
+                        route=type(original[0]).__name__,
+                        container=container.__name__,
+                        reverse=reverse,
+                    ):
+                        self.assertEqual(
+                            list(argsort(values, reverse=reverse)),
+                            expected_argsort(values, reverse),
+                        )
+
+    def test_materialized_reusable_sequences_remain_compatible(self):
+        class ListSubclass(list):
+            pass
+
+        original = [index % 31 for index in range(4_096, 0, -1)]
+        for values in (
+            ListSubclass(original),
+            ReusableSequence(original),
+        ):
+            with self.subTest(container=type(values).__name__):
+                self.assertEqual(
+                    list(argsort(values)),
+                    expected_argsort(values),
+                )
+
+    def test_comparison_can_resize_exact_source_without_corruption(self):
+        source = []
+        numeric_values = [index % 37 for index in range(4_096, 0, -1)]
+        source.extend(
+            SourceClearingValue(value, source)
+            for value in numeric_values
+        )
+        expected = sorted(
+            range(len(numeric_values)),
+            key=numeric_values.__getitem__,
+        )
+
+        order = argsort(source)
+
+        self.assertEqual(list(order), expected)
+        self.assertEqual(len(order), len(numeric_values))
+        self.assertEqual(source, [])
 
     def test_trivial_and_all_equal_inputs_return_identity(self):
         for values in ([], [7], [5] * 10_000):

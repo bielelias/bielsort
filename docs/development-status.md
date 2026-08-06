@@ -418,6 +418,17 @@ at most `1.05x` direct Python's RSS, with at least two of three paired samples
 at or below `1.10x`. No implementation change or new measurement is claimed
 by the protocol itself.
 
+The bounded implementation now acquires private argsort inputs through
+`PySequence_Fast`, so exact built-in lists and tuples receive only an owned
+reference during the operation while subclasses and custom sequences retain
+materialization. The internal Timsort route accepts either fast-sequence
+representation. New tests cover every route for exact list/tuple inputs,
+materialized reusable sequences, source resizing during generic comparison,
+and the frozen focused-gate calculation. The dedicated continuation harness
+is implemented. All 212 optimized and locally sanitized tests pass, along with
+warning-clean compilation, strict typing/stub comparison, and strict
+documentation. Its single clean-tree decision run remains pending.
+
 ## Resume checklist
 
 Start from the repository root and inspect the current evidence:

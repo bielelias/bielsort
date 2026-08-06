@@ -48,6 +48,7 @@ jobs:
         env:
           ASAN_OPTIONS: "detect_leaks=0:abort_on_error=1"
           UBSAN_OPTIONS: "halt_on_error=1:print_stacktrace=1"
+          PYTHONPATH: ${{ github.workspace }}
         run: |
           export LD_PRELOAD="$(gcc -print-file-name=libasan.so)"
           cd "${RUNNER_TEMP}"
