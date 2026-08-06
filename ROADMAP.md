@@ -133,8 +133,14 @@ published on 2026-08-05.
 - [x] Evaluate a second private streaming layout that reuses the result list
   and reduces per-slot native state; retain its passing memory result and
   failed 7-of-12 signed-int64 timing target.
-- [ ] Test a bounded medium-`k` exact-int64 finishing optimization without
-  changing the passing large-`k` in-place memory layout or fixed gates.
+- [x] Test a bounded medium-`k` exact-int64 finishing optimization without
+  changing the passing large-`k` in-place memory layout or fixed gates. Its
+  canonical run retained the memory wins but again reached 7 of 12 exact
+  timing targets, so it is not approved for promotion.
+- [x] Evaluate lower-movement exact heap repairs after the medium-`k` result.
+  Two further canonical candidates still reached only 7 of 12 exact targets;
+  a final Floyd screening did the same, closing this local optimization pass
+  without weakening the gate.
 - [ ] Prototype native inverse and composition operations only after external
   demand justifies expanding the private permutation toolkit.
 - [ ] Evaluate fused sorted-group boundaries and counts for telemetry/event

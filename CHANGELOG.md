@@ -85,6 +85,12 @@ release.
   passed both fixed memory gates (`0.62x–0.67x` `heapq` at `k=100,000`) but
   reached the `1.10x` signed-int64 target in 7 of 12 cases rather than 8, so
   this second canonical result also remains unapproved.
+- Evaluated stable medium-`k` Radix finishing and lower-movement exact heap
+  repairs without changing the streaming protocol. Both additional canonical
+  records preserved the semantic, generic-timing, and memory wins but still
+  reached only 7 of 12 signed-int64 targets. A final bottom-up Floyd screening
+  produced the same count, so the private candidate remains unapproved and no
+  public symbol or release metadata changed.
 
 ### Fixed
 

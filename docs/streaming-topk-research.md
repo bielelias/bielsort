@@ -224,3 +224,33 @@ preserved in
 `benchmarks/results/2026-08-06-streaming-topk-compact.{json,md}`. Further code
 may target this bounded medium-`k` finish, but the result cannot be relabeled
 and no threshold may be changed.
+
+## Medium-k and heap follow-ups
+
+Commit `0b96727` added a stable 11-bit Radix finish for exact-int64 requests
+between `k = 2,048` and `32,768`. Constant high digits are skipped and the
+compact in-place finish remains in use at `k = 100,000`, so the passing
+large-`k` memory layout is unchanged. The canonical memory checks passed at
+`0.62x` `heapq` for signed-int64 records and `0.66x` for strings, all generic
+timing checks passed, and the minimum paired speedup was `0.99x`.
+
+The Radix follow-up is nevertheless **FAIL**: it again produced 7 of the
+required 8 signed-int64 target cases. The complete independent record is
+preserved in
+`benchmarks/results/2026-08-06-streaming-topk-radix.{json,md}`.
+
+Commit `e56c96d` then reduced exact heap movement with a hole-based repair and
+precomputed which Radix digits actually vary. Its unchanged canonical run
+again passed semantics, generic timing, both memory gates, and the regression
+floor. Large exact cases reached `1.74x–1.90x`; `k = 100,000` memory remained
+at `0.63x` `heapq` for signed-int64 records and `0.67x` for strings. The exact
+target still reached only 7 of 12 cases because natural smallest selection at
+`k = 10,000` measured `1.08x`. This separate **FAIL** is preserved in
+`benchmarks/results/2026-08-06-streaming-topk-hole.{json,md}`.
+
+A final private bottom-up Floyd heap repair passed all 189 optimized and
+sanitized local tests, warning-clean compilation, strict typing, and strict
+documentation. Its 12-case exact-int64 screening still reached only 7 target
+cases, so another full canonical run was intentionally not performed. The
+fixed gate remains failed, every symbol remains private, and no public API,
+merge, version, or publication is approved from this experiment.

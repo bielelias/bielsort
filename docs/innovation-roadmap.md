@@ -79,8 +79,16 @@ That compact follow-up reduced the `k=100,000` ratios to `0.62x` for int64
 keys and `0.67x` for strings, passing memory, while every generic timing case
 also passed. Its overall decision is still failed because 7 of 12 signed-int64
 cases reached `1.10x`, one short of the fixed count. Medium-`k` finalization is
-the only remaining local optimization under evaluation; no public API follows
-from the current evidence.
+the next bounded local optimization; no public API follows from the current
+evidence.
+
+That local optimization pass is complete. Stable medium-`k` Radix finishing
+and a lower-movement exact heap each retained the semantic, memory, and
+generic-key wins in separate canonical runs, but both again reached only 7 of
+12 signed-int64 targets. A final bottom-up Floyd screening produced the same
+count. Streaming remains a useful private research result—especially for
+large `k` and bounded memory—but further work now requires a new hypothesis or
+external workload evidence rather than another rerun of the fixed local gate.
 
 ## Priority 4: permutation toolkit
 

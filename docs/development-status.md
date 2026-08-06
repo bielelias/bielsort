@@ -326,6 +326,30 @@ is retained independently. A bounded medium-`k` finishing optimization may be
 tested next, while the already passing large-`k` in-place layout and all fixed
 thresholds remain unchanged.
 
+That finishing pass is now complete. Commit `0b96727` added stable medium-`k`
+Radix finishing while retaining the compact large-`k` layout. Its canonical
+memory ratios passed at `0.62x` `heapq` for signed-int64 records and `0.66x`
+for strings, and all generic timing cases passed, but the exact count remained
+7 of 12. The independent
+[Radix record](https://github.com/bielelias/bielsort/blob/research/streaming-topk-0.3/benchmarks/results/2026-08-06-streaming-topk-radix.md)
+is preserved as **failed**.
+
+A following exact heap/Radix optimization at commit `e56c96d` also passed
+semantics, the no-regression floor, generic timing, and both memory gates. Its
+large exact cases reached `1.74x–1.90x`, while signed-int64 and string memory
+at `k=100,000` remained `0.63x` and `0.67x` `heapq`. Natural smallest
+selection at `k=10,000` measured `1.08x`, leaving the decision at 7 of 12
+again. The separate
+[heap optimization record](https://github.com/bielelias/bielsort/blob/research/streaming-topk-0.3/benchmarks/results/2026-08-06-streaming-topk-hole.md)
+is therefore also **failed**.
+
+The final bottom-up Floyd repair passes 189 optimized and sanitized local
+tests plus warning-clean compilation, strict typing, and strict docs. Its
+exact-only screening still reached 7 of 12 target cases, so no further
+canonical run, hosted promotion matrix, public API, merge, or release is
+approved. Future streaming work should begin with a new pre-registered idea
+or external workload evidence rather than rerunning this unchanged gate.
+
 ## Resume checklist
 
 Start from the repository root and inspect the current evidence:
