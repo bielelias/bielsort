@@ -61,6 +61,9 @@ release.
   ordering, explicit keys, immutable structured diagnostics, conservative
   memory limits, and a fixed partial-selection/full-sort crossover. No public
   symbol or release is added by the protocol.
+- Implemented that private façade with natural signed-int64 detection,
+  adaptive large-`k` routing, normalized immutable diagnostics, and
+  differential, callback-safety, iterable, exception, and memory-guard tests.
 
 ### Fixed
 

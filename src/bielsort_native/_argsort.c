@@ -986,7 +986,10 @@ topk_int64_impl(
         );
         return finalize_argsort(result, "seleção vazia", diagnostic);
     }
-    if (k > source_length / 8) {
+    const Py_ssize_t full_sort_threshold = (
+        source_length / 8 + (source_length % 8 != 0)
+    );
+    if (k >= full_sort_threshold) {
         Py_DECREF(values);
         return topk_full_argsort(
             sequence,
@@ -1265,6 +1268,136 @@ typedef struct {
     uint64_t index;
     PyObject *key_object;
 } KeyedTopKEntry;
+
+static int
+keyed_topk_info_set(
+    PyObject *info,
+    const char *name,
+    PyObject *value
+)
+{
+    if (value == NULL) {
+        return -1;
+    }
+    const int result = PyDict_SetItemString(info, name, value);
+    Py_DECREF(value);
+    return result;
+}
+
+static PyObject *
+finalize_keyed_topk(
+    PyObject *result,
+    const char *strategy,
+    int diagnostic,
+    Py_ssize_t source_length,
+    Py_ssize_t selected,
+    int largest,
+    int exact_int64
+)
+{
+    if (diagnostic != 2 || result == NULL) {
+        return finalize_argsort(result, strategy, diagnostic);
+    }
+
+    const char *algorithm;
+    const char *reason;
+    const char *key_domain;
+    if (selected == 0) {
+        algorithm = "trivial";
+        reason = "the selection is empty";
+        key_domain = "python";
+    } else if (exact_int64) {
+        algorithm = "native-int64";
+        reason = "explicit key returned exact signed-int64 integers";
+        key_domain = "signed-int64";
+    } else {
+        algorithm = "native-generic";
+        reason = "explicit key requires stable Python comparisons";
+        key_domain = "python";
+    }
+
+    size_t estimated = 0;
+    size_t worst_case = 0;
+    if (
+        selected > 0
+        && (
+            (size_t)selected > SIZE_MAX / sizeof(KeyedTopKEntry)
+            || (size_t)selected * sizeof(KeyedTopKEntry) > SIZE_MAX / 2
+        )
+    ) {
+        Py_DECREF(result);
+        return PyErr_NoMemory();
+    }
+    if (selected > 0) {
+        const size_t one_buffer = (
+            (size_t)selected * sizeof(KeyedTopKEntry)
+        );
+        estimated = exact_int64 ? one_buffer : one_buffer * 2;
+        worst_case = one_buffer * 2;
+    }
+
+    PyObject *info = PyDict_New();
+    if (info == NULL) {
+        Py_DECREF(result);
+        return NULL;
+    }
+    if (
+        keyed_topk_info_set(
+            info,
+            "algorithm",
+            PyUnicode_FromString(algorithm)
+        ) < 0
+        || keyed_topk_info_set(
+            info,
+            "reason",
+            PyUnicode_FromString(reason)
+        ) < 0
+        || keyed_topk_info_set(
+            info,
+            "size",
+            PyLong_FromSsize_t(source_length)
+        ) < 0
+        || keyed_topk_info_set(
+            info,
+            "selected",
+            PyLong_FromSsize_t(selected)
+        ) < 0
+        || keyed_topk_info_set(
+            info,
+            "largest",
+            PyBool_FromLong(largest)
+        ) < 0
+        || keyed_topk_info_set(
+            info,
+            "key_domain",
+            PyUnicode_FromString(key_domain)
+        ) < 0
+        || keyed_topk_info_set(
+            info,
+            "estimated_native_auxiliary_bytes",
+            PyLong_FromSize_t(estimated)
+        ) < 0
+        || keyed_topk_info_set(
+            info,
+            "worst_case_native_auxiliary_bytes",
+            PyLong_FromSize_t(worst_case)
+        ) < 0
+    ) {
+        Py_DECREF(info);
+        Py_DECREF(result);
+        return NULL;
+    }
+
+    PyObject *pair = PyTuple_New(2);
+    if (pair == NULL) {
+        Py_DECREF(info);
+        Py_DECREF(result);
+        return NULL;
+    }
+    PyTuple_SET_ITEM(pair, 0, result);
+    PyTuple_SET_ITEM(pair, 1, info);
+    return pair;
+}
 
 static void
 keyed_topk_clear_entries(KeyedTopKEntry *entries, Py_ssize_t length)
@@ -1575,10 +1708,14 @@ topk_by_key_adaptive_impl(
         return NULL;
     }
     if (k == 0) {
-        return finalize_argsort(
+        return finalize_keyed_topk(
             PyList_New(0),
             "seleção vazia sem avaliação de key",
-            diagnostic
+            diagnostic,
+            0,
+            0,
+            largest,
+            0
         );
     }
     if (!PyCallable_Check(key_function)) {
@@ -1598,10 +1735,14 @@ topk_by_key_adaptive_impl(
     }
     if (k == 0) {
         Py_DECREF(records);
-        return finalize_argsort(
+        return finalize_keyed_topk(
             PyList_New(0),
             "entrada vazia",
-            diagnostic
+            diagnostic,
+            source_length,
+            0,
+            largest,
+            0
         );
     }
     if ((size_t)k > SIZE_MAX / sizeof(KeyedTopKEntry)) {
@@ -1790,12 +1931,16 @@ topk_by_key_adaptive_impl(
     keyed_topk_clear_entries(heap, retained);
     PyMem_Free(heap);
     Py_DECREF(records);
-    return finalize_argsort(
+    return finalize_keyed_topk(
         result,
         exact_int64
             ? "heap nativo estável adaptativo: key int64"
             : "heap nativo estável adaptativo: key Python",
-        diagnostic
+        diagnostic,
+        source_length,
+        k,
+        largest,
+        exact_int64
     );
 }
 
@@ -2000,6 +2145,37 @@ bielsort_py_topk_by_key_prototype_with_strategy(
 }
 
 PyObject *
+bielsort_py_topk_by_key_prototype_with_info(
+    PyObject *Py_UNUSED(module),
+    PyObject *args
+)
+{
+    PyObject *iterable;
+    PyObject *key_function;
+    Py_ssize_t k;
+    int largest = 0;
+    if (
+        !parse_keyed_topk_arguments(
+            args,
+            "_topk_by_key_prototype_with_info",
+            &iterable,
+            &k,
+            &key_function,
+            &largest
+        )
+    ) {
+        return NULL;
+    }
+    return topk_by_key_adaptive_impl(
+        iterable,
+        k,
+        key_function,
+        largest,
+        2
+    );
+}
+
+PyObject *
 bielsort_py_topk_by_key_worst_auxiliary_bytes(
     PyObject *Py_UNUSED(module),
     PyObject *argument
@@ -2023,6 +2199,49 @@ bielsort_py_topk_by_key_worst_auxiliary_bytes(
         (size_t)k * sizeof(KeyedTopKEntry) * 2
     );
     return PyLong_FromSize_t(worst_case);
+}
+
+PyObject *
+bielsort_py_is_exact_int64_sequence_prototype(
+    PyObject *Py_UNUSED(module),
+    PyObject *sequence
+)
+{
+    if (!PySequence_Check(sequence)) {
+        PyErr_SetString(
+            PyExc_TypeError,
+            "_is_exact_int64_sequence_prototype requires a reusable sequence"
+        );
+        return NULL;
+    }
+    PyObject *values = PySequence_Fast(
+        sequence,
+        "_is_exact_int64_sequence_prototype requires a reusable sequence"
+    );
+    if (values == NULL) {
+        return NULL;
+    }
+    const Py_ssize_t length = PySequence_Fast_GET_SIZE(values);
+    for (Py_ssize_t index = 0; index < length; index++) {
+        PyObject *value = PySequence_Fast_GET_ITEM(values, index);
+        if (!PyLong_CheckExact(value)) {
+            Py_DECREF(values);
+            Py_RETURN_FALSE;
+        }
+        const long long converted = PyLong_AsLongLong(value);
+        (void)converted;
+        if (PyErr_Occurred()) {
+            if (PyErr_ExceptionMatches(PyExc_OverflowError)) {
+                PyErr_Clear();
+                Py_DECREF(values);
+                Py_RETURN_FALSE;
+            }
+            Py_DECREF(values);
+            return NULL;
+        }
+    }
+    Py_DECREF(values);
+    Py_RETURN_TRUE;
 }
 
 int

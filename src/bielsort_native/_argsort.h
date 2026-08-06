@@ -40,9 +40,19 @@ PyObject *bielsort_py_topk_by_key_prototype_with_strategy(
     PyObject *args
 );
 
+PyObject *bielsort_py_topk_by_key_prototype_with_info(
+    PyObject *module,
+    PyObject *args
+);
+
 PyObject *bielsort_py_topk_by_key_worst_auxiliary_bytes(
     PyObject *module,
     PyObject *argument
+);
+
+PyObject *bielsort_py_is_exact_int64_sequence_prototype(
+    PyObject *module,
+    PyObject *sequence
 );
 
 #endif
