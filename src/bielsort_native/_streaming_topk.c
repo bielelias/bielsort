@@ -203,6 +203,9 @@ stream_topk_exact_sift_down(
     Py_ssize_t root
 )
 {
+    /* Move the hole down and write the displaced pair only once. */
+    const StreamingTopKEntry entry = heap[root];
+    PyObject *record = PyList_GET_ITEM(records, root);
     while (length >= 2 && root <= (length - 2) / 2) {
         Py_ssize_t child = root * 2 + 1;
         if (
@@ -211,12 +214,15 @@ stream_topk_exact_sift_down(
         ) {
             child++;
         }
-        if (!stream_topk_exact_is_worse(heap[child], heap[root])) {
-            return;
+        if (!stream_topk_exact_is_worse(heap[child], entry)) {
+            break;
         }
-        stream_topk_swap(heap, records, root, child);
+        heap[root] = heap[child];
+        PyList_SET_ITEM(records, root, PyList_GET_ITEM(records, child));
         root = child;
     }
+    heap[root] = entry;
+    PyList_SET_ITEM(records, root, record);
 }
 
 static int
@@ -236,6 +242,19 @@ stream_topk_exact_radix_sort(
         return PyErr_NoMemory(), -1;
     }
 
+    /* Constant radix digits need neither a counting nor a scatter pass. */
+    uint64_t varied_bits[2] = {0, 0};
+    const uint64_t first_values[2] = {
+        entries[0].encounter_index,
+        entries[0].key.normalized,
+    };
+    for (Py_ssize_t position = 1; position < length; position++) {
+        varied_bits[0] |= entries[position].encounter_index
+            ^ first_values[0];
+        varied_bits[1] |= entries[position].key.normalized
+            ^ first_values[1];
+    }
+
     size_t positions[STREAM_TOPK_RADIX_BASE];
     int source_is_entries = 1;
     for (int field = 0; field < 2; field++) {
@@ -244,9 +263,13 @@ stream_topk_exact_radix_sort(
             shift < 64;
             shift += STREAM_TOPK_RADIX_BITS
         ) {
+            if (
+                ((varied_bits[field] >> shift) & STREAM_TOPK_RADIX_MASK)
+                == 0
+            ) {
+                continue;
+            }
             memset(positions, 0, sizeof(positions));
-            uint64_t first_digit = 0;
-            int digit_varies = 0;
             for (Py_ssize_t position = 0; position < length; position++) {
                 const StreamingTopKEntry entry = source_is_entries
                     ? entries[position]
@@ -257,15 +280,7 @@ stream_topk_exact_radix_sort(
                 const uint64_t digit = (
                     value >> shift
                 ) & STREAM_TOPK_RADIX_MASK;
-                if (position == 0) {
-                    first_digit = digit;
-                } else if (digit != first_digit) {
-                    digit_varies = 1;
-                }
                 positions[digit]++;
-            }
-            if (!digit_varies) {
-                continue;
             }
 
             size_t offset = 0;
