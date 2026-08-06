@@ -337,6 +337,35 @@ algorithms, seeds, repetitions, and every threshold are still unchanged. This
 correction and both invalid attempts must be committed before the corrected
 decision run.
 
+## Canonical result
+
+The corrected canonical run started from clean commit `8886573` and retained
+the exact pre-registered workloads, repetitions, baselines, and thresholds.
+Every sample confirms that correctness validation happened after peak-RSS
+sampling stopped. The complete result is preserved in the
+[canonical report](https://github.com/bielelias/bielsort/blob/research/reorder-plan-0.3/benchmarks/results/2026-08-06-reorder-plan-canonical.md).
+
+All three time gates passed. In the six disordered large cases, BielSort met
+the direct-Python target in all six, the `sort_together()` target in all six,
+and the end-to-end NumPy target in all six. At one million records, complete
+disordered workflows were `4.83x–5.88x` faster than direct Python. The required
+nearly ordered control remained within its time floor at `0.93x`.
+
+The compact payload requirement and the intended disordered-memory targets
+also passed. BielSort used `0.44x–0.55x` the incremental peak RSS of direct
+Python and `0.20x–0.23x` that of `sort_together()` across the three disordered
+one-million-record workflows. However, the nearly ordered control used
+`1.1205x` direct Python's incremental peak RSS, exceeding the frozen `1.10x`
+maximum. The peak-memory gate, and therefore the overall local performance
+gate, **failed**.
+
+This is a valid negative result. It does not authorize public `argsort` or
+`Permutation` exports, portability promotion, a version change, merge, tag,
+or publication. The threshold will not be weakened. A follow-up may investigate
+only a separately pre-registered, memory-focused hypothesis—such as avoiding
+the duplicate snapshot/compact-buffer transition on the nearly monotonic
+fallback—and must retain this failed canonical record.
+
 ## Why this is a credible differential, not an exclusivity claim
 
 NumPy, Arrow, Polars, pandas, and more-itertools already solve related forms

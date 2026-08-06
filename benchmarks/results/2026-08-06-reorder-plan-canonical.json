@@ -1,0 +1,2487 @@
+{
+  "schema_version": 1,
+  "benchmark": "compact-reusable-reorder-plan-candidate",
+  "canonical": true,
+  "git": {
+    "commit": "8886573bb12ae74d62195355a1d9506752adfaec",
+    "dirty": false
+  },
+  "environment": {
+    "python": "3.11.2 (main, Apr  8 2026, 01:58:00) [GCC 12.2.0]",
+    "python_compiler": "GCC 12.2.0",
+    "python_cflags": "-Wsign-compare -DNDEBUG -g -fwrapv -O2 -Wall -g   -fstack-protector-strong -Wformat -Werror=format-security  -g -fwrapv -O2   ",
+    "project_optimized_compile_flags": [
+      "-O3"
+    ],
+    "platform": "Linux-6.7.0-keepos-x86_64-with-glibc2.36",
+    "machine": "x86_64",
+    "cpu": "13th Gen Intel(R) Core(TM) i5-1334U",
+    "numpy": "2.4.6",
+    "more_itertools": "11.1.0"
+  },
+  "configuration": {
+    "sizes": [
+      10000,
+      100000,
+      1000000
+    ],
+    "workloads": [
+      "event-batch",
+      "event-batch-nearly-ordered",
+      "ranking-export",
+      "simulation-columns"
+    ],
+    "repetitions": 7,
+    "memory_repetitions": 3,
+    "algorithms": [
+      "python-indices",
+      "biel-reorder-plan",
+      "more-itertools-sort-together",
+      "numpy-python-e2e",
+      "numpy-resident"
+    ],
+    "seeds": {
+      "event-batch-10000": 90600,
+      "event-batch-100000": 180600,
+      "event-batch-1000000": 1080600,
+      "event-batch-nearly-ordered-10000": 10090600,
+      "event-batch-nearly-ordered-100000": 10180600,
+      "event-batch-nearly-ordered-1000000": 11080600,
+      "ranking-export-10000": 20090600,
+      "ranking-export-100000": 20180600,
+      "ranking-export-1000000": 21080600,
+      "simulation-columns-10000": 30090600,
+      "simulation-columns-100000": 30180600,
+      "simulation-columns-1000000": 31080600
+    }
+  },
+  "time_rows": [
+    {
+      "workload": "event-batch",
+      "size": 10000,
+      "seed": 90600,
+      "sequence_count": 2,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.0021254679959383793,
+          0.00201237500004936,
+          0.003753702992980834,
+          0.002468222002789844,
+          0.0021590120013570413,
+          0.0022270240006037056,
+          0.002083273997413926
+        ],
+        "biel-reorder-plan": [
+          0.000573894998524338,
+          0.0006286319985520095,
+          0.0007306359984795563,
+          0.0006859029963379726,
+          0.0007262700019055046,
+          0.000619837999693118,
+          0.0006104610001784749
+        ],
+        "more-itertools-sort-together": [
+          0.002588363000540994,
+          0.002424057005555369,
+          0.002413923000858631,
+          0.0026126220036530867,
+          0.0025453960042796098,
+          0.002422650002699811,
+          0.0024455879974993877
+        ],
+        "numpy-python-e2e": [
+          0.0026356630041846074,
+          0.0019374869953026064,
+          0.001953655999386683,
+          0.002181546005886048,
+          0.002013436002016533,
+          0.001856431998021435,
+          0.001860998003394343
+        ],
+        "numpy-resident": [
+          0.0006694900002912618,
+          0.0006991659975028597,
+          0.0007240550039568916,
+          0.0007657859969185665,
+          0.0009750600002007559,
+          0.0007215139994514175,
+          0.0007345760022872128
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.0021590120013570413,
+        "biel-reorder-plan": 0.0006286319985520095,
+        "more-itertools-sort-together": 0.0024455879974993877,
+        "numpy-python-e2e": 0.001953655999386683,
+        "numpy-resident": 0.0007240550039568916
+      },
+      "candidate_speedup_over": {
+        "python-indices": 3.4344608711139557,
+        "more-itertools-sort-together": 3.890333300138322,
+        "numpy-python-e2e": 3.107789619183772,
+        "numpy-resident": 1.1517946996409336
+      },
+      "execution_order": [
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ]
+      ]
+    },
+    {
+      "workload": "event-batch-nearly-ordered",
+      "size": 10000,
+      "seed": 10090600,
+      "sequence_count": 2,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.0005385620024753734,
+          0.0004715809991466813,
+          0.00048576299741398543,
+          0.0005303530051605776,
+          0.0004996060015400872,
+          0.0006282859976636246,
+          0.0006189959967741743
+        ],
+        "biel-reorder-plan": [
+          0.00048823099496075884,
+          0.00046085000212769955,
+          0.0004248949990142137,
+          0.0003893629982485436,
+          0.000568171999475453,
+          0.00042387099529150873,
+          0.00040498900489183143
+        ],
+        "more-itertools-sort-together": [
+          0.0007293390008271672,
+          0.0007503079978050664,
+          0.0008205370031646453,
+          0.0007330009975703433,
+          0.0008167510022758506,
+          0.0009999049943871796,
+          0.0007736730040051043
+        ],
+        "numpy-python-e2e": [
+          0.001347512996289879,
+          0.0012553929991554469,
+          0.0012147739980719052,
+          0.0013424729986581951,
+          0.0012610999983735383,
+          0.0026419109999551438,
+          0.001486649998696521
+        ],
+        "numpy-resident": [
+          0.0001460880012018606,
+          0.00014513300266116858,
+          0.00015595200238749385,
+          0.0001648440011194907,
+          0.00022326400357997045,
+          0.00022533500305144116,
+          0.00017520300025353208
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.0005303530051605776,
+        "biel-reorder-plan": 0.0004248949990142137,
+        "more-itertools-sort-together": 0.0007736730040051043,
+        "numpy-python-e2e": 0.0013424729986581951,
+        "numpy-resident": 0.0001648440011194907
+      },
+      "candidate_speedup_over": {
+        "python-indices": 1.2481978050836886,
+        "more-itertools-sort-together": 1.8208569312420249,
+        "numpy-python-e2e": 3.1595405965540357,
+        "numpy-resident": 0.38796408877944055
+      },
+      "execution_order": [
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ]
+      ]
+    },
+    {
+      "workload": "ranking-export",
+      "size": 10000,
+      "seed": 20090600,
+      "sequence_count": 3,
+      "reverse": true,
+      "samples_s": {
+        "python-indices": [
+          0.0016516550022060983,
+          0.0015553069970337674,
+          0.0015463419986190274,
+          0.0015101530007086694,
+          0.0015917810014798306,
+          0.0015836239981581457,
+          0.0016563640019739978
+        ],
+        "biel-reorder-plan": [
+          0.0003678760040202178,
+          0.00033784200059017166,
+          0.0002626069981488399,
+          0.00028696500521618873,
+          0.0003644759999588132,
+          0.00025208999431924894,
+          0.0002585039983387105
+        ],
+        "more-itertools-sort-together": [
+          0.001795228999981191,
+          0.0017487829973106273,
+          0.0018152740012737922,
+          0.0017752720013959333,
+          0.0017781050046323799,
+          0.0017412570014130324,
+          0.001970928999071475
+        ],
+        "numpy-python-e2e": [
+          0.0022235610013012774,
+          0.0019740019997698255,
+          0.0019517330001690425,
+          0.002017220998823177,
+          0.001990949000173714,
+          0.001972774996829685,
+          0.002000749002036173
+        ],
+        "numpy-resident": [
+          0.0007101419978425838,
+          0.0007672120045754127,
+          0.0008282470007543452,
+          0.0006890139993629418,
+          0.0007052799992379732,
+          0.0007049549967632629,
+          0.0006734190028510056
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.0015836239981581457,
+        "biel-reorder-plan": 0.00028696500521618873,
+        "more-itertools-sort-together": 0.0017781050046323799,
+        "numpy-python-e2e": 0.001990949000173714,
+        "numpy-resident": 0.0007052799992379732
+      },
+      "candidate_speedup_over": {
+        "python-indices": 5.518526542862265,
+        "more-itertools-sort-together": 6.196243347835468,
+        "numpy-python-e2e": 6.937950495649487,
+        "numpy-resident": 2.4577212775705584
+      },
+      "execution_order": [
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ]
+      ]
+    },
+    {
+      "workload": "simulation-columns",
+      "size": 10000,
+      "seed": 30090600,
+      "sequence_count": 5,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.003296980998129584,
+          0.0034036450015264563,
+          0.0027836350054712966,
+          0.0032341949990950525,
+          0.0030026570020709187,
+          0.002749079001659993,
+          0.002939926001999993
+        ],
+        "biel-reorder-plan": [
+          0.0007644319994142279,
+          0.0008477960000163876,
+          0.0006847010008641519,
+          0.0006338460007100366,
+          0.0006095549979363568,
+          0.0006882359957671724,
+          0.0005355359971872531
+        ],
+        "more-itertools-sort-together": [
+          0.004054085999086965,
+          0.0038555880018975586,
+          0.0032518869993509725,
+          0.0033306149998679757,
+          0.003222771003493108,
+          0.0030688480037497357,
+          0.003370538994204253
+        ],
+        "numpy-python-e2e": [
+          0.0031275159999495372,
+          0.0029798930045217276,
+          0.002621576000819914,
+          0.002775612003460992,
+          0.0026260140002705157,
+          0.002874067002267111,
+          0.002824268005497288
+        ],
+        "numpy-resident": [
+          0.0014234429982025176,
+          0.001163610999356024,
+          0.0014706339934491552,
+          0.001038274000165984,
+          0.001145158996223472,
+          0.0010987389978254214,
+          0.001016581998555921
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.0030026570020709187,
+        "biel-reorder-plan": 0.0006847010008641519,
+        "more-itertools-sort-together": 0.0033306149998679757,
+        "numpy-python-e2e": 0.002824268005497288,
+        "numpy-resident": 0.001145158996223472
+      },
+      "candidate_speedup_over": {
+        "python-indices": 4.3853550648842425,
+        "more-itertools-sort-together": 4.86433493694978,
+        "numpy-python-e2e": 4.124819449559468,
+        "numpy-resident": 1.6724949938413736
+      },
+      "execution_order": [
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ]
+      ]
+    },
+    {
+      "workload": "event-batch",
+      "size": 100000,
+      "seed": 180600,
+      "sequence_count": 2,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.03415022900298936,
+          0.02938188100233674,
+          0.03399906500271754,
+          0.03217287400184432,
+          0.031269646002328955,
+          0.028943569006514736,
+          0.029037353000603616
+        ],
+        "biel-reorder-plan": [
+          0.009168739998131059,
+          0.009120048001932446,
+          0.009883140999590978,
+          0.008444580998911988,
+          0.00974356699589407,
+          0.008778472998528741,
+          0.008654458993987646
+        ],
+        "more-itertools-sort-together": [
+          0.043048409002949484,
+          0.04641013099899283,
+          0.04229091700108256,
+          0.041996559004473966,
+          0.043952790001640096,
+          0.06226825399789959,
+          0.04347090399824083
+        ],
+        "numpy-python-e2e": [
+          0.0222878380009206,
+          0.02616537400172092,
+          0.021930326001893263,
+          0.024786632995528635,
+          0.022702665002725553,
+          0.024092466999718454,
+          0.023018740001134574
+        ],
+        "numpy-resident": [
+          0.009337550000054762,
+          0.009308740998676512,
+          0.009166709998680744,
+          0.009240127001248766,
+          0.009150320001936052,
+          0.009770183001819532,
+          0.00927157599653583
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.031269646002328955,
+        "biel-reorder-plan": 0.009120048001932446,
+        "more-itertools-sort-together": 0.04347090399824083,
+        "numpy-python-e2e": 0.023018740001134574,
+        "numpy-resident": 0.00927157599653583
+      },
+      "candidate_speedup_over": {
+        "python-indices": 3.42867120827689,
+        "more-itertools-sort-together": 4.766521403070443,
+        "numpy-python-e2e": 2.523971364652591,
+        "numpy-resident": 1.0166148242390036
+      },
+      "execution_order": [
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ]
+      ]
+    },
+    {
+      "workload": "event-batch-nearly-ordered",
+      "size": 100000,
+      "seed": 10180600,
+      "sequence_count": 2,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.006513346001156606,
+          0.006305599999905098,
+          0.006303611000475939,
+          0.012194941002235282,
+          0.006765980004274752,
+          0.006233364998479374,
+          0.00679437199869426
+        ],
+        "biel-reorder-plan": [
+          0.006453471003624145,
+          0.005379283997172024,
+          0.005996460000460502,
+          0.007862112994189374,
+          0.00541671799874166,
+          0.00648858899512561,
+          0.005565478997596074
+        ],
+        "more-itertools-sort-together": [
+          0.016972818004433066,
+          0.015173307001532521,
+          0.014746066000952851,
+          0.017701451004541013,
+          0.014937826999812387,
+          0.016569917999731842,
+          0.021767325000837445
+        ],
+        "numpy-python-e2e": [
+          0.013375639005971607,
+          0.012714759999653324,
+          0.012398990998917725,
+          0.013145945995347574,
+          0.012756520001858007,
+          0.013082771998597309,
+          0.014323808005428873
+        ],
+        "numpy-resident": [
+          0.0021795950015075505,
+          0.002040478997514583,
+          0.0018886659963754937,
+          0.0018489620051695965,
+          0.002125979997799732,
+          0.0018323440017411485,
+          0.0020071059989277273
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.006513346001156606,
+        "biel-reorder-plan": 0.005996460000460502,
+        "more-itertools-sort-together": 0.016569917999731842,
+        "numpy-python-e2e": 0.013082771998597309,
+        "numpy-resident": 0.0020071059989277273
+      },
+      "candidate_speedup_over": {
+        "python-indices": 1.0861985239051724,
+        "more-itertools-sort-together": 2.7632833369120022,
+        "numpy-python-e2e": 2.181749231645439,
+        "numpy-resident": 0.33471514839982097
+      },
+      "execution_order": [
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ]
+      ]
+    },
+    {
+      "workload": "ranking-export",
+      "size": 100000,
+      "seed": 20180600,
+      "sequence_count": 3,
+      "reverse": true,
+      "samples_s": {
+        "python-indices": [
+          0.027453637994767632,
+          0.023512022002250887,
+          0.02635701699909987,
+          0.024360814000829123,
+          0.02636562500265427,
+          0.022963169998547528,
+          0.028547170993988402
+        ],
+        "biel-reorder-plan": [
+          0.006115881995356176,
+          0.00467544500133954,
+          0.004401028003485408,
+          0.004482800002733711,
+          0.005358196998713538,
+          0.0041769110030145384,
+          0.004136111994739622
+        ],
+        "more-itertools-sort-together": [
+          0.03656450400012545,
+          0.03572585700021591,
+          0.035225947001890745,
+          0.04103685700101778,
+          0.03659333100222284,
+          0.03860359400277957,
+          0.03463159300008556
+        ],
+        "numpy-python-e2e": [
+          0.024934396002208814,
+          0.02269325000088429,
+          0.023793852000380866,
+          0.02679888699640287,
+          0.022580584001843818,
+          0.023896539998531807,
+          0.02236252200236777
+        ],
+        "numpy-resident": [
+          0.009718623994558584,
+          0.010586786003841553,
+          0.010924397000053432,
+          0.009564238003804348,
+          0.010729419002018403,
+          0.010822758995345794,
+          0.010598108005069662
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.02635701699909987,
+        "biel-reorder-plan": 0.004482800002733711,
+        "more-itertools-sort-together": 0.03656450400012545,
+        "numpy-python-e2e": 0.023793852000380866,
+        "numpy-resident": 0.010598108005069662
+      },
+      "candidate_speedup_over": {
+        "python-indices": 5.879587976940032,
+        "more-itertools-sort-together": 8.156621749314626,
+        "numpy-python-e2e": 5.307810293983859,
+        "numpy-resident": 2.364171499644575
+      },
+      "execution_order": [
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ]
+      ]
+    },
+    {
+      "workload": "simulation-columns",
+      "size": 100000,
+      "seed": 30180600,
+      "sequence_count": 5,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.04284069399727741,
+          0.042283929004042875,
+          0.042699766003352124,
+          0.04899442699388601,
+          0.043543526000576094,
+          0.04339985499973409,
+          0.04532793699763715
+        ],
+        "biel-reorder-plan": [
+          0.009123363000981044,
+          0.015649739994842093,
+          0.009056073999090586,
+          0.010754814997198991,
+          0.010017989996413235,
+          0.0092383260052884,
+          0.00894920399878174
+        ],
+        "more-itertools-sort-together": [
+          0.06352474199957214,
+          0.06001540899887914,
+          0.061016640000161715,
+          0.05774628200015286,
+          0.060309055996185634,
+          0.06298196699935943,
+          0.06085972499568015
+        ],
+        "numpy-python-e2e": [
+          0.036042114996234886,
+          0.04030542600230547,
+          0.04094076000183122,
+          0.039439359003154095,
+          0.04060596699855523,
+          0.036428255996725056,
+          0.042987576001905836
+        ],
+        "numpy-resident": [
+          0.01909653699840419,
+          0.0160096799954772,
+          0.014466343003732618,
+          0.01595184799953131,
+          0.015503022004850209,
+          0.01939146500080824,
+          0.01824435399612412
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.04339985499973409,
+        "biel-reorder-plan": 0.0092383260052884,
+        "more-itertools-sort-together": 0.06085972499568015,
+        "numpy-python-e2e": 0.04030542600230547,
+        "numpy-resident": 0.0160096799954772
+      },
+      "candidate_speedup_over": {
+        "python-indices": 4.697805097470063,
+        "more-itertools-sort-together": 6.587743814284269,
+        "numpy-python-e2e": 4.36284950100624,
+        "numpy-resident": 1.7329633081050178
+      },
+      "execution_order": [
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ]
+      ]
+    },
+    {
+      "workload": "event-batch",
+      "size": 1000000,
+      "seed": 1080600,
+      "sequence_count": 2,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.5270898820017464,
+          0.530376159993466,
+          0.5201424920014688,
+          0.5198831439993228,
+          0.5191111960011767,
+          0.5469701359979808,
+          0.514295567998488
+        ],
+        "biel-reorder-plan": [
+          0.10167283100599889,
+          0.10572941100690514,
+          0.10682232899853261,
+          0.1128743890003534,
+          0.1092558390009799,
+          0.12739345699810656,
+          0.10773781500029145
+        ],
+        "more-itertools-sort-together": [
+          0.6707786440019845,
+          0.6520063420030056,
+          0.6911173170010443,
+          0.6657478239940247,
+          0.6529031000027317,
+          0.754970901994966,
+          0.7056761229978292
+        ],
+        "numpy-python-e2e": [
+          0.297415084001841,
+          0.3230456130040693,
+          0.2913939220015891,
+          0.29476947899820516,
+          0.2947868409974035,
+          0.2914185169938719,
+          0.32547963700199034
+        ],
+        "numpy-resident": [
+          0.12707304799550911,
+          0.1172873109971988,
+          0.1178854890022194,
+          0.1241209110012278,
+          0.12042164499871433,
+          0.11663235000014538,
+          0.1178936119977152
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.5201424920014688,
+        "biel-reorder-plan": 0.10773781500029145,
+        "more-itertools-sort-together": 0.6707786440019845,
+        "numpy-python-e2e": 0.2947868409974035,
+        "numpy-resident": 0.1178936119977152
+      },
+      "candidate_speedup_over": {
+        "python-indices": 4.827854472452979,
+        "more-itertools-sort-together": 6.22602791786867,
+        "numpy-python-e2e": 2.73615017156795,
+        "numpy-resident": 1.0942639963266034
+      },
+      "execution_order": [
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ]
+      ]
+    },
+    {
+      "workload": "event-batch-nearly-ordered",
+      "size": 1000000,
+      "seed": 11080600,
+      "sequence_count": 2,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.07466388299508253,
+          0.07799904699641047,
+          0.0743671859963797,
+          0.08351388399751158,
+          0.07576829799654661,
+          0.07925122499727877,
+          0.07942636899679201
+        ],
+        "biel-reorder-plan": [
+          0.08582014500279911,
+          0.08383012199919904,
+          0.07917547800025204,
+          0.0799209639953915,
+          0.08863410600315547,
+          0.09233145499456441,
+          0.08402950500021689
+        ],
+        "more-itertools-sort-together": [
+          0.18183320599928265,
+          0.1849593079969054,
+          0.1741933910016087,
+          0.18249382100475486,
+          0.17367874100455083,
+          0.17691981100506382,
+          0.17936909099807963
+        ],
+        "numpy-python-e2e": [
+          0.13279825600329787,
+          0.1331198760017287,
+          0.1327212070027599,
+          0.1458667369952309,
+          0.13680343000305584,
+          0.13812324000173248,
+          0.13395211700117216
+        ],
+        "numpy-resident": [
+          0.022471606003819034,
+          0.021973148999677505,
+          0.02163463199394755,
+          0.020627428995794617,
+          0.020289774998673238,
+          0.020199657999910414,
+          0.02065965300425887
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.07799904699641047,
+        "biel-reorder-plan": 0.08402950500021689,
+        "more-itertools-sort-together": 0.17936909099807963,
+        "numpy-python-e2e": 0.13395211700117216,
+        "numpy-resident": 0.02065965300425887
+      },
+      "candidate_speedup_over": {
+        "python-indices": 0.9282340410812744,
+        "more-itertools-sort-together": 2.1345965443639905,
+        "numpy-python-e2e": 1.594108129053318,
+        "numpy-resident": 0.24586189106083092
+      },
+      "execution_order": [
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ]
+      ]
+    },
+    {
+      "workload": "ranking-export",
+      "size": 1000000,
+      "seed": 21080600,
+      "sequence_count": 3,
+      "reverse": true,
+      "samples_s": {
+        "python-indices": [
+          0.48147045799851185,
+          0.4848264659958659,
+          0.48641268899518764,
+          0.48925184900144814,
+          0.49425794999842765,
+          0.5412583779980196,
+          0.4866268370024045
+        ],
+        "biel-reorder-plan": [
+          0.07981834500242257,
+          0.08198464899760438,
+          0.07912455099722138,
+          0.08280023900442757,
+          0.08401325899467338,
+          0.08374438800092321,
+          0.08549109100567875
+        ],
+        "more-itertools-sort-together": [
+          0.5948818670003675,
+          0.5898473069973988,
+          0.5852495829967665,
+          0.5862650260023656,
+          0.6173344469934818,
+          0.5898878059961135,
+          0.5893205989996204
+        ],
+        "numpy-python-e2e": [
+          0.349349831994914,
+          0.355154026998207,
+          0.35011380200012354,
+          0.40325883100013016,
+          0.37278294499992626,
+          0.43341163599689025,
+          0.35290964400337543
+        ],
+        "numpy-resident": [
+          0.1425743860017974,
+          0.153503866000392,
+          0.15672626600280637,
+          0.15486798900383292,
+          0.1666563649996533,
+          0.15792749500542413,
+          0.14594887199928053
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.4866268370024045,
+        "biel-reorder-plan": 0.08280023900442757,
+        "more-itertools-sort-together": 0.5898473069973988,
+        "numpy-python-e2e": 0.355154026998207,
+        "numpy-resident": 0.15486798900383292
+      },
+      "candidate_speedup_over": {
+        "python-indices": 5.877118748128048,
+        "more-itertools-sort-together": 7.123739183480594,
+        "numpy-python-e2e": 4.289287461829861,
+        "numpy-resident": 1.8703809417210944
+      },
+      "execution_order": [
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ]
+      ]
+    },
+    {
+      "workload": "simulation-columns",
+      "size": 1000000,
+      "seed": 31080600,
+      "sequence_count": 5,
+      "reverse": false,
+      "samples_s": {
+        "python-indices": [
+          0.7753755140001886,
+          0.7788683000035235,
+          0.766791807996924,
+          0.7659767470031511,
+          0.7628484520027996,
+          0.8258632260040031,
+          0.778411250001227
+        ],
+        "biel-reorder-plan": [
+          0.13057156399736414,
+          0.1437086670048302,
+          0.1334740789970965,
+          0.1530053919996135,
+          0.13203988700115588,
+          0.1389720840015798,
+          0.127721021999605
+        ],
+        "more-itertools-sort-together": [
+          0.8739973459960311,
+          0.973948733000725,
+          0.8703661379986443,
+          0.9217493010000908,
+          0.868125859000429,
+          0.8662699300039094,
+          0.8747664890033775
+        ],
+        "numpy-python-e2e": [
+          0.49827347800601274,
+          0.5060805489993072,
+          0.4991838410060154,
+          0.5018425720045343,
+          0.4984630810067756,
+          0.5634820839986787,
+          0.648795583001629
+        ],
+        "numpy-resident": [
+          0.20765918299730401,
+          0.21808074499858776,
+          0.23689181199733866,
+          0.2296181570054614,
+          0.21853670600103214,
+          0.23532642899954226,
+          0.24062253299780423
+        ]
+      },
+      "medians_s": {
+        "python-indices": 0.7753755140001886,
+        "biel-reorder-plan": 0.1334740789970965,
+        "more-itertools-sort-together": 0.8739973459960311,
+        "numpy-python-e2e": 0.5018425720045343,
+        "numpy-resident": 0.2296181570054614
+      },
+      "candidate_speedup_over": {
+        "python-indices": 5.809184223830123,
+        "more-itertools-sort-together": 6.548068003638694,
+        "numpy-python-e2e": 3.7598504202111855,
+        "numpy-resident": 1.7203202204561105
+      },
+      "execution_order": [
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ],
+        [
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident"
+        ],
+        [
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices"
+        ],
+        [
+          "more-itertools-sort-together",
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan"
+        ],
+        [
+          "numpy-python-e2e",
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together"
+        ],
+        [
+          "numpy-resident",
+          "python-indices",
+          "biel-reorder-plan",
+          "more-itertools-sort-together",
+          "numpy-python-e2e"
+        ]
+      ]
+    }
+  ],
+  "memory_rows": [
+    {
+      "workload": "event-batch",
+      "size": 1000000,
+      "median_incremental_peak_bytes": {
+        "python-indices": 57868288,
+        "biel-reorder-plan": 31981568,
+        "more-itertools-sort-together": 152027136,
+        "numpy-python-e2e": 55934976,
+        "numpy-resident": 24023040
+      },
+      "candidate_memory_ratio_to": {
+        "python-indices": 0.5526613816534541,
+        "more-itertools-sort-together": 0.2103674964974674,
+        "numpy-python-e2e": 0.5717633274751025,
+        "numpy-resident": 1.3312872975277068
+      },
+      "raw": {
+        "python-indices": [
+          {
+            "algorithm": "python-indices",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080600,
+            "elapsed_s": 0.6343861690038466,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 119320576,
+            "sampled_peak_rss_bytes": 177188864,
+            "incremental_peak_bytes": 57868288
+          },
+          {
+            "algorithm": "python-indices",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080601,
+            "elapsed_s": 0.5394901749968994,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 119574528,
+            "sampled_peak_rss_bytes": 183955456,
+            "incremental_peak_bytes": 64380928
+          },
+          {
+            "algorithm": "python-indices",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080602,
+            "elapsed_s": 0.5387417940000887,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 119316480,
+            "sampled_peak_rss_bytes": 175783936,
+            "incremental_peak_bytes": 56467456
+          }
+        ],
+        "biel-reorder-plan": [
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080600,
+            "elapsed_s": 0.11983930299902568,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            },
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 119578624,
+            "sampled_peak_rss_bytes": 151560192,
+            "incremental_peak_bytes": 31981568
+          },
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080601,
+            "elapsed_s": 0.11132586500025354,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            },
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 119623680,
+            "sampled_peak_rss_bytes": 151650304,
+            "incremental_peak_bytes": 32026624
+          },
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080602,
+            "elapsed_s": 0.12778072099899873,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            },
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 119529472,
+            "sampled_peak_rss_bytes": 151392256,
+            "incremental_peak_bytes": 31862784
+          }
+        ],
+        "more-itertools-sort-together": [
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080600,
+            "elapsed_s": 1.465733655000804,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 119603200,
+            "sampled_peak_rss_bytes": 271519744,
+            "incremental_peak_bytes": 151916544
+          },
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080601,
+            "elapsed_s": 1.5343782609998016,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 119447552,
+            "sampled_peak_rss_bytes": 271568896,
+            "incremental_peak_bytes": 152121344
+          },
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080602,
+            "elapsed_s": 1.4537080520021846,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 119496704,
+            "sampled_peak_rss_bytes": 271523840,
+            "incremental_peak_bytes": 152027136
+          }
+        ],
+        "numpy-python-e2e": [
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080600,
+            "elapsed_s": 0.3410105479997583,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 119578624,
+            "sampled_peak_rss_bytes": 175513600,
+            "incremental_peak_bytes": 55934976
+          },
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080601,
+            "elapsed_s": 0.30602477700449526,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 119709696,
+            "sampled_peak_rss_bytes": 175673344,
+            "incremental_peak_bytes": 55963648
+          },
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080602,
+            "elapsed_s": 0.3125605109962635,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 119840768,
+            "sampled_peak_rss_bytes": 175587328,
+            "incremental_peak_bytes": 55746560
+          }
+        ],
+        "numpy-resident": [
+          {
+            "algorithm": "numpy-resident",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080600,
+            "elapsed_s": 0.15111474200239172,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 135888896,
+            "sampled_peak_rss_bytes": 159854592,
+            "incremental_peak_bytes": 23965696
+          },
+          {
+            "algorithm": "numpy-resident",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080601,
+            "elapsed_s": 0.13314934899972286,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 135692288,
+            "sampled_peak_rss_bytes": 159715328,
+            "incremental_peak_bytes": 24023040
+          },
+          {
+            "algorithm": "numpy-resident",
+            "workload": "event-batch",
+            "size": 1000000,
+            "seed": 1080602,
+            "elapsed_s": 0.12672583400126314,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 135524352,
+            "sampled_peak_rss_bytes": 159612928,
+            "incremental_peak_bytes": 24088576
+          }
+        ]
+      }
+    },
+    {
+      "workload": "event-batch-nearly-ordered",
+      "size": 1000000,
+      "median_incremental_peak_bytes": {
+        "python-indices": 56918016,
+        "biel-reorder-plan": 63774720,
+        "more-itertools-sort-together": 152010752,
+        "numpy-python-e2e": 55885824,
+        "numpy-resident": 24145920
+      },
+      "candidate_memory_ratio_to": {
+        "python-indices": 1.1204663212435233,
+        "more-itertools-sort-together": 0.41954084932097435,
+        "numpy-python-e2e": 1.141160949868074,
+        "numpy-resident": 2.6412213740458017
+      },
+      "raw": {
+        "python-indices": [
+          {
+            "algorithm": "python-indices",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080600,
+            "elapsed_s": 0.09105789600289427,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 104644608,
+            "sampled_peak_rss_bytes": 161562624,
+            "incremental_peak_bytes": 56918016
+          },
+          {
+            "algorithm": "python-indices",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080601,
+            "elapsed_s": 0.0932358890058822,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 104771584,
+            "sampled_peak_rss_bytes": 160997376,
+            "incremental_peak_bytes": 56225792
+          },
+          {
+            "algorithm": "python-indices",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080602,
+            "elapsed_s": 0.08541167000657879,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 104521728,
+            "sampled_peak_rss_bytes": 161583104,
+            "incremental_peak_bytes": 57061376
+          }
+        ],
+        "biel-reorder-plan": [
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080600,
+            "elapsed_s": 0.12369114000466652,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            },
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 104644608,
+            "sampled_peak_rss_bytes": 168415232,
+            "incremental_peak_bytes": 63770624
+          },
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080601,
+            "elapsed_s": 0.0877630289978697,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            },
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 104513536,
+            "sampled_peak_rss_bytes": 168325120,
+            "incremental_peak_bytes": 63811584
+          },
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080602,
+            "elapsed_s": 0.09225049799715634,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            },
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 104648704,
+            "sampled_peak_rss_bytes": 168423424,
+            "incremental_peak_bytes": 63774720
+          }
+        ],
+        "more-itertools-sort-together": [
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080600,
+            "elapsed_s": 0.5892139059942565,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 104644608,
+            "sampled_peak_rss_bytes": 256536576,
+            "incremental_peak_bytes": 151891968
+          },
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080601,
+            "elapsed_s": 0.5356071090063779,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 104644608,
+            "sampled_peak_rss_bytes": 256655360,
+            "incremental_peak_bytes": 152010752
+          },
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080602,
+            "elapsed_s": 0.5446164490058436,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 104386560,
+            "sampled_peak_rss_bytes": 256536576,
+            "incremental_peak_bytes": 152150016
+          }
+        ],
+        "numpy-python-e2e": [
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080600,
+            "elapsed_s": 0.1333768289987347,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 104513536,
+            "sampled_peak_rss_bytes": 160464896,
+            "incremental_peak_bytes": 55951360
+          },
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080601,
+            "elapsed_s": 0.19822790299804183,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 104779776,
+            "sampled_peak_rss_bytes": 160665600,
+            "incremental_peak_bytes": 55885824
+          },
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080602,
+            "elapsed_s": 0.15399637399968924,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 104640512,
+            "sampled_peak_rss_bytes": 160493568,
+            "incremental_peak_bytes": 55853056
+          }
+        ],
+        "numpy-resident": [
+          {
+            "algorithm": "numpy-resident",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080600,
+            "elapsed_s": 0.0227191089943517,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 120815616,
+            "sampled_peak_rss_bytes": 144961536,
+            "incremental_peak_bytes": 24145920
+          },
+          {
+            "algorithm": "numpy-resident",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080601,
+            "elapsed_s": 0.023489166000217665,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 120680448,
+            "sampled_peak_rss_bytes": 144826368,
+            "incremental_peak_bytes": 24145920
+          },
+          {
+            "algorithm": "numpy-resident",
+            "workload": "event-batch-nearly-ordered",
+            "size": 1000000,
+            "seed": 11080602,
+            "elapsed_s": 0.024116987995512318,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 121106432,
+            "sampled_peak_rss_bytes": 145108992,
+            "incremental_peak_bytes": 24002560
+          }
+        ]
+      }
+    },
+    {
+      "workload": "ranking-export",
+      "size": 1000000,
+      "median_incremental_peak_bytes": {
+        "python-indices": 72560640,
+        "biel-reorder-plan": 32067584,
+        "more-itertools-sort-together": 160243712,
+        "numpy-python-e2e": 72114176,
+        "numpy-resident": 31932416
+      },
+      "candidate_memory_ratio_to": {
+        "python-indices": 0.4419418571831781,
+        "more-itertools-sort-together": 0.20011758090077195,
+        "numpy-python-e2e": 0.4446779506986255,
+        "numpy-resident": 1.004232939969215
+      },
+      "raw": {
+        "python-indices": [
+          {
+            "algorithm": "python-indices",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080600,
+            "elapsed_s": 0.525971955001296,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 143691776,
+            "sampled_peak_rss_bytes": 216322048,
+            "incremental_peak_bytes": 72630272
+          },
+          {
+            "algorithm": "python-indices",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080601,
+            "elapsed_s": 0.5306996910003363,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 143880192,
+            "sampled_peak_rss_bytes": 216440832,
+            "incremental_peak_bytes": 72560640
+          },
+          {
+            "algorithm": "python-indices",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080602,
+            "elapsed_s": 0.5239306410003337,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 143753216,
+            "sampled_peak_rss_bytes": 210464768,
+            "incremental_peak_bytes": 66711552
+          }
+        ],
+        "biel-reorder-plan": [
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080600,
+            "elapsed_s": 0.09639233499910915,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            },
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 143601664,
+            "sampled_peak_rss_bytes": 175669248,
+            "incremental_peak_bytes": 32067584
+          },
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080601,
+            "elapsed_s": 0.08371388399973512,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            },
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 143765504,
+            "sampled_peak_rss_bytes": 175820800,
+            "incremental_peak_bytes": 32055296
+          },
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080602,
+            "elapsed_s": 0.13581001599959563,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            },
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 143659008,
+            "sampled_peak_rss_bytes": 175738880,
+            "incremental_peak_bytes": 32079872
+          }
+        ],
+        "more-itertools-sort-together": [
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080600,
+            "elapsed_s": 1.319964718000847,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 143872000,
+            "sampled_peak_rss_bytes": 304115712,
+            "incremental_peak_bytes": 160243712
+          },
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080601,
+            "elapsed_s": 1.3243588449986419,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 143581184,
+            "sampled_peak_rss_bytes": 303869952,
+            "incremental_peak_bytes": 160288768
+          },
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080602,
+            "elapsed_s": 1.3367195760001778,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 143839232,
+            "sampled_peak_rss_bytes": 303919104,
+            "incremental_peak_bytes": 160079872
+          }
+        ],
+        "numpy-python-e2e": [
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080600,
+            "elapsed_s": 0.3622131049996824,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 143486976,
+            "sampled_peak_rss_bytes": 215609344,
+            "incremental_peak_bytes": 72122368
+          },
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080601,
+            "elapsed_s": 0.3886264469983871,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 143691776,
+            "sampled_peak_rss_bytes": 215625728,
+            "incremental_peak_bytes": 71933952
+          },
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080602,
+            "elapsed_s": 0.3571838889984065,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 143802368,
+            "sampled_peak_rss_bytes": 215916544,
+            "incremental_peak_bytes": 72114176
+          }
+        ],
+        "numpy-resident": [
+          {
+            "algorithm": "numpy-resident",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080600,
+            "elapsed_s": 0.15526123399467906,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 167690240,
+            "sampled_peak_rss_bytes": 199622656,
+            "incremental_peak_bytes": 31932416
+          },
+          {
+            "algorithm": "numpy-resident",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080601,
+            "elapsed_s": 0.1524420130008366,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 168112128,
+            "sampled_peak_rss_bytes": 200101888,
+            "incremental_peak_bytes": 31989760
+          },
+          {
+            "algorithm": "numpy-resident",
+            "workload": "ranking-export",
+            "size": 1000000,
+            "seed": 21080602,
+            "elapsed_s": 0.16099521199794253,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 168042496,
+            "sampled_peak_rss_bytes": 199806976,
+            "incremental_peak_bytes": 31764480
+          }
+        ]
+      }
+    },
+    {
+      "workload": "simulation-columns",
+      "size": 1000000,
+      "median_incremental_peak_bytes": {
+        "python-indices": 89382912,
+        "biel-reorder-plan": 43667456,
+        "more-itertools-sort-together": 192204800,
+        "numpy-python-e2e": 103809024,
+        "numpy-resident": 48029696
+      },
+      "candidate_memory_ratio_to": {
+        "python-indices": 0.48854367152414996,
+        "more-itertools-sort-together": 0.22719232818327117,
+        "numpy-python-e2e": 0.42065183080808083,
+        "numpy-resident": 0.9091761896639945
+      },
+      "raw": {
+        "python-indices": [
+          {
+            "algorithm": "python-indices",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080600,
+            "elapsed_s": 0.7878758839942748,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 224993280,
+            "sampled_peak_rss_bytes": 314474496,
+            "incremental_peak_bytes": 89481216
+          },
+          {
+            "algorithm": "python-indices",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080601,
+            "elapsed_s": 0.8026740220011561,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 225095680,
+            "sampled_peak_rss_bytes": 314331136,
+            "incremental_peak_bytes": 89235456
+          },
+          {
+            "algorithm": "python-indices",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080602,
+            "elapsed_s": 0.896762709999166,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 224931840,
+            "sampled_peak_rss_bytes": 314314752,
+            "incremental_peak_bytes": 89382912
+          }
+        ],
+        "biel-reorder-plan": [
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080600,
+            "elapsed_s": 0.13829510800132994,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            },
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 224919552,
+            "sampled_peak_rss_bytes": 268587008,
+            "incremental_peak_bytes": 43667456
+          },
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080601,
+            "elapsed_s": 0.1506881120003527,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            },
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 224722944,
+            "sampled_peak_rss_bytes": 268505088,
+            "incremental_peak_bytes": 43782144
+          },
+          {
+            "algorithm": "biel-reorder-plan",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080602,
+            "elapsed_s": 0.14187377099733567,
+            "permutation": {
+              "format": "I",
+              "itemsize": 4,
+              "payload_bytes": 4000000,
+              "readonly": true
+            },
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 224980992,
+            "sampled_peak_rss_bytes": 268607488,
+            "incremental_peak_bytes": 43626496
+          }
+        ],
+        "more-itertools-sort-together": [
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080600,
+            "elapsed_s": 1.6452801859995816,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 225165312,
+            "sampled_peak_rss_bytes": 417370112,
+            "incremental_peak_bytes": 192204800
+          },
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080601,
+            "elapsed_s": 1.6831697870002245,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 224796672,
+            "sampled_peak_rss_bytes": 417075200,
+            "incremental_peak_bytes": 192278528
+          },
+          {
+            "algorithm": "more-itertools-sort-together",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080602,
+            "elapsed_s": 1.6451595309990807,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 224882688,
+            "sampled_peak_rss_bytes": 417054720,
+            "incremental_peak_bytes": 192172032
+          }
+        ],
+        "numpy-python-e2e": [
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080600,
+            "elapsed_s": 0.5180149060033727,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 225099776,
+            "sampled_peak_rss_bytes": 328908800,
+            "incremental_peak_bytes": 103809024
+          },
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080601,
+            "elapsed_s": 0.5099666090027313,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 224907264,
+            "sampled_peak_rss_bytes": 328982528,
+            "incremental_peak_bytes": 104075264
+          },
+          {
+            "algorithm": "numpy-python-e2e",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080602,
+            "elapsed_s": 0.5415286279967404,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 225042432,
+            "sampled_peak_rss_bytes": 328843264,
+            "incremental_peak_bytes": 103800832
+          }
+        ],
+        "numpy-resident": [
+          {
+            "algorithm": "numpy-resident",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080600,
+            "elapsed_s": 0.42336569799954304,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 264708096,
+            "sampled_peak_rss_bytes": 312692736,
+            "incremental_peak_bytes": 47984640
+          },
+          {
+            "algorithm": "numpy-resident",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080601,
+            "elapsed_s": 0.21820760300033726,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 265154560,
+            "sampled_peak_rss_bytes": 313307136,
+            "incremental_peak_bytes": 48152576
+          },
+          {
+            "algorithm": "numpy-resident",
+            "workload": "simulation-columns",
+            "size": 1000000,
+            "seed": 31080602,
+            "elapsed_s": 0.23257611600274686,
+            "measurement": "parent-sampled-linux-rss",
+            "sampling_interval_seconds": 0.0005,
+            "validation_excluded_from_sampling": true,
+            "baseline_current_rss_bytes": 264998912,
+            "sampled_peak_rss_bytes": 313028608,
+            "incremental_peak_bytes": 48029696
+          }
+        ]
+      }
+    }
+  ],
+  "decision": {
+    "time": {
+      "passed": true,
+      "direct_python": {
+        "passed": true,
+        "target_count_at_least_1_50x": 6,
+        "target_required": 5,
+        "disordered_large_floor_passed": true,
+        "nearly_ordered_floor_passed": true,
+        "small_input_floor_passed": true
+      },
+      "sort_together": {
+        "passed": true,
+        "target_count_at_least_1_25x": 6,
+        "target_required": 5,
+        "large_floor_passed": true
+      },
+      "numpy_python_e2e": {
+        "passed": true,
+        "target_count_at_least_1_00x": 6,
+        "target_required": 4,
+        "disordered_large_floor_passed": true
+      }
+    },
+    "memory": {
+      "passed": false,
+      "direct_python": {
+        "reduction_count_at_most_0_70x": 3,
+        "required": 2,
+        "regression_floor_passed": false
+      },
+      "sort_together": {
+        "reduction_count_at_most_0_70x": 3,
+        "required": 2,
+        "regression_floor_passed": true
+      },
+      "compact_payload_passed": true
+    },
+    "local_performance_passed": false,
+    "note": "A local pass authorizes only the remaining engineering and public-API promotion review; it does not authorize release."
+  }
+}

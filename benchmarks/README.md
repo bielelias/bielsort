@@ -249,6 +249,14 @@ preserves its passing time grid and void memory result. The final worker now
 holds the measured outputs at an `operation-complete` checkpoint; the parent
 stops sampling before authorizing validation. No performance criterion changed.
 
+The corrected [canonical result](results/2026-08-06-reorder-plan-canonical.md)
+is valid and keeps every frozen criterion unchanged. All three time gates and
+the compact/disordered-memory targets passed. The overall gate nevertheless
+failed: the nearly ordered one-million-record control used `1.1205x` the
+incremental peak RSS of direct Python, above the `1.10x` maximum. This record
+does not authorize a public API or release, and it must not be replaced by a
+rerun under weaker criteria.
+
 ## Research: stable compact top-k
 
 The private top-k prototype compares stable reusable index selection against

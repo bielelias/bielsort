@@ -102,6 +102,15 @@ gate. The proposed value is the complete workflow, not `argsort` alone:
 > Compute one stable order and reuse it across Python sequences without a
 > giant `list[int]` or a mandatory conversion to a columnar container.
 
+The later frozen complete-workflow protocol confirmed the time differential:
+all six disordered large cases passed each target-count gate, and the three
+one-million-record disordered workflows were `4.83x–5.88x` faster than direct
+Python while using `0.44x–0.55x` its incremental peak RSS. Promotion still
+stopped because the nearly ordered memory control measured `1.1205x` direct
+Python against a fixed `1.10x` maximum. This strengthens the evidence for the
+intended niche without converting it into a general-purpose or market-demand
+claim.
+
 ## Recommended 0.3 discovery candidate
 
 The API and usability review is now pre-registered in the

@@ -118,6 +118,13 @@ release.
   `operation-complete` handshake stops sampling while measured outputs remain
   alive and authorizes validation only afterward; the unchanged timing gates
   passed, but no combined decision is claimed from the invalid run.
+- Recorded the corrected compact reorder-plan canonical decision from a clean
+  committed tree. All direct-Python, `sort_together()`, and end-to-end NumPy
+  time gates passed, and the three disordered one-million-record workflows
+  used `0.44x–0.55x` direct Python's incremental peak RSS. The overall gate
+  remains failed because the nearly ordered memory control measured `1.1205x`
+  against its frozen `1.10x` ceiling; no public API, version, or release is
+  approved.
 
 ### Fixed
 

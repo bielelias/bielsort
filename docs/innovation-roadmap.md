@@ -12,9 +12,12 @@ variants and validating one narrower product hypothesis: a compact stable
 reorder plan for aligned Python sequences. Functional demand is visible, but
 large-scale performance demand remains unproven. That API and usability
 protocol is now frozen in the
-[compact reusable reorder-plan review](reorder-plan-api-review.md). The next
-step is a private implementation and one unchanged canonical end-to-end run,
-not public API or release work.
+[compact reusable reorder-plan review](reorder-plan-api-review.md). Its private
+implementation completed the unchanged canonical run: every time gate and the
+disordered-memory targets passed, but the overall decision failed because the
+nearly ordered memory control reached `1.1205x` direct Python against a
+`1.10x` ceiling. The next permissible step is a separately pre-registered,
+narrow memory hypothesis—not public API or release work.
 
 ## Priority 1: stable compact top-k
 

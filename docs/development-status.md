@@ -377,8 +377,7 @@ The corresponding private façade, 32-/64-bit buffer fixture, contract tests,
 and complete-flow benchmark harness are now implemented on the focused
 research branch. The harness refuses canonical mode unless the exact frozen
 sizes, workloads, repetition counts, optional baselines, output artifacts, and
-a clean committed tree are present. Only smoke validation has run so far; the
-single canonical decision remains the next action.
+a clean committed tree are present.
 
 The first attempt completed the unchanged timing grid but cannot be a decision
 run: every memory worker produced `0 / 0` because it subtracted a post-input
@@ -387,7 +386,7 @@ undefined ratio. Its JSON and diagnosis are retained in the
 [invalid-attempt record](https://github.com/bielelias/bielsort/blob/research/reorder-plan-0.3/benchmarks/results/2026-08-06-reorder-plan-canonical-invalid-ru-maxrss.md).
 The corrected, pre-registered memory method waits at a child-ready checkpoint
 and is sampled by the Linux parent every 0.5 ms. No workload, threshold, or
-algorithm changed; one corrected canonical run remains pending.
+algorithm changed.
 
 The first correction produced valid nonzero sampling but still included the
 post-operation reference order used only for validation. Its
@@ -395,7 +394,19 @@ post-operation reference order used only for validation. Its
 preserves the passing time grid and void RSS values. A final pre-registered
 `operation-complete` handshake now stops parent sampling before validation.
 Both invalid attempts remain versioned and all original gates remain binding;
-the corrected decision run is still pending.
+the invalid values do not contribute to the final decision.
+
+The corrected
+[canonical reorder-plan record](https://github.com/bielelias/bielsort/blob/research/reorder-plan-0.3/benchmarks/results/2026-08-06-reorder-plan-canonical.md)
+is now complete from clean commit `8886573`. All frozen time gates passed:
+each of the six disordered large cases cleared the direct-Python,
+`sort_together()`, and end-to-end NumPy target counts. At one million records,
+the three disordered complete flows were `4.83x–5.88x` faster than direct
+Python and used `0.44x–0.55x` its incremental peak RSS. The overall gate still
+**failed** because the nearly ordered memory control reached `1.1205x` direct
+Python, above the unchanged `1.10x` ceiling. The private API is not approved
+for promotion. Any continuation must pre-register a new, narrow memory
+hypothesis and preserve this result.
 
 ## Resume checklist
 
