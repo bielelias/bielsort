@@ -101,6 +101,7 @@ nav:
       - "Research: stable compact top-k": topk-research.md
       - "Research: direct keyed top-k": keyed-topk-research.md
       - "Review: stable top-k API": topk-api-review.md
+      - "Research: unified top-k facade": topk-facade-research.md
       - Release process: RELEASING.md
       - Changelog: https://github.com/bielelias/bielsort/blob/main/CHANGELOG.md
       - Roadmap: https://github.com/bielelias/bielsort/blob/main/ROADMAP.md

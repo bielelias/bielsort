@@ -121,7 +121,7 @@ published on 2026-08-05.
   after hardening keyed top-k against input resizing inside callbacks.
 - [x] Run a fresh non-publishing build-only wheel matrix on the exact reviewed
   commit before any merge or release proposal.
-- [ ] Pre-register a private unified-facade experiment covering natural-order
+- [x] Pre-register a private unified-facade experiment covering natural-order
   `key=None`, structured diagnostics, and a large-`k` full-sort crossover.
 - [ ] Implement and validate that private façade before proposing any public
   `top_k` or `TopKInfo` symbol.

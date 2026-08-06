@@ -57,6 +57,10 @@ release.
 - Completed the private direct top-k promotion review, selecting a provisional
   `top_k`/`top_k_with_info` contract and explicit remaining gates without
   adding either name to the public package.
+- Pre-registered a private unified stable top-k façade covering natural
+  ordering, explicit keys, immutable structured diagnostics, conservative
+  memory limits, and a fixed partial-selection/full-sort crossover. No public
+  symbol or release is added by the protocol.
 
 ### Fixed
 
