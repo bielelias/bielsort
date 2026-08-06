@@ -310,6 +310,22 @@ uses a worker-ready checkpoint and parent-sampled Linux RSS. The next private
 step may reduce the retained layout and repeat the same gate, but must not
 weaken or replace this failed result. No runtime symbol is public.
 
+Implementation commit `ddb8ff2` performed that retained-layout reduction. It
+reuses the eventual result list, stores only normalized key/index state on the
+exact path, reconstructs cached integers only after a late generic switch,
+and replaces final merge buffers with in-place heapsort. The unchanged memory
+gate now passes: `k=100,000` measures `0.62x` `heapq` for signed-int64 keys and
+`0.67x` for strings, with `0.11x` the materializing façade in both cases. All
+generic timing checks pass and the minimum of all 24 cases is `1.02x`.
+
+That second canonical decision is still **failed** because 7 of 12 exact
+cases reached `1.10x`, one short of the fixed requirement; the medium natural
+smallest case measured approximately `1.095x`. The
+[compact-layout record](https://github.com/bielelias/bielsort/blob/research/streaming-topk-0.3/benchmarks/results/2026-08-06-streaming-topk-compact.md)
+is retained independently. A bounded medium-`k` finishing optimization may be
+tested next, while the already passing large-`k` in-place layout and all fixed
+thresholds remain unchanged.
+
 ## Resume checklist
 
 Start from the repository root and inspect the current evidence:

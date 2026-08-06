@@ -130,9 +130,11 @@ published on 2026-08-05.
 - [x] Implement and evaluate the first private streaming path against the
   fixed gates; preserve its passing time/semantics and failed `heapq` memory
   result without weakening the `0.70x` bound.
-- [ ] Evaluate a second private streaming layout that reuses the result list
-  for retained records and reduces per-slot native state before reconsidering
-  the unchanged memory gate.
+- [x] Evaluate a second private streaming layout that reuses the result list
+  and reduces per-slot native state; retain its passing memory result and
+  failed 7-of-12 signed-int64 timing target.
+- [ ] Test a bounded medium-`k` exact-int64 finishing optimization without
+  changing the passing large-`k` in-place memory layout or fixed gates.
 - [ ] Prototype native inverse and composition operations only after external
   demand justifies expanding the private permutation toolkit.
 - [ ] Evaluate fused sorted-group boundaries and counts for telemetry/event

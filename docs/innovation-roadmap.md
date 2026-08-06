@@ -75,6 +75,13 @@ incremental RSS remained `0.76x–0.80x` `heapq`, above the pre-registered
 `0.70x` maximum. A second private layout may reduce per-selected-item native
 state; the failed result and original threshold remain binding evidence.
 
+That compact follow-up reduced the `k=100,000` ratios to `0.62x` for int64
+keys and `0.67x` for strings, passing memory, while every generic timing case
+also passed. Its overall decision is still failed because 7 of 12 signed-int64
+cases reached `1.10x`, one short of the fixed count. Medium-`k` finalization is
+the only remaining local optimization under evaluation; no public API follows
+from the current evidence.
+
 ## Priority 4: permutation toolkit
 
 If the compact permutation becomes public, the next direct operations should

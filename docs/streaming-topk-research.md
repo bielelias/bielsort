@@ -207,3 +207,20 @@ does not change this protocol or its gates: it waits at a worker-ready
 checkpoint while the parent establishes current Linux RSS, then samples that
 worker every 0.5 ms. A second implementation may improve the retained layout
 and repeat the unchanged protocol, but it cannot replace this failed record.
+
+## Compact-layout follow-up
+
+Commit `ddb8ff2` reuses the eventual result list for retained records, keeps a
+16-byte native key/index entry on the measured 64-bit host, reconstructs
+previous exact integers only after a late generic key, and finishes in place.
+The unchanged memory checks passed at `0.62x` `heapq` for signed-int64 keys and
+`0.67x` for strings at `k = 100,000`; both were `0.11x` the materializing
+façade. All generic timing checks and the no-regression floor passed.
+
+This follow-up is also **FAIL**, independently of the first result. Seven of
+12 signed-int64 cases reached `1.10x`, while the protocol requires eight. The
+medium natural-smallest result was approximately `1.095x`. Its raw record is
+preserved in
+`benchmarks/results/2026-08-06-streaming-topk-compact.{json,md}`. Further code
+may target this bounded medium-`k` finish, but the result cannot be relabeled
+and no threshold may be changed.

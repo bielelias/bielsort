@@ -80,6 +80,11 @@ release.
 - Corrected an inherited-`ru_maxrss` benchmark defect with a worker-ready
   checkpoint and parent-sampled Linux RSS. The malformed attempt and its raw
   samples remain versioned separately from the canonical result.
+- Added a second streaming layout that reuses the result list, reconstructs
+  retained int64 keys only on a late generic switch, and sorts in place. It
+  passed both fixed memory gates (`0.62x–0.67x` `heapq` at `k=100,000`) but
+  reached the `1.10x` signed-int64 target in 7 of 12 cases rather than 8, so
+  this second canonical result also remains unapproved.
 
 ### Fixed
 
