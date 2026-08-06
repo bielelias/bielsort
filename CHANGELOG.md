@@ -64,6 +64,9 @@ release.
   from `key` or generic comparison callbacks. The current record is retained
   across Python calls and size changes now raise `RuntimeError` instead of
   risking invalid borrowed-reference access.
+- Repeated the fixed practical callable and isolated-memory protocol after the
+  safety change. Both gates passed again without weakening their thresholds;
+  the separate result preserves every raw sample.
 
 ## [0.2.0] - 2026-08-05
 

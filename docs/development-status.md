@@ -256,8 +256,13 @@ resized an exact input list while the C core held a borrowed item. The private
 loop is now hardened to retain the current record and raise `RuntimeError` for
 size changes caused by key evaluation or generic comparison. The affected
 candidate passes a warning-clean local build, all 156 optimized tests, and
-strict documentation. The practical performance/memory gates, sanitizers,
-source matrix, and build-only wheels must pass again on the reviewed commit.
+strict documentation. The unchanged practical performance/memory protocol was
+then repeated on hardened commit `e0d6107` and passed: 19 of 24 callable cases
+reached `1.10x`, none fell below `0.90x`, and adaptive traced peak memory
+remained `0.28x–0.43x` of `heapq`. The
+[separate safety revalidation](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-adaptive-keyed-topk-practical-safety.md)
+preserves all samples. Hosted sanitizers, source CI, and build-only wheels must
+still pass on the reviewed branch.
 
 ## Resume checklist
 

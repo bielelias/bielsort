@@ -463,3 +463,11 @@ keeps the current record alive and raises `RuntimeError` if `key` or generic
 comparison changes the source length. The affected performance/memory gates,
 sanitizers, source CI, and build-only wheels must pass again before further
 promotion work.
+
+The exact stage-three performance and isolated-memory protocol was repeated on
+the hardened commit `e0d6107` and passed again. Nineteen of 24 callable cases
+reached `1.10x`, none fell below `0.90x`, and adaptive traced peak memory
+remained `0.28x–0.43x` of `heapq`. The
+[separate safety revalidation](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-adaptive-keyed-topk-practical-safety.md)
+preserves every sample without replacing the earlier result. Hosted
+sanitizers, source CI, and build-only wheels remain pending.

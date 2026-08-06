@@ -166,6 +166,11 @@ guarantees. See the
 and the earlier pass/failure history in the
 [research proposal](keyed-topk-research.md).
 
+The callback-safety change was then measured with the exact same canonical
+shape. Its [separate revalidation report](https://github.com/bielelias/bielsort/blob/research/stable-topk-0.3/benchmarks/results/2026-08-05-adaptive-keyed-topk-practical-safety.md)
+also passed: 19 of 24 callable cases reached `1.10x`, none fell below `0.90x`,
+and traced peak memory remained at `0.28x–0.43x` of `heapq`.
+
 ## Safety finding from this review
 
 The review tested adversarial user callbacks in addition to the benchmarked
@@ -188,8 +193,8 @@ commit:
 2. benchmark and select a safe large-`k` full-sort crossover;
 3. replace private strategy strings with structured internal diagnostics and
    construct the proposed `TopKInfo` without exporting it;
-4. repeat the affected practical performance and isolated-memory gates after
-   the callback-safety change;
+4. preserve the passing callback-safety performance and isolated-memory
+   revalidation as the reviewed implementation baseline;
 5. pass the complete local suite, warning-clean build, ASan/UBSan, supported
    source-build CI, strict docs, and a non-publishing wheel matrix;
 6. add the complete public runtime, type-stub, documentation, and compatibility
