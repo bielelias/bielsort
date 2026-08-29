@@ -208,6 +208,22 @@ class ArgsortPrototypeTests(unittest.TestCase):
             ["abcd"[index % 4] for index in permutation],
         )
 
+    def test_native_apply_many_supports_complete_permutations(self):
+        values = [5, 1, 5, 2] * 1_000
+        labels = tuple(str(index) for index in range(len(values)))
+        permutation = self.argsort(values)
+
+        ordered_values, ordered_labels = permutation.apply_many(
+            values,
+            labels,
+        )
+
+        self.assertEqual(ordered_values, sorted(values))
+        self.assertEqual(
+            ordered_labels,
+            [labels[index] for index in permutation],
+        )
+
     def test_native_apply_validates_sequence_and_length(self):
         permutation = self.argsort([3, 1, 2] * 1_000)
 

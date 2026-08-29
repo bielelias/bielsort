@@ -1,0 +1,1120 @@
+{
+  "application": [
+    {
+      "batch_iterations": 20000,
+      "case": "topk-10",
+      "fused_speedup_over_repeated": 2.090948491862554,
+      "medians_s": {
+        "fused-native-apply-many": 1.602407e-07,
+        "repeated-native-apply": 3.3505505e-07
+      },
+      "permutation_length": 10,
+      "samples_s": {
+        "fused-native-apply-many": [
+          1.573499e-07,
+          1.601516e-07,
+          1.6087719999999998e-07,
+          1.6270375000000002e-07,
+          1.616391e-07,
+          1.6014169999999998e-07,
+          1.621801e-07,
+          1.6020975000000002e-07,
+          1.602407e-07
+        ],
+        "repeated-native-apply": [
+          3.4191994999999996e-07,
+          3.3505505e-07,
+          3.3885035e-07,
+          3.450409e-07,
+          3.341913e-07,
+          3.3171929999999996e-07,
+          3.3320814999999996e-07,
+          3.3304295000000003e-07,
+          3.3874385e-07
+        ]
+      },
+      "sequence_count": 2,
+      "size": 100000
+    },
+    {
+      "batch_iterations": 16666,
+      "case": "topk-10",
+      "fused_speedup_over_repeated": 1.8789897997465377,
+      "medians_s": {
+        "fused-native-apply-many": 2.0983847353894157e-07,
+        "repeated-native-apply": 3.9428435137405495e-07
+      },
+      "permutation_length": 10,
+      "samples_s": {
+        "fused-native-apply-many": [
+          2.1230421216848673e-07,
+          2.132616704668187e-07,
+          2.0983847353894157e-07,
+          2.0800966038641546e-07,
+          2.1314292571702867e-07,
+          2.0712954518180725e-07,
+          2.0828003120124806e-07,
+          2.088855754230169e-07,
+          2.2131279251170047e-07
+        ],
+        "repeated-native-apply": [
+          3.9840363614544586e-07,
+          4.020397215888635e-07,
+          3.909204968198728e-07,
+          3.9428435137405495e-07,
+          3.905778831153246e-07,
+          3.9067994719788793e-07,
+          3.8946087843513745e-07,
+          4.029843393735749e-07,
+          3.961691467658706e-07
+        ]
+      },
+      "sequence_count": 3,
+      "size": 100000
+    },
+    {
+      "batch_iterations": 10000,
+      "case": "topk-10",
+      "fused_speedup_over_repeated": 1.9459489989086471,
+      "medians_s": {
+        "fused-native-apply-many": 2.824018e-07,
+        "repeated-native-apply": 5.495395e-07
+      },
+      "permutation_length": 10,
+      "samples_s": {
+        "fused-native-apply-many": [
+          2.824018e-07,
+          2.8800099999999996e-07,
+          2.820802e-07,
+          2.7969099999999996e-07,
+          2.893614e-07,
+          2.808977e-07,
+          2.9496080000000003e-07,
+          2.905632e-07,
+          2.804323e-07
+        ],
+        "repeated-native-apply": [
+          5.344867000000001e-07,
+          5.428218e-07,
+          5.528412e-07,
+          5.50616e-07,
+          5.49293e-07,
+          5.495395e-07,
+          5.565721e-07,
+          5.535554e-07,
+          5.476947e-07
+        ]
+      },
+      "sequence_count": 5,
+      "size": 100000
+    },
+    {
+      "batch_iterations": 2500,
+      "case": "topk-100",
+      "fused_speedup_over_repeated": 1.216393661694621,
+      "medians_s": {
+        "fused-native-apply-many": 8.261387999999999e-07,
+        "repeated-native-apply": 1.00491e-06
+      },
+      "permutation_length": 100,
+      "samples_s": {
+        "fused-native-apply-many": [
+          8.297604e-07,
+          8.211052e-07,
+          8.176844e-07,
+          8.256072000000001e-07,
+          8.423588e-07,
+          8.195344e-07,
+          8.328615999999999e-07,
+          8.261387999999999e-07,
+          8.579507999999999e-07
+        ],
+        "repeated-native-apply": [
+          1.0552184e-06,
+          1.0124712e-06,
+          1.0003488e-06,
+          1.0072812e-06,
+          1.00491e-06,
+          9.957088e-07,
+          1.0002112e-06,
+          9.991168e-07,
+          1.0238436e-06
+        ]
+      },
+      "sequence_count": 2,
+      "size": 100000
+    },
+    {
+      "batch_iterations": 1666,
+      "case": "topk-100",
+      "fused_speedup_over_repeated": 1.3423063532702966,
+      "medians_s": {
+        "fused-native-apply-many": 9.74108643457383e-07,
+        "repeated-native-apply": 1.3075522208883553e-06
+      },
+      "permutation_length": 100,
+      "samples_s": {
+        "fused-native-apply-many": [
+          9.910744297719088e-07,
+          9.956434573829532e-07,
+          9.895408163265306e-07,
+          9.468829531812724e-07,
+          9.716002400960385e-07,
+          9.826800720288115e-07,
+          9.74108643457383e-07,
+          9.520216086434573e-07,
+          9.640876350540216e-07
+        ],
+        "repeated-native-apply": [
+          1.3188697478991596e-06,
+          1.4012400960384155e-06,
+          1.306201680672269e-06,
+          1.2647124849939975e-06,
+          1.2897148859543817e-06,
+          1.3137803121248499e-06,
+          1.331250900360144e-06,
+          1.3075522208883553e-06,
+          1.264624849939976e-06
+        ]
+      },
+      "sequence_count": 3,
+      "size": 100000
+    },
+    {
+      "batch_iterations": 1000,
+      "case": "topk-100",
+      "fused_speedup_over_repeated": 1.2466895803069689,
+      "medians_s": {
+        "fused-native-apply-many": 1.585373e-06,
+        "repeated-native-apply": 1.976468e-06
+      },
+      "permutation_length": 100,
+      "samples_s": {
+        "fused-native-apply-many": [
+          1.607136e-06,
+          1.580535e-06,
+          1.5864600000000001e-06,
+          1.59675e-06,
+          1.567812e-06,
+          1.5754200000000001e-06,
+          1.585373e-06,
+          1.563953e-06,
+          1.588725e-06
+        ],
+        "repeated-native-apply": [
+          2.075559e-06,
+          1.974005e-06,
+          2.004957e-06,
+          2.01274e-06,
+          1.976468e-06,
+          1.997987e-06,
+          1.954839e-06,
+          1.97048e-06,
+          1.963566e-06
+        ]
+      },
+      "sequence_count": 5,
+      "size": 100000
+    },
+    {
+      "batch_iterations": 250,
+      "case": "topk-1000",
+      "fused_speedup_over_repeated": 1.0611460455513755,
+      "medians_s": {
+        "fused-native-apply-many": 4.990936e-06,
+        "repeated-native-apply": 5.296112e-06
+      },
+      "permutation_length": 1000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          5.30838e-06,
+          4.981436e-06,
+          4.990936e-06,
+          5.232848e-06,
+          4.951896e-06,
+          5.029728e-06,
+          4.967476e-06,
+          4.9082799999999995e-06,
+          5.104104e-06
+        ],
+        "repeated-native-apply": [
+          5.140436e-06,
+          5.264028e-06,
+          5.296112e-06,
+          5.537296e-06,
+          5.278956e-06,
+          5.833536e-06,
+          5.442348e-06,
+          5.18692e-06,
+          5.404728e-06
+        ]
+      },
+      "sequence_count": 2,
+      "size": 100000
+    },
+    {
+      "batch_iterations": 166,
+      "case": "topk-1000",
+      "fused_speedup_over_repeated": 1.1248661325651426,
+      "medians_s": {
+        "fused-native-apply-many": 6.457566265060241e-06,
+        "repeated-native-apply": 7.263897590361446e-06
+      },
+      "permutation_length": 1000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          2.5958722891566263e-05,
+          6.491120481927711e-06,
+          6.484018072289156e-06,
+          6.389819277108434e-06,
+          6.294969879518072e-06,
+          6.365319277108434e-06,
+          6.369837349397591e-06,
+          6.457566265060241e-06,
+          6.582385542168675e-06
+        ],
+        "repeated-native-apply": [
+          7.296765060240964e-06,
+          7.219903614457831e-06,
+          7.155506024096386e-06,
+          7.2368915662650606e-06,
+          7.231572289156627e-06,
+          7.288048192771084e-06,
+          7.36583734939759e-06,
+          7.263897590361446e-06,
+          7.317102409638555e-06
+        ]
+      },
+      "sequence_count": 3,
+      "size": 100000
+    },
+    {
+      "batch_iterations": 100,
+      "case": "topk-1000",
+      "fused_speedup_over_repeated": 1.1296710322343348,
+      "medians_s": {
+        "fused-native-apply-many": 1.038582e-05,
+        "repeated-native-apply": 1.1732559999999999e-05
+      },
+      "permutation_length": 1000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          1.000749e-05,
+          1.038582e-05,
+          1.06459e-05,
+          1.044209e-05,
+          9.98716e-06,
+          1.0350270000000001e-05,
+          1.055197e-05,
+          1.0001020000000001e-05,
+          1.05839e-05
+        ],
+        "repeated-native-apply": [
+          1.1517809999999999e-05,
+          1.2025440000000001e-05,
+          1.18929e-05,
+          1.1732559999999999e-05,
+          1.184563e-05,
+          1.151481e-05,
+          1.184441e-05,
+          1.149649e-05,
+          1.156684e-05
+        ]
+      },
+      "sequence_count": 5,
+      "size": 100000
+    },
+    {
+      "batch_iterations": 2,
+      "case": "full-random",
+      "fused_speedup_over_repeated": 1.1845055937539892,
+      "medians_s": {
+        "fused-native-apply-many": 0.000838167,
+        "repeated-native-apply": 0.0009928135
+      },
+      "permutation_length": 100000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          0.000909505,
+          0.000818041,
+          0.000818248,
+          0.00079518,
+          0.000838167,
+          0.0008264755,
+          0.0009532455,
+          0.0008432095,
+          0.0011942495
+        ],
+        "repeated-native-apply": [
+          0.000866719,
+          0.0011414765,
+          0.0009928135,
+          0.000923118,
+          0.001373738,
+          0.0008932855,
+          0.001307175,
+          0.000857225,
+          0.0010040465
+        ]
+      },
+      "sequence_count": 2,
+      "size": 100000
+    },
+    {
+      "batch_iterations": 1,
+      "case": "full-random",
+      "fused_speedup_over_repeated": 1.3164175515548941,
+      "medians_s": {
+        "fused-native-apply-many": 0.001688443,
+        "repeated-native-apply": 0.002222696
+      },
+      "permutation_length": 100000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          0.001571807,
+          0.00159269,
+          0.00176573,
+          0.001628433,
+          0.001688443,
+          0.001717552,
+          0.001689214,
+          0.00176978,
+          0.001656768
+        ],
+        "repeated-native-apply": [
+          0.001896774,
+          0.002535628,
+          0.002222696,
+          0.003182382,
+          0.001853832,
+          0.002828655,
+          0.001906158,
+          0.003365005,
+          0.001941516
+        ]
+      },
+      "sequence_count": 3,
+      "size": 100000
+    },
+    {
+      "batch_iterations": 1,
+      "case": "full-random",
+      "fused_speedup_over_repeated": 1.0957650317530137,
+      "medians_s": {
+        "fused-native-apply-many": 0.003946712,
+        "repeated-native-apply": 0.004324669
+      },
+      "permutation_length": 100000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          0.003946712,
+          0.004531418,
+          0.003714868,
+          0.004980721,
+          0.003712014,
+          0.003903461,
+          0.006192453,
+          0.005350958,
+          0.003750137
+        ],
+        "repeated-native-apply": [
+          0.003330852,
+          0.003829308,
+          0.005771354,
+          0.004083849,
+          0.004747444,
+          0.004324669,
+          0.004594974,
+          0.004177995,
+          0.005122691
+        ]
+      },
+      "sequence_count": 5,
+      "size": 100000
+    },
+    {
+      "batch_iterations": 2,
+      "case": "full-identity",
+      "fused_speedup_over_repeated": 1.157377226531924,
+      "medians_s": {
+        "fused-native-apply-many": 0.000785695,
+        "repeated-native-apply": 0.0009093455
+      },
+      "permutation_length": 100000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          0.000815372,
+          0.0009983555,
+          0.0007817325,
+          0.000788354,
+          0.000785695,
+          0.0007787635,
+          0.0007804335,
+          0.000777663,
+          0.0010423895
+        ],
+        "repeated-native-apply": [
+          0.0008364505,
+          0.001055608,
+          0.0008091925,
+          0.0010596055,
+          0.0009093455,
+          0.0008490865,
+          0.00095296,
+          0.000828522,
+          0.0010957155
+        ]
+      },
+      "sequence_count": 2,
+      "size": 100000
+    },
+    {
+      "batch_iterations": 1,
+      "case": "full-identity",
+      "fused_speedup_over_repeated": 1.0215665464959447,
+      "medians_s": {
+        "fused-native-apply-many": 0.001106204,
+        "repeated-native-apply": 0.001130061
+      },
+      "permutation_length": 100000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          0.001033731,
+          0.00103736,
+          0.001276541,
+          0.001106204,
+          0.001197684,
+          0.001381505,
+          0.001077966,
+          0.001124676,
+          0.001030556
+        ],
+        "repeated-native-apply": [
+          0.001836781,
+          0.001114821,
+          0.00154905,
+          0.00109293,
+          0.001171524,
+          0.001104701,
+          0.001130061,
+          0.001583348,
+          0.00111258
+        ]
+      },
+      "sequence_count": 3,
+      "size": 100000
+    },
+    {
+      "batch_iterations": 1,
+      "case": "full-identity",
+      "fused_speedup_over_repeated": 1.1444528895190387,
+      "medians_s": {
+        "fused-native-apply-many": 0.001994588,
+        "repeated-native-apply": 0.002282712
+      },
+      "permutation_length": 100000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          0.002196483,
+          0.001953782,
+          0.001985943,
+          0.001973079,
+          0.00192906,
+          0.002194796,
+          0.001994588,
+          0.00254957,
+          0.002485867
+        ],
+        "repeated-native-apply": [
+          0.002812906,
+          0.002282712,
+          0.002685221,
+          0.002548567,
+          0.002103785,
+          0.002654623,
+          0.002092107,
+          0.002179583,
+          0.002142405
+        ]
+      },
+      "sequence_count": 5,
+      "size": 100000
+    },
+    {
+      "batch_iterations": 20000,
+      "case": "topk-10",
+      "fused_speedup_over_repeated": 2.0505969131698945,
+      "medians_s": {
+        "fused-native-apply-many": 1.6479365000000001e-07,
+        "repeated-native-apply": 3.3792535e-07
+      },
+      "permutation_length": 10,
+      "samples_s": {
+        "fused-native-apply-many": [
+          1.6479365000000001e-07,
+          1.593358e-07,
+          1.6775825e-07,
+          1.618408e-07,
+          1.6650765000000003e-07,
+          1.5954335000000001e-07,
+          1.6783715e-07,
+          1.611113e-07,
+          1.6684615e-07
+        ],
+        "repeated-native-apply": [
+          3.3792535e-07,
+          3.549667e-07,
+          3.32578e-07,
+          3.5589585e-07,
+          3.341401e-07,
+          3.562251e-07,
+          3.368318e-07,
+          3.571897e-07,
+          3.3410225e-07
+        ]
+      },
+      "sequence_count": 2,
+      "size": 1000000
+    },
+    {
+      "batch_iterations": 16666,
+      "case": "topk-10",
+      "fused_speedup_over_repeated": 1.9967825073560512,
+      "medians_s": {
+        "fused-native-apply-many": 1.9719248769950797e-07,
+        "repeated-native-apply": 3.9375051002040083e-07
+      },
+      "permutation_length": 10,
+      "samples_s": {
+        "fused-native-apply-many": [
+          1.9833409336373456e-07,
+          1.9658004320172807e-07,
+          1.9867598703948159e-07,
+          1.9638653546141845e-07,
+          1.9719248769950797e-07,
+          1.9848433937357497e-07,
+          2.0056936277451098e-07,
+          1.9624288971558864e-07,
+          1.9699837993519743e-07
+        ],
+        "repeated-native-apply": [
+          3.95472518900756e-07,
+          3.9095865834633383e-07,
+          4.0402592103684146e-07,
+          3.9377853114124564e-07,
+          3.944080763230529e-07,
+          3.9375051002040083e-07,
+          3.894683787351494e-07,
+          3.92953738149526e-07,
+          3.8954632185287407e-07
+        ]
+      },
+      "sequence_count": 3,
+      "size": 1000000
+    },
+    {
+      "batch_iterations": 10000,
+      "case": "topk-10",
+      "fused_speedup_over_repeated": 1.9899577940612223,
+      "medians_s": {
+        "fused-native-apply-many": 2.6714249999999996e-07,
+        "repeated-native-apply": 5.316023e-07
+      },
+      "permutation_length": 10,
+      "samples_s": {
+        "fused-native-apply-many": [
+          2.68918e-07,
+          2.686396e-07,
+          2.675987e-07,
+          2.6372149999999997e-07,
+          2.6416539999999995e-07,
+          2.654624e-07,
+          2.6714249999999996e-07,
+          2.663427e-07,
+          2.672346e-07
+        ],
+        "repeated-native-apply": [
+          5.604338000000001e-07,
+          5.334364000000001e-07,
+          5.397224e-07,
+          5.258845e-07,
+          5.317871e-07,
+          5.316023e-07,
+          5.306179e-07,
+          5.311146999999999e-07,
+          5.263494e-07
+        ]
+      },
+      "sequence_count": 5,
+      "size": 1000000
+    },
+    {
+      "batch_iterations": 2500,
+      "case": "topk-100",
+      "fused_speedup_over_repeated": 1.203662604941676,
+      "medians_s": {
+        "fused-native-apply-many": 8.224092000000001e-07,
+        "repeated-native-apply": 9.899032e-07
+      },
+      "permutation_length": 100,
+      "samples_s": {
+        "fused-native-apply-many": [
+          8.195656e-07,
+          8.278288e-07,
+          8.181731999999999e-07,
+          8.183768e-07,
+          8.224092000000001e-07,
+          8.211812e-07,
+          8.2337e-07,
+          8.23278e-07,
+          8.23784e-07
+        ],
+        "repeated-native-apply": [
+          1.01106e-06,
+          9.84332e-07,
+          9.926484e-07,
+          9.8532e-07,
+          9.899032e-07,
+          9.973044e-07,
+          9.919468000000001e-07,
+          9.783952e-07,
+          9.871168e-07
+        ]
+      },
+      "sequence_count": 2,
+      "size": 1000000
+    },
+    {
+      "batch_iterations": 1666,
+      "case": "topk-100",
+      "fused_speedup_over_repeated": 1.1231102348164113,
+      "medians_s": {
+        "fused-native-apply-many": 1.178157262905162e-06,
+        "repeated-native-apply": 1.323200480192077e-06
+      },
+      "permutation_length": 100,
+      "samples_s": {
+        "fused-native-apply-many": [
+          1.188908163265306e-06,
+          1.1717785114045618e-06,
+          1.1694519807923168e-06,
+          1.1712274909963984e-06,
+          1.178157262905162e-06,
+          1.1835960384153661e-06,
+          1.1517623049219687e-06,
+          1.1790972388955582e-06,
+          1.1822442977190877e-06
+        ],
+        "repeated-native-apply": [
+          1.323200480192077e-06,
+          1.348467587034814e-06,
+          1.3223643457382953e-06,
+          1.3456092436974792e-06,
+          1.343735294117647e-06,
+          1.313204081632653e-06,
+          1.3204597839135655e-06,
+          1.3036098439375752e-06,
+          1.3339753901560626e-06
+        ]
+      },
+      "sequence_count": 3,
+      "size": 1000000
+    },
+    {
+      "batch_iterations": 1000,
+      "case": "topk-100",
+      "fused_speedup_over_repeated": 1.1150565193710038,
+      "medians_s": {
+        "fused-native-apply-many": 1.758866e-06,
+        "repeated-native-apply": 1.961235e-06
+      },
+      "permutation_length": 100,
+      "samples_s": {
+        "fused-native-apply-many": [
+          1.775065e-06,
+          1.7230820000000002e-06,
+          1.764798e-06,
+          1.760921e-06,
+          1.7285050000000002e-06,
+          1.730039e-06,
+          1.758866e-06,
+          1.751818e-06,
+          1.8223759999999999e-06
+        ],
+        "repeated-native-apply": [
+          1.980102e-06,
+          2.051904e-06,
+          1.934999e-06,
+          1.938391e-06,
+          1.961235e-06,
+          1.933166e-06,
+          1.9125650000000002e-06,
+          2.002985e-06,
+          1.986232e-06
+        ]
+      },
+      "sequence_count": 5,
+      "size": 1000000
+    },
+    {
+      "batch_iterations": 250,
+      "case": "topk-1000",
+      "fused_speedup_over_repeated": 1.0929166319389778,
+      "medians_s": {
+        "fused-native-apply-many": 5.183184e-06,
+        "repeated-native-apply": 5.664787999999999e-06
+      },
+      "permutation_length": 1000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          1.8107656e-05,
+          7.257576e-06,
+          5.183184e-06,
+          5.134676e-06,
+          5.256296e-06,
+          5.1208400000000004e-06,
+          5.1389719999999995e-06,
+          5.278716e-06,
+          5.141104e-06
+        ],
+        "repeated-native-apply": [
+          5.626792000000001e-06,
+          5.7053400000000005e-06,
+          5.769304e-06,
+          5.664787999999999e-06,
+          5.832764e-06,
+          5.6271840000000005e-06,
+          5.650088e-06,
+          5.6021999999999995e-06,
+          5.69408e-06
+        ]
+      },
+      "sequence_count": 2,
+      "size": 1000000
+    },
+    {
+      "batch_iterations": 166,
+      "case": "topk-1000",
+      "fused_speedup_over_repeated": 1.1091142210266678,
+      "medians_s": {
+        "fused-native-apply-many": 6.901963855421687e-06,
+        "repeated-native-apply": 7.65506626506024e-06
+      },
+      "permutation_length": 1000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          7.226475903614458e-06,
+          7.62993373493976e-06,
+          6.901963855421687e-06,
+          6.6610180722891565e-06,
+          7.011421686746988e-06,
+          6.8028975903614455e-06,
+          6.869174698795181e-06,
+          6.734295180722892e-06,
+          6.916259036144579e-06
+        ],
+        "repeated-native-apply": [
+          7.966325301204818e-06,
+          7.645813253012048e-06,
+          7.598891566265061e-06,
+          7.551373493975904e-06,
+          7.65506626506024e-06,
+          7.67612048192771e-06,
+          7.937234939759035e-06,
+          8.259656626506025e-06,
+          7.654319277108434e-06
+        ]
+      },
+      "sequence_count": 3,
+      "size": 1000000
+    },
+    {
+      "batch_iterations": 100,
+      "case": "topk-1000",
+      "fused_speedup_over_repeated": 1.1461393067635333,
+      "medians_s": {
+        "fused-native-apply-many": 1.109982e-05,
+        "repeated-native-apply": 1.272194e-05
+      },
+      "permutation_length": 1000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          1.112235e-05,
+          1.109269e-05,
+          1.11432e-05,
+          1.0940350000000001e-05,
+          1.159427e-05,
+          1.109982e-05,
+          1.1673120000000001e-05,
+          1.09443e-05,
+          1.092961e-05
+        ],
+        "repeated-native-apply": [
+          1.383367e-05,
+          1.3024870000000001e-05,
+          1.273695e-05,
+          1.3827129999999999e-05,
+          1.255003e-05,
+          1.253886e-05,
+          1.2625450000000001e-05,
+          1.272194e-05,
+          1.2485190000000001e-05
+        ]
+      },
+      "sequence_count": 5,
+      "size": 1000000
+    },
+    {
+      "batch_iterations": 1,
+      "case": "full-random",
+      "fused_speedup_over_repeated": 0.9776371793598785,
+      "medians_s": {
+        "fused-native-apply-many": 0.038763357,
+        "repeated-native-apply": 0.037896499
+      },
+      "permutation_length": 1000000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          0.040672879,
+          0.038763357,
+          0.03769778,
+          0.035644187,
+          0.042563786,
+          0.050007633,
+          0.040948134,
+          0.036453074,
+          0.037040838
+        ],
+        "repeated-native-apply": [
+          0.044014868,
+          0.037056548,
+          0.038500431,
+          0.037062826,
+          0.037758316,
+          0.04990075,
+          0.047010411,
+          0.037896499,
+          0.036825619
+        ]
+      },
+      "sequence_count": 2,
+      "size": 1000000
+    },
+    {
+      "batch_iterations": 1,
+      "case": "full-random",
+      "fused_speedup_over_repeated": 1.2225519014300037,
+      "medians_s": {
+        "fused-native-apply-many": 0.043175978,
+        "repeated-native-apply": 0.052784874
+      },
+      "permutation_length": 1000000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          0.043175978,
+          0.056761381,
+          0.041911249,
+          0.043117683,
+          0.047328957,
+          0.047151084,
+          0.041076327,
+          0.040248275,
+          0.049107648
+        ],
+        "repeated-native-apply": [
+          0.045938104,
+          0.103016698,
+          0.064065465,
+          0.0568002,
+          0.098467892,
+          0.048717374,
+          0.045201202,
+          0.044255784,
+          0.052784874
+        ]
+      },
+      "sequence_count": 3,
+      "size": 1000000
+    },
+    {
+      "batch_iterations": 1,
+      "case": "full-random",
+      "fused_speedup_over_repeated": 1.2675703509746874,
+      "medians_s": {
+        "fused-native-apply-many": 0.060104249,
+        "repeated-native-apply": 0.076186364
+      },
+      "permutation_length": 1000000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          0.060773175,
+          0.054699743,
+          0.060104249,
+          0.066274457,
+          0.07447852,
+          0.082722458,
+          0.058692313,
+          0.059570283,
+          0.05748753
+        ],
+        "repeated-native-apply": [
+          0.079048905,
+          0.066408819,
+          0.065154455,
+          0.063521775,
+          0.118910905,
+          0.077983559,
+          0.071324891,
+          0.076186364,
+          0.078087173
+        ]
+      },
+      "sequence_count": 5,
+      "size": 1000000
+    },
+    {
+      "batch_iterations": 1,
+      "case": "full-identity",
+      "fused_speedup_over_repeated": 1.0759632117299018,
+      "medians_s": {
+        "fused-native-apply-many": 0.009627634,
+        "repeated-native-apply": 0.01035898
+      },
+      "permutation_length": 1000000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          0.009533928,
+          0.010751676,
+          0.010106246,
+          0.017534859,
+          0.011673692,
+          0.009627634,
+          0.008579902,
+          0.008630691,
+          0.009546557
+        ],
+        "repeated-native-apply": [
+          0.012633063,
+          0.012880358,
+          0.01115759,
+          0.01035898,
+          0.012156496,
+          0.009695857,
+          0.008700709,
+          0.00876413,
+          0.009008981
+        ]
+      },
+      "sequence_count": 2,
+      "size": 1000000
+    },
+    {
+      "batch_iterations": 1,
+      "case": "full-identity",
+      "fused_speedup_over_repeated": 0.9828889663475728,
+      "medians_s": {
+        "fused-native-apply-many": 0.015162205,
+        "repeated-native-apply": 0.014902764
+      },
+      "permutation_length": 1000000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          0.01418645,
+          0.020771691,
+          0.016366999,
+          0.015554928,
+          0.014811951,
+          0.014743835,
+          0.015162205,
+          0.015173614,
+          0.01371293
+        ],
+        "repeated-native-apply": [
+          0.016555625,
+          0.017007164,
+          0.016264135,
+          0.01480437,
+          0.014902764,
+          0.014873192,
+          0.015056205,
+          0.014869084,
+          0.014213446
+        ]
+      },
+      "sequence_count": 3,
+      "size": 1000000
+    },
+    {
+      "batch_iterations": 1,
+      "case": "full-identity",
+      "fused_speedup_over_repeated": 1.0200871395414624,
+      "medians_s": {
+        "fused-native-apply-many": 0.019163057,
+        "repeated-native-apply": 0.019547988
+      },
+      "permutation_length": 1000000,
+      "samples_s": {
+        "fused-native-apply-many": [
+          0.018968785,
+          0.019108746,
+          0.019163057,
+          0.019551635,
+          0.019567542,
+          0.020113296,
+          0.018930412,
+          0.019332283,
+          0.018922261
+        ],
+        "repeated-native-apply": [
+          0.020842808,
+          0.019547988,
+          0.019425674,
+          0.021144663,
+          0.022996816,
+          0.018602215,
+          0.018971253,
+          0.02131111,
+          0.019134259
+        ]
+      },
+      "sequence_count": 5,
+      "size": 1000000
+    }
+  ],
+  "benchmark": "private-permutation-apply-many",
+  "configuration": {
+    "cases": [
+      "topk-10",
+      "topk-100",
+      "topk-1000",
+      "full-random",
+      "full-identity"
+    ],
+    "max_batch_iterations": 20000,
+    "repetitions": 9,
+    "sequence_counts": [
+      2,
+      3,
+      5
+    ],
+    "sizes": [
+      100000,
+      1000000
+    ],
+    "target_applied_items_per_sample": 500000
+  },
+  "decision_gate": {
+    "canonical_shape_present": true,
+    "cases_at_least_1_05x": 12,
+    "full_cases_at_least_1_10x": 2,
+    "note": "This gate evaluates a private method and does not approve a public API or release.",
+    "passed": false,
+    "regressions_over_5_percent": [],
+    "target_case_count": 15
+  },
+  "environment": {
+    "compiler": "GCC 12.2.0",
+    "platform": "Linux-6.7.0-keepos-x86_64-with-glibc2.36",
+    "python": "3.11.2 (main, Apr  8 2026, 01:58:00) [GCC 12.2.0]"
+  }
+}

@@ -1,0 +1,3296 @@
+{
+  "benchmark": "private-unified-stable-topk-facade",
+  "configuration": {
+    "blocks": 7,
+    "calls_per_block": 1,
+    "denominators": [
+      64,
+      16,
+      8,
+      4,
+      2
+    ],
+    "directions": [
+      "smallest",
+      "largest"
+    ],
+    "domains": [
+      "natural-int64",
+      "natural-string",
+      "keyed-int64",
+      "keyed-huge-int",
+      "keyed-string"
+    ],
+    "full_sort_when": "selected * 8 >= n",
+    "primary_statistic": "median paired block speedup",
+    "size": 200000,
+    "spread_statistic": "unscaled median absolute deviation",
+    "warmups_per_algorithm": 1
+  },
+  "decision_gate": {
+    "canonical_parameters_present": true,
+    "canonical_shape_present": true,
+    "cases_at_or_above_0_95x": 47,
+    "fixed_thresholds": {
+      "minimum_near_parity_cases": 40,
+      "near_parity_target": 0.95,
+      "regression_floor": 0.85
+    },
+    "note": "A pass permits only a separate public API proposal; it does not approve a version, tag, merge, TestPyPI, or PyPI publication.",
+    "passed": true,
+    "regressions_below_0_85x": [],
+    "required_cases_at_or_above_0_95x": 40,
+    "routing_assertions_passed": true,
+    "semantic_probes_passed": true
+  },
+  "environment": {
+    "compiler": "GCC 12.2.0",
+    "platform": "Linux-6.7.0-keepos-x86_64-with-glibc2.36",
+    "python": "3.11.2 (main, Apr  8 2026, 01:58:00) [GCC 12.2.0]"
+  },
+  "provenance": {
+    "benchmark_implementation_commit": "4f046a6",
+    "pre_registered_protocol_commit": "0cc6989"
+  },
+  "semantic_probes": {
+    "passed": true,
+    "probes": [
+      {
+        "cases": [
+          {
+            "algorithm": "native-int64",
+            "calls": 4096,
+            "direction": "smallest",
+            "route": "partial"
+          },
+          {
+            "algorithm": "native-int64",
+            "calls": 4096,
+            "direction": "largest",
+            "route": "partial"
+          },
+          {
+            "algorithm": "native-int64",
+            "calls": 4096,
+            "direction": "smallest",
+            "route": "full"
+          },
+          {
+            "algorithm": "native-int64",
+            "calls": 4096,
+            "direction": "largest",
+            "route": "full"
+          }
+        ],
+        "name": "one-key-call-partial-and-full",
+        "passed": true
+      },
+      {
+        "name": "zero-and-invalid-k-before-consumption",
+        "passed": true,
+        "source_consumptions": 0
+      },
+      {
+        "key_calls": 4096,
+        "name": "natural-order-and-one-shot",
+        "natural_comparisons": 10,
+        "one_shot_iterations": 1,
+        "passed": true
+      },
+      {
+        "name": "exception-propagation",
+        "passed": true,
+        "propagated": [
+          "iterator",
+          "key",
+          "comparison"
+        ]
+      },
+      {
+        "fallback_algorithm": "heapq",
+        "fallback_key_calls": 4096,
+        "name": "pre-key-memory-guard",
+        "passed": true,
+        "raise_key_calls": 0
+      },
+      {
+        "immutable": true,
+        "info": {
+          "algorithm": "timsort",
+          "estimated_native_auxiliary_bytes": null,
+          "key_domain": "signed-int64",
+          "largest": false,
+          "max_native_auxiliary_bytes": null,
+          "native_memory_limit_exceeded": false,
+          "reason": "large k uses CPython Timsort through the adaptive argsort route",
+          "requested_k": 2,
+          "selected": 2,
+          "size": 3,
+          "used_native": false,
+          "worst_case_native_auxiliary_bytes": 96
+        },
+        "name": "immutable-info-and-public-isolation",
+        "passed": true,
+        "public_leaks": []
+      },
+      {
+        "key_calls_before_raise": 1,
+        "name": "callback-resize-safety",
+        "passed": true,
+        "raised": "RuntimeError"
+      }
+    ]
+  },
+  "timing_cases": [
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "smallest",
+      "domain": "natural-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 3125,
+      "k_denominator": 64,
+      "median_absolute_deviations_s": {
+        "baseline": 7.363899931078777e-05,
+        "facade": 0.0002484839969838504
+      },
+      "median_paired_speedup": 1.6443242870878025,
+      "medians_s": {
+        "baseline": 0.007046161001198925,
+        "facade": 0.004450574997463264
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 62500,
+        "key_domain": "signed-int64",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "exact signed-int64 values use compact native selection",
+        "requested_k": 3125,
+        "selected": 3125,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 150000
+      },
+      "paired_speedups": [
+        1.757222832006749,
+        1.6724145189788122,
+        1.42058752498909,
+        1.6443242870878025,
+        1.2937338663283575,
+        2.1008798423573696,
+        1.1862892776318235
+      ],
+      "ratio_of_medians": 1.5832023963679058,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.007820652001100825,
+          0.007027637999271974,
+          0.007046161001198925,
+          0.006972522001888137,
+          0.007094222000887385,
+          0.008865630999935092,
+          0.006586284001969034
+        ],
+        "facade": [
+          0.004450574997463264,
+          0.004202091000479413,
+          0.004960032998496899,
+          0.004240357000526274,
+          0.005483525001181988,
+          0.004219960999762407,
+          0.005552005000936333
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "largest",
+      "domain": "natural-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 3125,
+      "k_denominator": 64,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0004932740012009162,
+        "facade": 0.0006401919963536784
+      },
+      "median_paired_speedup": 1.4907872185072981,
+      "medians_s": {
+        "baseline": 0.007659539998712717,
+        "facade": 0.005229205002251547
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 62500,
+        "key_domain": "signed-int64",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "exact signed-int64 values use compact native selection",
+        "requested_k": 3125,
+        "selected": 3125,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 150000
+      },
+      "paired_speedups": [
+        1.5070667168660923,
+        1.5590924426185746,
+        1.3255199663038268,
+        1.278773317033153,
+        1.4907872185072981,
+        1.8043471672054494,
+        1.3012866574541928
+      ],
+      "ratio_of_medians": 1.464761851068133,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.007659539998712717,
+          0.008152813999913633,
+          0.007858873999794014,
+          0.0069000690018583555,
+          0.006722698999510612,
+          0.008211353000660893,
+          0.0076377680015866645
+        ],
+        "facade": [
+          0.0050824160025513265,
+          0.005229205002251547,
+          0.005928898997808574,
+          0.0053958499993314035,
+          0.004509496000537183,
+          0.004550871999526862,
+          0.005869396998605225
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "smallest",
+      "domain": "natural-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 12500,
+      "k_denominator": 16,
+      "median_absolute_deviations_s": {
+        "baseline": 0.001605992998520378,
+        "facade": 0.0006085890017857309
+      },
+      "median_paired_speedup": 2.553654755129915,
+      "medians_s": {
+        "baseline": 0.022336456000630278,
+        "facade": 0.00876716899801977
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 250000,
+        "key_domain": "signed-int64",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "exact signed-int64 values use compact native selection",
+        "requested_k": 12500,
+        "selected": 12500,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 600000
+      },
+      "paired_speedups": [
+        2.755660824554755,
+        2.187802243320641,
+        2.484556211069473,
+        2.7306001636319523,
+        2.553654755129915,
+        2.480902120729843,
+        2.858833502743534
+      ],
+      "ratio_of_medians": 2.547738729078382,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.022314071000437252,
+          0.01918083200143883,
+          0.022336456000630278,
+          0.022128111999336397,
+          0.023942448999150656,
+          0.025736111998412525,
+          0.024291048001032323
+        ],
+        "facade": [
+          0.008097539001028053,
+          0.00876716899801977,
+          0.008990119000372943,
+          0.00810375400033081,
+          0.0093757579998055,
+          0.010373690998676466,
+          0.008496839000144973
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "largest",
+      "domain": "natural-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 12500,
+      "k_denominator": 16,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0019324099994264543,
+        "facade": 0.0002527030010242015
+      },
+      "median_paired_speedup": 2.5105325325849694,
+      "medians_s": {
+        "baseline": 0.021611765998386545,
+        "facade": 0.009031112000229768
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 250000,
+        "key_domain": "signed-int64",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "exact signed-int64 values use compact native selection",
+        "requested_k": 12500,
+        "selected": 12500,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 600000
+      },
+      "paired_speedups": [
+        2.624931535095316,
+        2.5105325325849694,
+        2.2862478454698048,
+        2.1790623345673725,
+        2.4086652284582386,
+        2.533082336181772,
+        2.6711414428592026
+      ],
+      "ratio_of_medians": 2.393034877414509,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.023727750998659758,
+          0.02061562200105982,
+          0.021611765998386545,
+          0.01967935599896009,
+          0.01941491600155132,
+          0.022604899997531902,
+          0.02479838299768744
+        ],
+        "facade": [
+          0.009039379001478665,
+          0.008211652999307262,
+          0.009452941001654835,
+          0.009031112000229768,
+          0.008060445998125942,
+          0.008923870998842176,
+          0.00928381500125397
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "smallest",
+      "domain": "natural-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 25000,
+      "k_denominator": 8,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0004003869980806485,
+        "facade": 0.0007196330043370835
+      },
+      "median_paired_speedup": 3.7334986459470048,
+      "medians_s": {
+        "baseline": 0.031380945998535026,
+        "facade": 0.008333784997375915
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 10400008,
+        "key_domain": "signed-int64",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses the compact native full-argsort route",
+        "requested_k": 25000,
+        "selected": 25000,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        4.0468676890280655,
+        3.7208409569762995,
+        3.267654616751094,
+        3.4594861292380314,
+        3.8119330561718994,
+        4.276684485407305,
+        3.7334986459470048
+      ],
+      "ratio_of_medians": 3.7655094303987977,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.03077109500009101,
+          0.030980559000454377,
+          0.03141338199930033,
+          0.031320173999120016,
+          0.031380945998535026,
+          0.035640969002997736,
+          0.03496072400230332
+        ],
+        "facade": [
+          0.0076036819991713855,
+          0.008326225000928389,
+          0.009613434001948917,
+          0.009053418001712998,
+          0.008232291998865549,
+          0.008333784997375915,
+          0.009364065001136623
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "largest",
+      "domain": "natural-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 25000,
+      "k_denominator": 8,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0007050610001897439,
+        "facade": 0.000779637000960065
+      },
+      "median_paired_speedup": 3.6420952117683383,
+      "medians_s": {
+        "baseline": 0.03247575199929997,
+        "facade": 0.009109093000006396
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 10400008,
+        "key_domain": "signed-int64",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses the compact native full-argsort route",
+        "requested_k": 25000,
+        "selected": 25000,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        3.761887368636196,
+        3.375577278409996,
+        4.331577046145642,
+        3.675524668836582,
+        2.9782654164966877,
+        2.9222617253765657,
+        3.6420952117683383
+      ],
+      "ratio_of_medians": 3.5652014969302837,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.03281541000251309,
+          0.03164537200063933,
+          0.03247575199929997,
+          0.030615121002483647,
+          0.03177069099911023,
+          0.035284781999507686,
+          0.033176183998875786
+        ],
+        "facade": [
+          0.008723124003154226,
+          0.009374803001264809,
+          0.007497442999010673,
+          0.008329455999046331,
+          0.010667514998203842,
+          0.012074477002897765,
+          0.009109093000006396
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "smallest",
+      "domain": "natural-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 50000,
+      "k_denominator": 4,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0013797770006931387,
+        "facade": 0.0009544919994368684
+      },
+      "median_paired_speedup": 3.052772507827404,
+      "medians_s": {
+        "baseline": 0.03188776900060475,
+        "facade": 0.010250218001601752
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 10400008,
+        "key_domain": "signed-int64",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses the compact native full-argsort route",
+        "requested_k": 50000,
+        "selected": 50000,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        4.154946785821339,
+        3.770678158105151,
+        3.2910740116214003,
+        3.00941228701458,
+        2.8953902443341493,
+        3.052772507827404,
+        2.8930174966625715
+      ],
+      "ratio_of_medians": 3.110935688940645,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.030909583998436574,
+          0.03505119100009324,
+          0.03188776900060475,
+          0.030847131998598343,
+          0.038169226001627976,
+          0.036198018002323806,
+          0.03050799199991161
+        ],
+        "facade": [
+          0.007439224998961436,
+          0.009295726002164884,
+          0.009689168000477366,
+          0.010250218001601752,
+          0.013182756996684475,
+          0.011857424000481842,
+          0.010545388002356049
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "largest",
+      "domain": "natural-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 50000,
+      "k_denominator": 4,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0015458029993169475,
+        "facade": 0.00144729599924176
+      },
+      "median_paired_speedup": 3.3315249531832793,
+      "medians_s": {
+        "baseline": 0.030875108001055196,
+        "facade": 0.00947986300161574
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 10400008,
+        "key_domain": "signed-int64",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses the compact native full-argsort route",
+        "requested_k": 50000,
+        "selected": 50000,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        3.8676175727048423,
+        3.795151168854749,
+        3.3315249531832793,
+        3.5198662339284983,
+        3.142225433148029,
+        2.945110033336016,
+        3.256914999277191
+      ],
+      "ratio_of_medians": 3.256914999277191,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.029123198997695,
+          0.030675352998514427,
+          0.029900049998104805,
+          0.03846213799988618,
+          0.036161431002255995,
+          0.03242091100037214,
+          0.030875108001055196
+        ],
+        "facade": [
+          0.007530009999754839,
+          0.00808277500254917,
+          0.008974884000053862,
+          0.0109271590008575,
+          0.011508223000419093,
+          0.011008386998582864,
+          0.00947986300161574
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "smallest",
+      "domain": "natural-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 100000,
+      "k_denominator": 2,
+      "median_absolute_deviations_s": {
+        "baseline": 0.001860349002527073,
+        "facade": 0.00039149399890447967
+      },
+      "median_paired_speedup": 3.089033009770084,
+      "medians_s": {
+        "baseline": 0.03358692000256269,
+        "facade": 0.010761997000372503
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 10400008,
+        "key_domain": "signed-int64",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses the compact native full-argsort route",
+        "requested_k": 100000,
+        "selected": 100000,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        3.4707492485021163,
+        3.218659596127836,
+        3.089033009770084,
+        2.7418900033687335,
+        3.4991358617988695,
+        3.032316734436161,
+        2.884763284318966
+      ],
+      "ratio_of_medians": 3.120881747263092,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.037352193001424894,
+          0.03337911900234758,
+          0.03358692000256269,
+          0.03172657100003562,
+          0.035540471002605045,
+          0.03542389100039145,
+          0.03034862999993493
+        ],
+        "facade": [
+          0.010761997000372503,
+          0.010370503001468023,
+          0.010872956001549028,
+          0.01157105899983435,
+          0.01015692799774115,
+          0.01168212099946686,
+          0.010520319003262557
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "largest",
+      "domain": "natural-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 100000,
+      "k_denominator": 2,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0029940839995106217,
+        "facade": 0.0009576609991199803
+      },
+      "median_paired_speedup": 3.1365538065016243,
+      "medians_s": {
+        "baseline": 0.03547491900098976,
+        "facade": 0.010388884002168197
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 10400008,
+        "key_domain": "signed-int64",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses the compact native full-argsort route",
+        "requested_k": 100000,
+        "selected": 100000,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        3.7266795003012096,
+        3.3903715180376914,
+        3.1123605184648153,
+        2.6746186781305243,
+        2.754302963689467,
+        3.940072007124564,
+        3.1365538065016243
+      ],
+      "ratio_of_medians": 3.4146996918616104,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.036276537997764535,
+          0.03846900300050038,
+          0.03146441799981403,
+          0.031359904001874384,
+          0.028614133996597957,
+          0.03547491900098976,
+          0.037385277999419486
+        ],
+        "facade": [
+          0.009734278999530943,
+          0.011346545001288177,
+          0.010109503000421682,
+          0.011725000000296859,
+          0.010388884002168197,
+          0.009003621998999733,
+          0.01191922100042575
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "smallest",
+      "domain": "natural-string",
+      "expected_facade_algorithm": "heapq",
+      "k": 3125,
+      "k_denominator": 64,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0007191859986050986,
+        "facade": 0.0005203170003369451
+      },
+      "median_paired_speedup": 1.0439453252730482,
+      "medians_s": {
+        "baseline": 0.010485675000381889,
+        "facade": 0.010631095999997342
+      },
+      "observed_facade_info": {
+        "algorithm": "heapq",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "natural",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "natural values are outside the signed-int64 fast path",
+        "requested_k": 3125,
+        "selected": 3125,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 0
+      },
+      "paired_speedups": [
+        1.0731845171901835,
+        1.2393106752713638,
+        0.9863211657936783,
+        1.0439453252730482,
+        0.8260773865461587,
+        0.8679045777410932,
+        1.108209466289723
+      ],
+      "ratio_of_medians": 0.9863211657936783,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.009818386999540962,
+          0.011439072997745825,
+          0.010485675000381889,
+          0.011596864998864476,
+          0.010373422999691684,
+          0.009638029998313868,
+          0.011204860998986987
+        ],
+        "facade": [
+          0.009148834000370698,
+          0.00923018999674241,
+          0.010631095999997342,
+          0.011108690003311494,
+          0.012557447000290267,
+          0.01110494200111134,
+          0.010110778999660397
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "largest",
+      "domain": "natural-string",
+      "expected_facade_algorithm": "heapq",
+      "k": 3125,
+      "k_denominator": 64,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0011230880008952226,
+        "facade": 0.0003576300005079247
+      },
+      "median_paired_speedup": 0.9457496755056025,
+      "medians_s": {
+        "baseline": 0.010357126000599237,
+        "facade": 0.010473088001162978
+      },
+      "observed_facade_info": {
+        "algorithm": "heapq",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "natural",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "natural values are outside the signed-int64 fast path",
+        "requested_k": 3125,
+        "selected": 3125,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 0
+      },
+      "paired_speedups": [
+        0.7851228656379661,
+        1.1496132383915636,
+        0.9457496755056025,
+        0.8971475218028867,
+        0.7359828568455916,
+        1.0358984853959854,
+        1.2360125462946323
+      ],
+      "ratio_of_medians": 0.9889276209126798,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.00972674900185666,
+          0.011876251999638043,
+          0.010357126000599237,
+          0.009234037999704015,
+          0.009003975999803515,
+          0.010849055997823598,
+          0.012502833000326063
+        ],
+        "facade": [
+          0.012388824001391185,
+          0.010330649998650188,
+          0.010951233998639509,
+          0.010292663999280194,
+          0.012233948000357486,
+          0.010473088001162978,
+          0.010115458000655053
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "smallest",
+      "domain": "natural-string",
+      "expected_facade_algorithm": "heapq",
+      "k": 12500,
+      "k_denominator": 16,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0013010160000703763,
+        "facade": 0.004235708998749033
+      },
+      "median_paired_speedup": 0.9513697926006149,
+      "medians_s": {
+        "baseline": 0.02952722299960442,
+        "facade": 0.03688311200312455
+      },
+      "observed_facade_info": {
+        "algorithm": "heapq",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "natural",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "natural values are outside the signed-int64 fast path",
+        "requested_k": 12500,
+        "selected": 12500,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 0
+      },
+      "paired_speedups": [
+        0.718095078607896,
+        0.8193621243000069,
+        0.761174706201449,
+        0.9611258496549745,
+        1.0607377073848798,
+        0.9513697926006149,
+        0.9885899727464473
+      ],
+      "ratio_of_medians": 0.8005621379536255,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.02952722299960442,
+          0.030220625001675216,
+          0.028226206999534043,
+          0.03584399100145674,
+          0.030267950001871213,
+          0.027555526998185087,
+          0.02741974699893035
+        ],
+        "facade": [
+          0.041118821001873584,
+          0.03688311200312455,
+          0.037082429000292905,
+          0.03729375400143908,
+          0.028534811001009075,
+          0.028964054999960354,
+          0.02773621800224646
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "largest",
+      "domain": "natural-string",
+      "expected_facade_algorithm": "heapq",
+      "k": 12500,
+      "k_denominator": 16,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0022131920013634954,
+        "facade": 0.0010924300004262477
+      },
+      "median_paired_speedup": 1.0094521975657949,
+      "medians_s": {
+        "baseline": 0.029634255002747523,
+        "facade": 0.030599106001318432
+      },
+      "observed_facade_info": {
+        "algorithm": "heapq",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "natural",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "natural values are outside the signed-int64 fast path",
+        "requested_k": 12500,
+        "selected": 12500,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 0
+      },
+      "paired_speedups": [
+        1.0094521975657949,
+        0.896139351267404,
+        0.967028407872453,
+        1.0309421936545424,
+        0.954995642354579,
+        1.1957213570095326,
+        1.4085614544041363
+      ],
+      "ratio_of_medians": 0.9684680003876801,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.03584847399906721,
+          0.027421063001384027,
+          0.028779070999007672,
+          0.029634255002747523,
+          0.028178747001220472,
+          0.04313149999870802,
+          0.044279951998760225
+        ],
+        "facade": [
+          0.03551279999737744,
+          0.030599106001318432,
+          0.02976031599973794,
+          0.0287448269991728,
+          0.029506676000892185,
+          0.03607153100165306,
+          0.03143629400074133
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "smallest",
+      "domain": "natural-string",
+      "expected_facade_algorithm": "timsort",
+      "k": 25000,
+      "k_denominator": 8,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0009200019994750619,
+        "facade": 0.004515179000009084
+      },
+      "median_paired_speedup": 0.9124372125137185,
+      "medians_s": {
+        "baseline": 0.04105998000159161,
+        "facade": 0.04458075300135533
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "natural",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k favors CPython's stable full sort",
+        "requested_k": 25000,
+        "selected": 25000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 0
+      },
+      "paired_speedups": [
+        0.835530695379477,
+        0.6666686604818509,
+        1.0248194622199085,
+        1.068749520661992,
+        0.9124372125137185,
+        0.903791395826854,
+        0.9277378730942851
+      ],
+      "ratio_of_medians": 0.9210248198441896,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.04478522899808013,
+          0.04413635599848931,
+          0.04105998000159161,
+          0.04013997800211655,
+          0.040677138000319246,
+          0.041683508999994956,
+          0.04011179900044226
+        ],
+        "facade": [
+          0.05360093799754395,
+          0.0662043359989184,
+          0.04006557400134625,
+          0.03755789099886897,
+          0.04458075300135533,
+          0.04612071899828152,
+          0.04323613400265458
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "largest",
+      "domain": "natural-string",
+      "expected_facade_algorithm": "timsort",
+      "k": 25000,
+      "k_denominator": 8,
+      "median_absolute_deviations_s": {
+        "baseline": 0.002297814000485232,
+        "facade": 0.0017527349991723895
+      },
+      "median_paired_speedup": 0.9113478913206375,
+      "medians_s": {
+        "baseline": 0.041267582000728,
+        "facade": 0.04598570699818083
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "natural",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k favors CPython's stable full sort",
+        "requested_k": 25000,
+        "selected": 25000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 0
+      },
+      "paired_speedups": [
+        0.9800192481822954,
+        0.889854947091044,
+        0.9906578685290806,
+        0.9089493475353609,
+        0.9113478913206375,
+        0.816318387650845,
+        0.935646027065119
+      ],
+      "ratio_of_medians": 0.8974001857220663,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.0450668779994885,
+          0.041267582000728,
+          0.0414690840007097,
+          0.038555637998797465,
+          0.042153704998781905,
+          0.038969768000242766,
+          0.03773508800077252
+        ],
+        "facade": [
+          0.04598570699818083,
+          0.04637562800053274,
+          0.04186014699735097,
+          0.042417807002493646,
+          0.04625424099867814,
+          0.04773844199735322,
+          0.040330517000256805
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "smallest",
+      "domain": "natural-string",
+      "expected_facade_algorithm": "timsort",
+      "k": 50000,
+      "k_denominator": 4,
+      "median_absolute_deviations_s": {
+        "baseline": 0.005192976001126226,
+        "facade": 0.0033323800016660243
+      },
+      "median_paired_speedup": 1.035084783448871,
+      "medians_s": {
+        "baseline": 0.044596323001314886,
+        "facade": 0.04423273700012942
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "natural",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k favors CPython's stable full sort",
+        "requested_k": 50000,
+        "selected": 50000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 0
+      },
+      "paired_speedups": [
+        1.035084783448871,
+        1.1253649016612013,
+        1.1110417607988559,
+        1.1093462254330182,
+        0.9287043065254263,
+        0.9739662701315992,
+        0.9975433492674276
+      ],
+      "ratio_of_medians": 1.0082198395542288,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.045784632999129826,
+          0.05056948499986902,
+          0.044596323001314886,
+          0.04978929900244111,
+          0.044173928999953205,
+          0.037716948998422595,
+          0.03895398299937369
+        ],
+        "facade": [
+          0.04423273700012942,
+          0.04493607800031896,
+          0.04013919600038207,
+          0.04488165899965679,
+          0.04756511700179544,
+          0.03872510799919837,
+          0.03904991500166943
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "largest",
+      "domain": "natural-string",
+      "expected_facade_algorithm": "timsort",
+      "k": 50000,
+      "k_denominator": 4,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0010642480010574218,
+        "facade": 0.0010609390010358766
+      },
+      "median_paired_speedup": 1.0255877406216798,
+      "medians_s": {
+        "baseline": 0.04074818400113145,
+        "facade": 0.037283792000380345
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "natural",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k favors CPython's stable full sort",
+        "requested_k": 50000,
+        "selected": 50000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 0
+      },
+      "paired_speedups": [
+        1.1455930045701659,
+        1.1410356263015167,
+        0.9839404269481238,
+        0.8530335529602244,
+        1.1201932393885272,
+        0.9975006369065361,
+        1.0255877406216798
+      ],
+      "ratio_of_medians": 1.092919518505944,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.04149664700162248,
+          0.04142788399985875,
+          0.03968393600007403,
+          0.047314457999164006,
+          0.04074818400113145,
+          0.0383560900008888,
+          0.03823779999947874
+        ],
+        "facade": [
+          0.03622285299934447,
+          0.036307266000221716,
+          0.04033164499924169,
+          0.055466115998569876,
+          0.03637603099923581,
+          0.038452196000434924,
+          0.037283792000380345
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "smallest",
+      "domain": "natural-string",
+      "expected_facade_algorithm": "timsort",
+      "k": 100000,
+      "k_denominator": 2,
+      "median_absolute_deviations_s": {
+        "baseline": 0.002756935002253158,
+        "facade": 0.0007183779962360859
+      },
+      "median_paired_speedup": 1.059466304885372,
+      "medians_s": {
+        "baseline": 0.04430337099984172,
+        "facade": 0.04010051300065243
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "natural",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k favors CPython's stable full sort",
+        "requested_k": 100000,
+        "selected": 100000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 0
+      },
+      "paired_speedups": [
+        1.134825343544882,
+        1.1628437129230214,
+        1.059466304885372,
+        1.0360574688137434,
+        0.9906613663532077,
+        1.072740945788065,
+        1.0002615549886684
+      ],
+      "ratio_of_medians": 1.1048080856003242,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.0463223119986651,
+          0.04430337099984172,
+          0.04872891099876142,
+          0.04154643599758856,
+          0.039230837999639334,
+          0.04266624900265015,
+          0.04777681799896527
+        ],
+        "facade": [
+          0.04081889099688851,
+          0.03809916200043517,
+          0.04599382800006424,
+          0.04010051300065243,
+          0.03960065399951418,
+          0.039773115000571124,
+          0.047764325001480756
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "largest",
+      "domain": "natural-string",
+      "expected_facade_algorithm": "timsort",
+      "k": 100000,
+      "k_denominator": 2,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0011335339986544568,
+        "facade": 0.002466998997988412
+      },
+      "median_paired_speedup": 0.9842999921050662,
+      "medians_s": {
+        "baseline": 0.04147612299857428,
+        "facade": 0.04562104599972372
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "natural",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k favors CPython's stable full sort",
+        "requested_k": 100000,
+        "selected": 100000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 0
+      },
+      "paired_speedups": [
+        1.133238130184087,
+        1.0144029977532223,
+        1.1021044492090328,
+        0.8988536680327651,
+        0.8499944957012541,
+        0.8663611526920105,
+        0.9842999921050662
+      ],
+      "ratio_of_medians": 0.9091444987654483,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.042573532002279535,
+          0.04878065700177103,
+          0.04260965699722874,
+          0.04147612299857428,
+          0.03981073999966611,
+          0.039524301999335876,
+          0.040592762001324445
+        ],
+        "facade": [
+          0.037568036997981835,
+          0.04808804499771213,
+          0.038662086000840645,
+          0.04614335400037817,
+          0.0468364680018567,
+          0.04562104599972372,
+          0.04124023400072474
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "smallest",
+      "domain": "keyed-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 3125,
+      "k_denominator": 64,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0006401280006684829,
+        "facade": 0.00043310399632900953
+      },
+      "median_paired_speedup": 2.6975265621756632,
+      "medians_s": {
+        "baseline": 0.01182284999958938,
+        "facade": 0.0047520289990643505
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 75000,
+        "key_domain": "signed-int64",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "explicit key returned exact signed-int64 integers",
+        "requested_k": 3125,
+        "selected": 3125,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 150000
+      },
+      "paired_speedups": [
+        1.9886339253972585,
+        1.7810736689017672,
+        2.8393545165631275,
+        2.7374520261642687,
+        2.760594775290416,
+        2.6975265621756632,
+        1.902779065999067
+      ],
+      "ratio_of_medians": 2.4879583020047304,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.010966633999487385,
+          0.011152491999382619,
+          0.013492695001332322,
+          0.01182284999958938,
+          0.01193790500110481,
+          0.011855782999191433,
+          0.011182721998920897
+        ],
+        "facade": [
+          0.005514657001185697,
+          0.006261668000661302,
+          0.0047520289990643505,
+          0.004318925002735341,
+          0.004324395998992259,
+          0.0043950569997832645,
+          0.005877046998648439
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "largest",
+      "domain": "keyed-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 3125,
+      "k_denominator": 64,
+      "median_absolute_deviations_s": {
+        "baseline": 0.00034019599843304604,
+        "facade": 0.0004013090001535602
+      },
+      "median_paired_speedup": 2.349995536968943,
+      "medians_s": {
+        "baseline": 0.012532403998193331,
+        "facade": 0.005332947999704629
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 75000,
+        "key_domain": "signed-int64",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "explicit key returned exact signed-int64 integers",
+        "requested_k": 3125,
+        "selected": 3125,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 150000
+      },
+      "paired_speedups": [
+        1.9686951988201904,
+        2.422714204559443,
+        2.422259392200144,
+        2.0139384232434576,
+        2.349995536968943,
+        3.054968135604589,
+        1.8970048317897137
+      ],
+      "ratio_of_medians": 2.349995536968943,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.012579227997775888,
+          0.01268840600096155,
+          0.012116763999074465,
+          0.012192207999760285,
+          0.012532403998193331,
+          0.01506599999993341,
+          0.01174284499938949
+        ],
+        "facade": [
+          0.0063896270003169775,
+          0.005237269000645028,
+          0.005002256999432575,
+          0.006053912999050226,
+          0.005332947999704629,
+          0.004931638999551069,
+          0.006190202999277972
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "smallest",
+      "domain": "keyed-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 12500,
+      "k_denominator": 16,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0017643949977355078,
+        "facade": 0.0005015129972889554
+      },
+      "median_paired_speedup": 3.497925204608357,
+      "medians_s": {
+        "baseline": 0.03678701299941167,
+        "facade": 0.010649463001755066
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 300000,
+        "key_domain": "signed-int64",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "explicit key returned exact signed-int64 integers",
+        "requested_k": 12500,
+        "selected": 12500,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 600000
+      },
+      "paired_speedups": [
+        3.7943959231266224,
+        3.0363642184990294,
+        3.393176350810724,
+        3.6680761868043597,
+        3.3278527005429774,
+        4.217259216924325,
+        3.497925204608357
+      ],
+      "ratio_of_medians": 3.45435380106481,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.040408278997347225,
+          0.03678701299941167,
+          0.03662442200220539,
+          0.03570434199718875,
+          0.035022618001676165,
+          0.04194066399941221,
+          0.039005280003038934
+        ],
+        "facade": [
+          0.010649463001755066,
+          0.012115481000364525,
+          0.010793551002279855,
+          0.009733806000440381,
+          0.01052408900068258,
+          0.009945005000190577,
+          0.011150975999044022
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "largest",
+      "domain": "keyed-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 12500,
+      "k_denominator": 16,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0004889269985142164,
+        "facade": 0.0003802979990723543
+      },
+      "median_paired_speedup": 3.532331056942265,
+      "medians_s": {
+        "baseline": 0.03646158599804039,
+        "facade": 0.010314122002455406
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 300000,
+        "key_domain": "signed-int64",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "explicit key returned exact signed-int64 integers",
+        "requested_k": 12500,
+        "selected": 12500,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 600000
+      },
+      "paired_speedups": [
+        3.541486419247144,
+        3.532331056942265,
+        2.21643878066536,
+        3.3620057773049172,
+        3.3971544967754985,
+        3.6568215122589245,
+        3.5521987472777785
+      ],
+      "ratio_of_medians": 3.5351129247220707,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.03652732299815398,
+          0.035972658999526175,
+          0.03646158599804039,
+          0.038281193003058434,
+          0.036330596998595865,
+          0.03762238900162629,
+          0.035161996998795075
+        ],
+        "facade": [
+          0.010314122002455406,
+          0.010183830003370531,
+          0.016450526996777626,
+          0.011386414997105021,
+          0.01069442000152776,
+          0.010288276000210317,
+          0.009898657001031097
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "smallest",
+      "domain": "keyed-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 25000,
+      "k_denominator": 8,
+      "median_absolute_deviations_s": {
+        "baseline": 0.001866268998128362,
+        "facade": 0.0006579789987881668
+      },
+      "median_paired_speedup": 3.768559123800762,
+      "medians_s": {
+        "baseline": 0.04824110299887252,
+        "facade": 0.013458919998811325
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 4800008,
+        "key_domain": "signed-int64",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses adaptive native signed-int64 sorting",
+        "requested_k": 25000,
+        "selected": 25000,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        3.16538783880306,
+        3.768559123800762,
+        4.255687554131014,
+        3.7701157176832716,
+        4.224327384849919,
+        3.4456578986159307,
+        3.6479275248990843
+      ],
+      "ratio_of_medians": 3.5843219963513504,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.04965758199978154,
+          0.04824110299887252,
+          0.05785585099874879,
+          0.046620085999165894,
+          0.057000272998266155,
+          0.04637483400074416,
+          0.04610472600325011
+        ],
+        "facade": [
+          0.015687677001551492,
+          0.012800941000023158,
+          0.013594947999081342,
+          0.012365691000013612,
+          0.013493336999090388,
+          0.013458919998811325,
+          0.01263860800099792
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "largest",
+      "domain": "keyed-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 25000,
+      "k_denominator": 8,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0016682009991200175,
+        "facade": 0.00021122099860804155
+      },
+      "median_paired_speedup": 3.7610293545415305,
+      "medians_s": {
+        "baseline": 0.0486266580010124,
+        "facade": 0.012667873001191765
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 4800008,
+        "key_domain": "signed-int64",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses adaptive native signed-int64 sorting",
+        "requested_k": 25000,
+        "selected": 25000,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        3.160763003033616,
+        3.697649292545915,
+        3.838581109586251,
+        3.7610293545415305,
+        3.6774927151956733,
+        4.037590436796372,
+        3.9508099168888187
+      ],
+      "ratio_of_medians": 3.838581109586251,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.04453535300126532,
+          0.049802407000242965,
+          0.0486266580010124,
+          0.047200184999383055,
+          0.04593301299973973,
+          0.05029485900013242,
+          0.052030207003554096
+        ],
+        "facade": [
+          0.014090063999901759,
+          0.013468666998960543,
+          0.012667873001191765,
+          0.01254980500016245,
+          0.012490306999097811,
+          0.012456652002583724,
+          0.013169503999961307
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "smallest",
+      "domain": "keyed-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 50000,
+      "k_denominator": 4,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0015920469995762687,
+        "facade": 0.0012428699992597103
+      },
+      "median_paired_speedup": 3.972582930333371,
+      "medians_s": {
+        "baseline": 0.049628296997980215,
+        "facade": 0.012580665999848861
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 4800008,
+        "key_domain": "signed-int64",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses adaptive native signed-int64 sorting",
+        "requested_k": 50000,
+        "selected": 50000,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        4.130299333243167,
+        4.578277309077654,
+        3.705299714983163,
+        3.7354998473592005,
+        3.972582930333371,
+        4.021487481457846,
+        3.6886173943119376
+      ],
+      "ratio_of_medians": 3.9448068169504245,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.04643878099886933,
+          0.0489167549967533,
+          0.05122034399755648,
+          0.049628296997980215,
+          0.049977739003225,
+          0.04734981399815297,
+          0.051786863998131594
+        ],
+        "facade": [
+          0.011243442000704817,
+          0.010684533001040109,
+          0.013823535999108572,
+          0.013285583998367656,
+          0.012580665999848861,
+          0.011774204001994804,
+          0.014039640998817049
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "largest",
+      "domain": "keyed-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 50000,
+      "k_denominator": 4,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0008771469983912539,
+        "facade": 0.0008065649999480229
+      },
+      "median_paired_speedup": 3.888121154600951,
+      "medians_s": {
+        "baseline": 0.04874368599848822,
+        "facade": 0.012484487000619993
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 4800008,
+        "key_domain": "signed-int64",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses adaptive native signed-int64 sorting",
+        "requested_k": 50000,
+        "selected": 50000,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        3.888121154600951,
+        3.7846251912052784,
+        3.6974270359378716,
+        3.948503937896914,
+        4.259364048582973,
+        4.034338342278453,
+        2.5341262875422976
+      ],
+      "ratio_of_medians": 3.904340322198866,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.047866539000096964,
+          0.04724910400182125,
+          0.049142695002956316,
+          0.050299123002332635,
+          0.04937986799995997,
+          0.04679153899996891,
+          0.04874368599848822
+        ],
+        "facade": [
+          0.012310968999372562,
+          0.012484487000619993,
+          0.013291052000568016,
+          0.012738780002109706,
+          0.011593249000725336,
+          0.011598317996686092,
+          0.019234907998907147
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "smallest",
+      "domain": "keyed-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 100000,
+      "k_denominator": 2,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0025278739994973876,
+        "facade": 0.001420682998286793
+      },
+      "median_paired_speedup": 4.451411573515269,
+      "medians_s": {
+        "baseline": 0.04782042900114902,
+        "facade": 0.01131492700005765
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 4800008,
+        "key_domain": "signed-int64",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses adaptive native signed-int64 sorting",
+        "requested_k": 100000,
+        "selected": 100000,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        5.740813091866197,
+        4.57766707527581,
+        4.451411573515269,
+        3.671725289387918,
+        3.7026043689439834,
+        4.597082658876618,
+        3.9806948473415633
+      ],
+      "ratio_of_medians": 4.226313523799612,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.059312748999218456,
+          0.045292555001651635,
+          0.05036739700153703,
+          0.04782042900114902,
+          0.04765689100167947,
+          0.046667325997987064,
+          0.05168511500232853
+        ],
+        "facade": [
+          0.01033176800046931,
+          0.009894244001770858,
+          0.01131492700005765,
+          0.013023966999753611,
+          0.012871180999354692,
+          0.0101515090027533,
+          0.012983943001017906
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "largest",
+      "domain": "keyed-int64",
+      "expected_facade_algorithm": "native-int64",
+      "k": 100000,
+      "k_denominator": 2,
+      "median_absolute_deviations_s": {
+        "baseline": 0.001002015997073613,
+        "facade": 0.0004164469974057283
+      },
+      "median_paired_speedup": 4.215803756928977,
+      "medians_s": {
+        "baseline": 0.048991634997946676,
+        "facade": 0.011730687998351641
+      },
+      "observed_facade_info": {
+        "algorithm": "native-int64",
+        "estimated_native_auxiliary_bytes": 4800008,
+        "key_domain": "signed-int64",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses adaptive native signed-int64 sorting",
+        "requested_k": 100000,
+        "selected": 100000,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        4.299196899737659,
+        4.12698974678466,
+        4.215803756928977,
+        4.011102580137443,
+        4.233509963024097,
+        4.226042411797378,
+        3.9291931737769255
+      ],
+      "ratio_of_medians": 4.176365018388591,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.04817975400146679,
+          0.04798961900087306,
+          0.050883376999991015,
+          0.048991634997946676,
+          0.04789895200156025,
+          0.04957438500059652,
+          0.051725616001931485
+        ],
+        "facade": [
+          0.011206686998775695,
+          0.011628238000412239,
+          0.01206967400139547,
+          0.012214007001603022,
+          0.011314241000945913,
+          0.011730687998351641,
+          0.013164437001250917
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "smallest",
+      "domain": "keyed-huge-int",
+      "expected_facade_algorithm": "native-generic",
+      "k": 3125,
+      "k_denominator": 64,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0002145830003428273,
+        "facade": 0.0004576439969241619
+      },
+      "median_paired_speedup": 1.307330770448651,
+      "medians_s": {
+        "baseline": 0.015175971999269677,
+        "facade": 0.011642394001682987
+      },
+      "observed_facade_info": {
+        "algorithm": "native-generic",
+        "estimated_native_auxiliary_bytes": 150000,
+        "key_domain": "python",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "explicit key requires stable Python comparisons",
+        "requested_k": 3125,
+        "selected": 3125,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 150000
+      },
+      "paired_speedups": [
+        1.1359726430352395,
+        1.307330770448651,
+        1.356483973778017,
+        1.3219407449522578,
+        1.4138846230780382,
+        1.2466341159050847,
+        1.2651457588795871
+      ],
+      "ratio_of_medians": 1.3035095700313772,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.015175971999269677,
+          0.01581875199917704,
+          0.014887941997585585,
+          0.015390554999612505,
+          0.015353646002040477,
+          0.014471602000412531,
+          0.015087788000528235
+        ],
+        "facade": [
+          0.013359452001168393,
+          0.01210003799860715,
+          0.010975391000101808,
+          0.011642394001682987,
+          0.010859193000214873,
+          0.011608540000452194,
+          0.011925731003429973
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "largest",
+      "domain": "keyed-huge-int",
+      "expected_facade_algorithm": "native-generic",
+      "k": 3125,
+      "k_denominator": 64,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0004251180034771096,
+        "facade": 0.0005686139957106207
+      },
+      "median_paired_speedup": 1.2627138152105903,
+      "medians_s": {
+        "baseline": 0.014678782001283253,
+        "facade": 0.011482974001410184
+      },
+      "observed_facade_info": {
+        "algorithm": "native-generic",
+        "estimated_native_auxiliary_bytes": 150000,
+        "key_domain": "python",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "explicit key requires stable Python comparisons",
+        "requested_k": 3125,
+        "selected": 3125,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 150000
+      },
+      "paired_speedups": [
+        1.4241269838029489,
+        1.2627138152105903,
+        1.3679296026615104,
+        1.182720816643535,
+        1.2342604796169858,
+        1.381087217772256,
+        1.2110075279647192
+      ],
+      "ratio_of_medians": 1.2783083894016134,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.01597867199961911,
+          0.014774508003029041,
+          0.014678782001283253,
+          0.014253663997806143,
+          0.014172980998409912,
+          0.014074414000788238,
+          0.014941710000130115
+        ],
+        "facade": [
+          0.011219976997381309,
+          0.011700598999595968,
+          0.010730656002124306,
+          0.012051587997120805,
+          0.011482974001410184,
+          0.010190821998548927,
+          0.012338247001025593
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "smallest",
+      "domain": "keyed-huge-int",
+      "expected_facade_algorithm": "native-generic",
+      "k": 12500,
+      "k_denominator": 16,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0014543889956257772,
+        "facade": 0.0003584529986255802
+      },
+      "median_paired_speedup": 1.5949122304520942,
+      "medians_s": {
+        "baseline": 0.041928342998289736,
+        "facade": 0.026647261998732574
+      },
+      "observed_facade_info": {
+        "algorithm": "native-generic",
+        "estimated_native_auxiliary_bytes": 600000,
+        "key_domain": "python",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "explicit key requires stable Python comparisons",
+        "requested_k": 12500,
+        "selected": 12500,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 600000
+      },
+      "paired_speedups": [
+        1.6726170662982291,
+        1.5949122304520942,
+        1.5029424482457299,
+        1.9637913620053018,
+        1.6704584438817198,
+        1.49295297203689,
+        1.474631116973465
+      ],
+      "ratio_of_medians": 1.5734578284359562,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.04303930899914121,
+          0.041928342998289736,
+          0.04047851599898422,
+          0.0524698580011318,
+          0.04372655500264955,
+          0.03978310899765347,
+          0.04047395400266396
+        ],
+        "facade": [
+          0.025731716999871423,
+          0.026288809000106994,
+          0.02693284499764559,
+          0.026718651999544818,
+          0.026176380000833888,
+          0.026647261998732574,
+          0.02744683299897588
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "largest",
+      "domain": "keyed-huge-int",
+      "expected_facade_algorithm": "native-generic",
+      "k": 12500,
+      "k_denominator": 16,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0009050290027516894,
+        "facade": 0.0006098339945310727
+      },
+      "median_paired_speedup": 1.6058049690648601,
+      "medians_s": {
+        "baseline": 0.04010051799923531,
+        "facade": 0.025069015002372907
+      },
+      "observed_facade_info": {
+        "algorithm": "native-generic",
+        "estimated_native_auxiliary_bytes": 600000,
+        "key_domain": "python",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "explicit key requires stable Python comparisons",
+        "requested_k": 12500,
+        "selected": 12500,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 600000
+      },
+      "paired_speedups": [
+        1.6471416042368747,
+        1.5263725021791008,
+        1.5103827401308227,
+        1.6990634744992004,
+        1.6058049690648601,
+        1.593806298160891,
+        1.6696362908348674
+      ],
+      "ratio_of_medians": 1.5996048506668328,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.040542134000133956,
+          0.03919548899648362,
+          0.0366412629991828,
+          0.043195131001994014,
+          0.04175137399943196,
+          0.039955153999471804,
+          0.04010051799923531
+        ],
+        "facade": [
+          0.024613629997475073,
+          0.02567884899690398,
+          0.024259588000859367,
+          0.025422906001040246,
+          0.02600027699736529,
+          0.025069015002372907,
+          0.02401751700017485
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "smallest",
+      "domain": "keyed-huge-int",
+      "expected_facade_algorithm": "timsort",
+      "k": 25000,
+      "k_denominator": 8,
+      "median_absolute_deviations_s": {
+        "baseline": 0.002255225001135841,
+        "facade": 0.0006151729976409115
+      },
+      "median_paired_speedup": 1.000467918454021,
+      "medians_s": {
+        "baseline": 0.05917095900076674,
+        "facade": 0.05735594799989485
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "python",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses cached-key CPython Timsort",
+        "requested_k": 25000,
+        "selected": 25000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        1.0394592503615707,
+        0.9858950110323025,
+        1.000467918454021,
+        0.9595158993019545,
+        0.9884201521897108,
+        1.0289858656151176,
+        1.0343581279376843
+      ],
+      "ratio_of_medians": 1.0316446866308482,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.05917095900076674,
+          0.05594044699682854,
+          0.061426184001902584,
+          0.05519278900101199,
+          0.05405107499973383,
+          0.06020503999752691,
+          0.05932659099926241
+        ],
+        "facade": [
+          0.05692475099931471,
+          0.05674077500225394,
+          0.0613974549996783,
+          0.05752149499676307,
+          0.05468431099870941,
+          0.0585091030006879,
+          0.05735594799989485
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "largest",
+      "domain": "keyed-huge-int",
+      "expected_facade_algorithm": "timsort",
+      "k": 25000,
+      "k_denominator": 8,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0009439770001336001,
+        "facade": 0.0029556549998233095
+      },
+      "median_paired_speedup": 0.9816881238058879,
+      "medians_s": {
+        "baseline": 0.059892923000006704,
+        "facade": 0.06071983999936492
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "python",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses cached-key CPython Timsort",
+        "requested_k": 25000,
+        "selected": 25000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        0.9626205626389958,
+        1.0205103040983075,
+        0.9354852641839734,
+        0.6377544737906221,
+        1.0561621119086129,
+        1.004469412295639,
+        0.9816881238058879
+      ],
+      "ratio_of_medians": 0.9863814364569,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.058430453998880694,
+          0.058948945999873104,
+          0.06554490600319696,
+          0.059157443000003695,
+          0.060210447998542804,
+          0.06099122199884732,
+          0.059892923000006704
+        ],
+        "facade": [
+          0.06069936199855874,
+          0.05776418499954161,
+          0.07006514000022435,
+          0.09275896200051648,
+          0.057008717998542124,
+          0.06071983999936492,
+          0.061010133002127986
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "smallest",
+      "domain": "keyed-huge-int",
+      "expected_facade_algorithm": "timsort",
+      "k": 50000,
+      "k_denominator": 4,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0006630550014961045,
+        "facade": 0.0020272540023142938
+      },
+      "median_paired_speedup": 1.003998377847856,
+      "medians_s": {
+        "baseline": 0.059143214999494376,
+        "facade": 0.05910686499919393
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "python",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses cached-key CPython Timsort",
+        "requested_k": 50000,
+        "selected": 50000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        1.0118328894927195,
+        0.9141022053185723,
+        0.9621010363074203,
+        1.003998377847856,
+        1.0938610260149697,
+        1.0010202488959214,
+        1.0572564599379122
+      ],
+      "ratio_of_medians": 1.0006149877903512,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.05980627000099048,
+          0.05588283299948671,
+          0.05945855599929928,
+          0.05796525699770427,
+          0.058901057000184665,
+          0.06001614799970412,
+          0.059143214999494376
+        ],
+        "facade": [
+          0.05910686499919393,
+          0.061134119001508225,
+          0.061800740000762744,
+          0.057734412999707274,
+          0.053846928996790666,
+          0.059954978998575825,
+          0.055940272999578156
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "largest",
+      "domain": "keyed-huge-int",
+      "expected_facade_algorithm": "timsort",
+      "k": 50000,
+      "k_denominator": 4,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0016774729956523515,
+        "facade": 0.0013223310015746392
+      },
+      "median_paired_speedup": 1.0111706349676863,
+      "medians_s": {
+        "baseline": 0.0568209079974622,
+        "facade": 0.056008717001532204
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "python",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses cached-key CPython Timsort",
+        "requested_k": 50000,
+        "selected": 50000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        1.3273267237276616,
+        1.0083576377099164,
+        0.993544097833128,
+        0.9902147473045914,
+        1.0510087775299872,
+        1.0111706349676863,
+        1.014501153381317
+      ],
+      "ratio_of_medians": 1.014501153381317,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.0740088909988117,
+          0.05514343500180985,
+          0.058987034997699084,
+          0.0563271410028392,
+          0.055185444001836004,
+          0.05916161600180203,
+          0.0568209079974622
+        ],
+        "facade": [
+          0.05575785499968333,
+          0.054686385999957565,
+          0.059370324001065455,
+          0.056883762998040766,
+          0.052507119999063434,
+          0.05850804399960907,
+          0.056008717001532204
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "smallest",
+      "domain": "keyed-huge-int",
+      "expected_facade_algorithm": "timsort",
+      "k": 100000,
+      "k_denominator": 2,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0023430549990735017,
+        "facade": 0.0027816789988719393
+      },
+      "median_paired_speedup": 1.0079936905034752,
+      "medians_s": {
+        "baseline": 0.0580921569999191,
+        "facade": 0.056186953999713296
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "python",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses cached-key CPython Timsort",
+        "requested_k": 100000,
+        "selected": 100000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        1.0694819655663788,
+        1.0079936905034752,
+        0.9197443814375099,
+        0.9499172561907108,
+        0.7601754123158688,
+        1.0877606565831541,
+        1.0093261029248557
+      ],
+      "ratio_of_medians": 1.033908280563056,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.06009093400280108,
+          0.055749102000845596,
+          0.060465126000053715,
+          0.0672465879979427,
+          0.05525210999985575,
+          0.0580921569999191,
+          0.0559693610011891
+        ],
+        "facade": [
+          0.056186953999713296,
+          0.05530699500013725,
+          0.06574122899837676,
+          0.07079204800174921,
+          0.07268336900233408,
+          0.05340527500084136,
+          0.055452208001952386
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "largest",
+      "domain": "keyed-huge-int",
+      "expected_facade_algorithm": "timsort",
+      "k": 100000,
+      "k_denominator": 2,
+      "median_absolute_deviations_s": {
+        "baseline": 0.002603617002023384,
+        "facade": 0.000929718000406865
+      },
+      "median_paired_speedup": 1.0723476855100498,
+      "medians_s": {
+        "baseline": 0.06028646100094193,
+        "facade": 0.055980090000957716
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "python",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses cached-key CPython Timsort",
+        "requested_k": 100000,
+        "selected": 100000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        1.2640907694013692,
+        0.9542023321127215,
+        1.0257325432588285,
+        1.1071600099309773,
+        1.0723476855100498,
+        1.034109358690797,
+        1.0942987681254535
+      ],
+      "ratio_of_medians": 1.0769268323775567,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.08431013799781795,
+          0.06361295000169775,
+          0.05768284399891854,
+          0.06197891700139735,
+          0.05903313900125795,
+          0.05669323899928713,
+          0.06028646100094193
+        ],
+        "facade": [
+          0.06669626900111325,
+          0.06666610200045398,
+          0.056235755000670906,
+          0.055980090000957716,
+          0.05505037200055085,
+          0.05482325299817603,
+          0.05509140899812337
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "smallest",
+      "domain": "keyed-string",
+      "expected_facade_algorithm": "native-generic",
+      "k": 3125,
+      "k_denominator": 64,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0010772700006782543,
+        "facade": 0.00041554600102244876
+      },
+      "median_paired_speedup": 1.1147218690193417,
+      "medians_s": {
+        "baseline": 0.018320762002986157,
+        "facade": 0.016458317997603444
+      },
+      "observed_facade_info": {
+        "algorithm": "native-generic",
+        "estimated_native_auxiliary_bytes": 150000,
+        "key_domain": "python",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "explicit key requires stable Python comparisons",
+        "requested_k": 3125,
+        "selected": 3125,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 150000
+      },
+      "paired_speedups": [
+        1.141749396607567,
+        1.1147218690193417,
+        1.05734047457385,
+        1.1105433431656124,
+        1.054876583260588,
+        1.1556221297639384,
+        1.1776653949535631
+      ],
+      "ratio_of_medians": 1.113161260200095,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.018320762002986157,
+          0.01834644699920318,
+          0.016859407001902582,
+          0.017243492002307903,
+          0.017799844001274323,
+          0.019790096001088386,
+          0.01939905199833447
+        ],
+        "facade": [
+          0.01604622000013478,
+          0.016458317997603444,
+          0.015945106999424752,
+          0.015527077001024736,
+          0.016873863998625893,
+          0.0171250580024207,
+          0.016472464998514624
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "largest",
+      "domain": "keyed-string",
+      "expected_facade_algorithm": "native-generic",
+      "k": 3125,
+      "k_denominator": 64,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0008247009973274544,
+        "facade": 0.0007336689996009227
+      },
+      "median_paired_speedup": 1.1082887798170225,
+      "medians_s": {
+        "baseline": 0.017667299001914216,
+        "facade": 0.015951512999890838
+      },
+      "observed_facade_info": {
+        "algorithm": "native-generic",
+        "estimated_native_auxiliary_bytes": 150000,
+        "key_domain": "python",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "explicit key requires stable Python comparisons",
+        "requested_k": 3125,
+        "selected": 3125,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 150000
+      },
+      "paired_speedups": [
+        1.1072920166611033,
+        1.1250276697366408,
+        1.088809084207799,
+        1.2968775304234315,
+        1.1082887798170225,
+        1.1692554730147462,
+        1.0986337797008539
+      ],
+      "ratio_of_medians": 1.1075625868239032,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.01766298299844493,
+          0.017000498999550473,
+          0.01672834300188697,
+          0.01957944899913855,
+          0.01849199999924167,
+          0.019791058999544475,
+          0.017667299001914216
+        ],
+        "facade": [
+          0.015951512999890838,
+          0.015111183001863537,
+          0.015363890001026448,
+          0.015097376999619883,
+          0.01668518199949176,
+          0.016926205997151555,
+          0.016081154000858078
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "smallest",
+      "domain": "keyed-string",
+      "expected_facade_algorithm": "native-generic",
+      "k": 12500,
+      "k_denominator": 16,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0010411980001663323,
+        "facade": 0.0030290200011222623
+      },
+      "median_paired_speedup": 1.3695685202323034,
+      "medians_s": {
+        "baseline": 0.0559428279993881,
+        "facade": 0.04107846899933065
+      },
+      "observed_facade_info": {
+        "algorithm": "native-generic",
+        "estimated_native_auxiliary_bytes": 600000,
+        "key_domain": "python",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "explicit key requires stable Python comparisons",
+        "requested_k": 12500,
+        "selected": 12500,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 600000
+      },
+      "paired_speedups": [
+        0.8935807235662783,
+        1.1914992239618687,
+        1.3912666483786054,
+        1.3970447246782185,
+        1.2318652681422666,
+        1.3695685202323034,
+        1.4491176187804042
+      ],
+      "ratio_of_medians": 1.3618527993411744,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.05238842799735721,
+          0.056548240998381516,
+          0.05348047499865061,
+          0.05315678199985996,
+          0.0559428279993881,
+          0.056259778000821825,
+          0.05698402599955443
+        ],
+        "facade": [
+          0.05862752699977136,
+          0.04745973800163483,
+          0.03844013299749349,
+          0.03804944899820839,
+          0.045413105999614345,
+          0.04107846899933065,
+          0.03932325800269609
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "heapq",
+      "direction": "largest",
+      "domain": "keyed-string",
+      "expected_facade_algorithm": "native-generic",
+      "k": 12500,
+      "k_denominator": 16,
+      "median_absolute_deviations_s": {
+        "baseline": 0.00917516299887211,
+        "facade": 0.004598529001668794
+      },
+      "median_paired_speedup": 1.5041784935538194,
+      "medians_s": {
+        "baseline": 0.06155906199637684,
+        "facade": 0.043206463000387885
+      },
+      "observed_facade_info": {
+        "algorithm": "native-generic",
+        "estimated_native_auxiliary_bytes": 600000,
+        "key_domain": "python",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "explicit key requires stable Python comparisons",
+        "requested_k": 12500,
+        "selected": 12500,
+        "size": 200000,
+        "used_native": true,
+        "worst_case_native_auxiliary_bytes": 600000
+      },
+      "paired_speedups": [
+        1.5041784935538194,
+        1.3557920204147853,
+        1.372751526607352,
+        1.5414734827804581,
+        1.3493670952616807,
+        2.218939804543793,
+        1.5511691773204852
+      ],
+      "ratio_of_medians": 1.4247651328419129,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.058073224001418566,
+          0.051723974000196904,
+          0.05238389899750473,
+          0.06660161699983291,
+          0.06155906199637684,
+          0.10122066700205323,
+          0.09066661399992881
+        ],
+        "facade": [
+          0.03860793399871909,
+          0.03815037499953178,
+          0.03815978200145764,
+          0.043206463000387885,
+          0.04562069299936411,
+          0.04561667999951169,
+          0.05845050000061747
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "smallest",
+      "domain": "keyed-string",
+      "expected_facade_algorithm": "timsort",
+      "k": 25000,
+      "k_denominator": 8,
+      "median_absolute_deviations_s": {
+        "baseline": 0.005128584001795389,
+        "facade": 0.002469703002134338
+      },
+      "median_paired_speedup": 1.0064982858497191,
+      "medians_s": {
+        "baseline": 0.06992440300018643,
+        "facade": 0.0699042600026587
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "python",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses cached-key CPython Timsort",
+        "requested_k": 25000,
+        "selected": 25000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        1.0064982858497191,
+        0.9269223219861942,
+        0.9679058299478007,
+        1.0691385489565928,
+        1.0342700998083936,
+        1.2740594010591593,
+        0.9607210730638214
+      ],
+      "ratio_of_medians": 1.0002881512160626,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.07955633299934561,
+          0.06479581899839104,
+          0.06609485499939183,
+          0.0768763090018183,
+          0.06974554599946714,
+          0.08395114000086323,
+          0.06992440300018643
+        ],
+        "facade": [
+          0.07904269099890371,
+          0.0699042600026587,
+          0.06828645200221217,
+          0.07190490799985128,
+          0.06743455700052436,
+          0.06589264200010803,
+          0.07278325099832728
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "largest",
+      "domain": "keyed-string",
+      "expected_facade_algorithm": "timsort",
+      "k": 25000,
+      "k_denominator": 8,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0019660610050777905,
+        "facade": 0.0019371419984963723
+      },
+      "median_paired_speedup": 0.9713007402213443,
+      "medians_s": {
+        "baseline": 0.06536806999793043,
+        "facade": 0.06537860399839701
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "python",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses cached-key CPython Timsort",
+        "requested_k": 25000,
+        "selected": 25000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        1.0369156354547135,
+        0.9713007402213443,
+        0.9247372954637525,
+        0.9679205294678773,
+        0.9503494871637564,
+        1.0018216771152908,
+        1.0437802847993616
+      ],
+      "ratio_of_medians": 0.9998388769441018,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.06536806999793043,
+          0.061620739001227776,
+          0.06646080099744722,
+          0.06328129299799912,
+          0.06237771200176212,
+          0.06733413100300822,
+          0.06544266700075241
+        ],
+        "facade": [
+          0.06304087600074126,
+          0.06344146199990064,
+          0.07186992600327358,
+          0.06537860399839701,
+          0.06563660300162155,
+          0.06721169299999019,
+          0.06269774199972744
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "smallest",
+      "domain": "keyed-string",
+      "expected_facade_algorithm": "timsort",
+      "k": 50000,
+      "k_denominator": 4,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0014597660010622349,
+        "facade": 0.002877396000258159
+      },
+      "median_paired_speedup": 1.004863527146371,
+      "medians_s": {
+        "baseline": 0.06463487500150222,
+        "facade": 0.06432204299926525
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "python",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses cached-key CPython Timsort",
+        "requested_k": 50000,
+        "selected": 50000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        1.004863527146371,
+        1.0509883901200525,
+        1.0986022228297356,
+        1.0281629415408775,
+        0.9425622089314577,
+        1.000680631416606,
+        0.9006819001424188
+      ],
+      "ratio_of_medians": 1.004863527146371,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.06463487500150222,
+          0.0634183820002363,
+          0.06902522599921213,
+          0.06317510900043999,
+          0.06625536700084922,
+          0.06720247200064478,
+          0.06449403899750905
+        ],
+        "facade": [
+          0.06432204299926525,
+          0.06034165800156188,
+          0.06283004400029313,
+          0.06144464699900709,
+          0.0702928319988132,
+          0.06715676299791085,
+          0.0716057899990119
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "largest",
+      "domain": "keyed-string",
+      "expected_facade_algorithm": "timsort",
+      "k": 50000,
+      "k_denominator": 4,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0018235799980175216,
+        "facade": 0.002485683999111643
+      },
+      "median_paired_speedup": 1.0622586831422356,
+      "medians_s": {
+        "baseline": 0.06926731699786615,
+        "facade": 0.0652075789985247
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "python",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses cached-key CPython Timsort",
+        "requested_k": 50000,
+        "selected": 50000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        1.09219726222482,
+        0.8347134033991098,
+        1.0622586831422356,
+        1.4772875393747462,
+        1.198921960249261,
+        0.9244324001912604,
+        0.9383464735493272
+      ],
+      "ratio_of_medians": 1.0622586831422356,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.06850468199991155,
+          0.06744373699984862,
+          0.06926731699786615,
+          0.09583650000058697,
+          0.07402458300202852,
+          0.06185079799979576,
+          0.0705484170030104
+        ],
+        "facade": [
+          0.06272189499941305,
+          0.08079867500055116,
+          0.0652075789985247,
+          0.0648732879999443,
+          0.06174262000058661,
+          0.06690678300219588,
+          0.07518376100051682
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "smallest",
+      "domain": "keyed-string",
+      "expected_facade_algorithm": "timsort",
+      "k": 100000,
+      "k_denominator": 2,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0017114319998654537,
+        "facade": 0.0019902909989468753
+      },
+      "median_paired_speedup": 1.0279562577538885,
+      "medians_s": {
+        "baseline": 0.06612191300155246,
+        "facade": 0.06339967499661725
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "python",
+        "largest": false,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses cached-key CPython Timsort",
+        "requested_k": 100000,
+        "selected": 100000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        1.014510281517715,
+        1.1281955051223225,
+        0.9951585399021016,
+        0.9454145411008507,
+        1.0601162813945928,
+        1.064984208838683,
+        1.0279562577538885
+      ],
+      "ratio_of_medians": 1.0429377280732188,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.06664657900182647,
+          0.0692817909985024,
+          0.0630927279999014,
+          0.064410481001687,
+          0.06612191300155246,
+          0.07082200900185853,
+          0.06476130899682175
+        ],
+        "facade": [
+          0.06569334999949206,
+          0.061409383997670375,
+          0.06339967499661725,
+          0.06812935299967648,
+          0.06237232100102119,
+          0.06650052499753656,
+          0.06300006299716188
+        ]
+      },
+      "size": 200000
+    },
+    {
+      "baseline_algorithm": "timsort",
+      "direction": "largest",
+      "domain": "keyed-string",
+      "expected_facade_algorithm": "timsort",
+      "k": 100000,
+      "k_denominator": 2,
+      "median_absolute_deviations_s": {
+        "baseline": 0.0019189650010957848,
+        "facade": 0.0009135769978456665
+      },
+      "median_paired_speedup": 1.0475794934202864,
+      "medians_s": {
+        "baseline": 0.06596826700115344,
+        "facade": 0.06385540299743298
+      },
+      "observed_facade_info": {
+        "algorithm": "timsort",
+        "estimated_native_auxiliary_bytes": null,
+        "key_domain": "python",
+        "largest": true,
+        "max_native_auxiliary_bytes": null,
+        "native_memory_limit_exceeded": false,
+        "reason": "large k uses cached-key CPython Timsort",
+        "requested_k": 100000,
+        "selected": 100000,
+        "size": 200000,
+        "used_native": false,
+        "worst_case_native_auxiliary_bytes": 10400008
+      },
+      "paired_speedups": [
+        1.0475794934202864,
+        1.0520841736896198,
+        1.0625043300938086,
+        1.0148688444212637,
+        1.136818841550158,
+        0.986402967366031,
+        0.5879270827226798
+      ],
+      "ratio_of_medians": 1.0330882572897613,
+      "routing_passed": true,
+      "samples_s": {
+        "baseline": [
+          0.06596826700115344,
+          0.06622009899729164,
+          0.06976358699830598,
+          0.06468390800000634,
+          0.09684405899679405,
+          0.06298715899902163,
+          0.06404930200005765
+        ],
+        "facade": [
+          0.06297208700198098,
+          0.06294182599958731,
+          0.06565957899874775,
+          0.06373622400133172,
+          0.0851886470009049,
+          0.06385540299743298,
+          0.10894089400244411
+        ]
+      },
+      "size": 200000
+    }
+  ]
+}
