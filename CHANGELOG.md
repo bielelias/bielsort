@@ -21,6 +21,13 @@ release.
   exact-object and sequence-contract tests plus versioned time and peak-memory
   evidence for reusing one order across three parallel Python lists.
 
+### Changed
+
+- Pinned every external GitHub Action to a full immutable commit SHA while
+  retaining version comments so Dependabot can continue proposing reviewed
+  updates. This hardens CI, documentation, wheel building, and publishing
+  workflows without changing package behavior or release metadata.
+
 ## [0.2.0] - 2026-08-05
 
 Prepared from the cross-platform validated `0.2.0rc1` candidate.
